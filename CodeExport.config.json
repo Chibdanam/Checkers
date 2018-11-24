@@ -1,0 +1,13 @@
+{
+	"Module Paths": {
+		"Feuil1": "Feuil1.cls",
+		"BoardConstructeur": "BoardConstructeur.bas",
+		"BoardModel": "BoardModel.cls",
+		"Bot": "Bot.bas",
+		"Enums": "Enums.bas",
+		"Game": "Game.bas",
+		"MoveModel": "MoveModel.cls",
+		"PawnModel": "PawnModel.cls",
+		"TestCase": "TestCase.bas"
+	}
+}
