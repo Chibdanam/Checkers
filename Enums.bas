@@ -7,6 +7,8 @@ Attribute VB_Name = "Enums"
 Enum EColor
     White
     Black
+    WhiteMoveStep
+    BlackMoveStep
 End Enum
 
 '/// ÉNUMÉRATION : Représente la configuration du jeu

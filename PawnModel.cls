@@ -11,6 +11,12 @@ Attribute VB_Exposed = False
 Private prvRow As Integer
 '/// VARIABLE PRIVÉE : Colonne
 Private prvColumn As Integer
+'/// VARIABLE PRIVÉE : Couleur
+Private prvColor As EColor
+'/// VARIABLE PRIVÉE : Couleur
+Private prvIsPawn As Boolean
+'/// VARIABLE PRIVÉE : Colonne
+Private prvIsQueen As Boolean
 
 
 
@@ -41,6 +47,34 @@ Public Sub Build(cell As Range)
     
     prvRow = cell.Row
     prvColumn = cell.Column
+    
+    '/// On définit la variable privé de couleur du pion
+    
+    If cell.Font.Color = RGB(255, 255, 255) Then
+        prvColor = EColor.White
+    ElseIf cell.Font.Color = RGB(0, 0, 0) Then
+        prvColor = EColor.Black
+    ElseIf cell.Font.Color = RGB(150, 50, 50) Then
+        prvColor = EColor.BlackMoveStep
+    ElseIf cell.Font.Color = RGB(230, 180, 180) Then
+        prvColor = EColor.WhiteMoveStep
+    End If
+    
+    '/// On définit si la cellule contient un pion
+    
+    If Not IsEmpty(cell) And (Me.Color = EColor.Black Or Me.Color = EColor.White) Then
+        prvIsPawn = True
+    Else
+        prvIsPawn = False
+    End If
+    
+    '/// On définit la variable privé d'état Dame du pion, si la valeur de la cellule est © alors c'est une dame
+    
+    If InStr(Chr(169), cell.Value) Then
+        prvIsQueen = True
+    Else
+        prvIsQueen = False
+    End If
     
 End Sub
 
@@ -99,13 +133,7 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : EColor
 Public Property Get Color() As EColor
-    
-    If CurrentRange.Font.ColorIndex = 2 Then
-        Color = EColor.White
-    ElseIf CurrentRange.Font.ColorIndex = -4105 Then
-        Color = EColor.Black
-    End If
-    
+    Color = prvColor
 End Property
 
 
@@ -115,9 +143,9 @@ End Property
 '/// RETOUR     : EColor
 Public Property Get EnemyColor() As EColor
     
-    If CurrentRange.Font.ColorIndex = 2 Then
+    If Me.Color = EColor.White Or Me.Color = EColor.WhiteMoveStep Then
         EnemyColor = EColor.Black
-    ElseIf CurrentRange.Font.ColorIndex = -4105 Then
+    ElseIf Me.Color = EColor.Black Or Me.Color = EColor.BlackMoveStep Then
         EnemyColor = EColor.White
     End If
     
@@ -130,11 +158,23 @@ End Property
 '/// RETOUR     : Aucun
 Public Property Let Color(pColor As EColor)
     
-    If pColor = EColor.White Then
-        CurrentRange.Font.ColorIndex = 2
-    ElseIf pColor = EColor.Black Then
-        CurrentRange.Font.ColorIndex = -4105
-    End If
+    prvColor = pColor
+    
+    Select Case pColor
+    
+        Case EColor.White
+            CurrentRange.Font.Color = RGB(255, 255, 255)
+            
+        Case EColor.Black
+            CurrentRange.Font.Color = RGB(0, 0, 0)
+            
+        Case EColor.BlackMoveStep
+            CurrentRange.Font.Color = RGB(150, 50, 50)
+            
+        Case EColor.WhiteMoveStep
+            CurrentRange.Font.Color = RGB(230, 180, 180)
+            
+    End Select
     
 End Property
 
@@ -146,9 +186,9 @@ End Property
 '/// RETOUR     : Integer
 Property Get Orientation() As Integer
     
-    If Me.Color = EColor.White Then
+    If Me.Color = EColor.White Or Me.Color = EColor.WhiteMoveStep Then
         Orientation = -1
-    ElseIf Me.Color = EColor.Black Then
+    ElseIf Me.Color = EColor.Black Or Me.Color = EColor.BlackMoveStep Then
         Orientation = 1
     End If
     
@@ -160,14 +200,22 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// retourne   : Boolean
 Public Property Get IsQueen() As Boolean
-    
-    'Si la valeur de la cellule est © alors c'est une dame
-    If CurrentRange.Value = Chr(169) Then
-        IsQueen = True
-    Else
-        IsQueen = False
-    End If
+    IsQueen = prvIsQueen
+End Property
 
+
+
+'/// PROPRIÉTÉ  : Retourne vrai si le pion est une Dame
+'/// PARAMÈTRE  : Aucun
+'/// retourne   : Boolean
+Public Property Let IsQueen(pIsQueen As Boolean)
+    
+    prvIsQueen = pIsQueen
+    
+    If pIsQueen Then
+        CurrentRange.Value = Chr(169)
+    End If
+    
 End Property
 
 
@@ -176,14 +224,27 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// retourne   : Boolean
 Public Property Get IsPawn() As Boolean
+    IsPawn = prvIsPawn
+End Property
 
-    'si la valeur de la range du pion est vide
-    If IsEmpty(CurrentRange) Then
-        prvIsPawn = False
-    Else
-        IsPawn = True
+
+
+'/// PROPRIÉTÉ  : Retourne vrai si le pion est véritablement un pion
+'/// PARAMÈTRE  : Aucun
+'/// retourne   : Boolean
+Public Property Let IsPawn(pIsPawn As Boolean)
+    prvIsPawn = pIsPawn
+End Property
+
+
+
+'/// PROPRIÉTÉ  : Retourne vrai si le pion est une step de déplacement un pion
+'/// PARAMÈTRE  : Aucun
+'/// retourne   : Boolean
+Public Property Get IsStepMove() As Boolean
+    If Me.Color = EColor.WhiteMoveStep Or Me.Color = EColor.BlackMoveStep Then
+        IsStepMove = True
     End If
-        
 End Property
 
 
@@ -198,7 +259,7 @@ Public Sub TryBecomeQueen()
         If Me.Color = EColor.Black And Me.Row = 9 Or _
            Me.Color = EColor.White And Me.Row = 2 Then
 
-            Me.CurrentRange.Value = Chr(169)
+            Me.IsQueen = True
                 
         End If
     End If
@@ -207,43 +268,77 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Ajoute un pion mémoire ou effectue un mouvement si c'est possible
-'///              Retourne vrai si un pion a été déplacé
+'/// PROPRIÉTÉ  : Vérifie si le mouvement est autorisé et, si possible, déplace le pion
+'///              Retourne vrai si le pion peut se déplacer
+'/// PARAMÈTRE  : Pion (à la position final apres déplacement), Bouléen indiquant si on déplace le pion
+'/// RETOUR     : Boolean
+Public Function TryMoveTo(pTarget As PawnModel, pDoMove As Boolean) As Boolean
+    
+    If Me.CanMoveTo(pTarget) Then
+        
+        TryMoveTo = True
+        
+        If pDoMove Then
+        
+            Call MoveTo(pTarget)
+        
+        End If
+        
+    End If
+    
+End Function
+
+
+
+'/// PROPRIÉTÉ  : déplace le pion vers la position passé en parametre
+'/// PARAMÈTRE  : Pion (à la position final apres déplacement)
+'/// RETOUR     : Aucun
+Private Sub MoveTo(ByRef pTarget As PawnModel)
+    
+    Dim move As MoveModel
+    Set move = New MoveModel
+    Call move.Build(Me, pTarget)
+    
+    'si c'est une attaque
+    If move.IsAttack Then
+        'on efface le pion mangé
+        move.EnemyKilled.CurrentRange.ClearContents
+    End If
+    
+    'on transmet la valeur (pion ou dame) et la couleur du pion a la cellule de destination
+    pTarget.CurrentRange.Value = Me.CurrentRange.Value
+    pTarget.Color = Me.Color
+    Call pTarget.Build(pTarget.CurrentRange)
+    
+    'on vérifie si le pion peut devenir une dame
+    Call pTarget.TryBecomeQueen
+    
+    'on efface le pion de sa position initial
+    Me.CurrentRange.ClearContents
+    
+End Sub
+
+
+
+'/// PROPRIÉTÉ  : Vérifie si le mouvement est autorisé
 '/// PARAMÈTRE  : Pion (à la position final apres déplacement)
 '/// RETOUR     : Boolean
-Public Function TryMoveTo(pTarget As PawnModel) As Boolean
+Public Function CanMoveTo(pTarget As PawnModel) As Boolean
     
     Dim move As MoveModel
     
     'on initialise le retour de la fonction a false
-    TryMoveTo = False
+    CanMoveTo = False
     
     'on instancie un nouvel object déplacement que l'on construit avec le pion actuelle et le pion à la position finale souhaité
     Set move = New MoveModel
     Call move.Build(Me, pTarget)
     
-    'si le déplacement est une attaque ou un mouvement
-    If move.IsMoveOrAttack Then
-    
-        'si c'est une attaque
-        If move.IsAttack Then
-            'on efface le pion mangé
-            move.EnemyKilled.CurrentRange.ClearContents
-        End If
-        
-        'on transmet la valeur (pion ou dame) et la couleur du pion a la cellule de destination
-        pTarget.CurrentRange.Value = Me.CurrentRange.Value
-        pTarget.Color = Me.Color
-        
-        'on vérifie si le pion peut devenir une dame
-        Call pTarget.TryBecomeQueen
-        
-        'on efface le pion de sa position initial
-        Me.CurrentRange.ClearContents
-        
-        TryMoveTo = True
-        
+    'si c'est un déplacement et aucun pion allié ne peut attaquer ou que ce déplacement est une attaque
+    If (move.IsMove And Not Me.HasAttackingAlly) Or move.IsAttack Then
+        CanMoveTo = True
     End If
+    
     
 End Function
 
@@ -498,3 +593,20 @@ Property Get HasAttackingAlly() As Boolean
 
 
 End Property
+
+
+
+'/// PROCÉDURE  : Transforme le pion en étape de déplacement sur le plateau
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Boolean
+Public Sub MarkMoveStep(pawn As PawnModel)
+
+    pawn.CurrentRange.Value = Me.CurrentRange.Value
+    
+    If Me.Color = EColor.White Or Me.Color = EColor.WhiteMoveStep Then
+        pawn.Color = EColor.WhiteMoveStep
+    ElseIf Me.Color = EColor.Black Or Me.Color = EColor.BlackMoveStep Then
+        pawn.Color = EColor.BlackMoveStep
+    End If
+        
+End Sub

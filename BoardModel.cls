@@ -140,7 +140,7 @@ End Property
 '/// RETOUR     : EConfig
 Public Property Get ConfigPlayer() As EConfig
     
-    If Range("ConfigPlayerValue") = "1 Players" Then
+    If Range("ConfigPlayerValue") = "1 Player" Then
         ConfigPlayer = EConfig.SinglePlayer
     ElseIf Range("ConfigPlayerValue").Value = "2 Players" Then
         ConfigPlayer = EConfig.TwoPlayer
@@ -201,34 +201,92 @@ End Property
 '/// PROPRIÉTÉ  : Retourne le pion écris en mémoire sur le plateau de jeu
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : PawnModel
-Public Property Get Memory() As PawnModel
+Public Property Get PawnAndMovesFromMemory() As PawnModel()
 
-    Dim offsetPawnPosition As String
-    Dim offsetPawnRange As Range
-    Dim pawnRange As Range
     Dim offset As Integer
+    Dim offsetStepPosition As String
+    Dim offsetStepRange As Range
+    Dim stepRange As Range
+    Dim pawnStep As PawnModel
+    Dim stepCounter As Integer
     
-    Set Memory = New PawnModel
+    Dim pawnStepList() As String
+    Dim finalList() As PawnModel
     
+    Set pawnStep = New PawnModel
+    
+    stepCounter = 0
     offset = 1
     
-    'si la range "mémoire" n'est pas vie
-    If Not IsEmpty(Range("MemoryValue")) Then
+    pawnStepList = Split(LTrim(Range("MemoryValue").Value))
+    
+    'si la range "mémoire" n'est pas vide
+    If Not IsArrayNullOrEmpty(pawnStepList) Then
+    
+        For Each step In pawnStepList
         
-        'on récupere la valeur écrite sur le plateau
-        offsetPawnPosition = Range("MemoryValue").Value
+            Set pawnStep = New PawnModel
+            
+            'on récupère la n-ième valeur écrite sur le plateau
+            offsetStepPosition = step
+            
+            'récupère la cellule dans le référentiel du damier
+            Set offsetStepRange = Range(offsetStepPosition)
+            
+            'récupere la veritable cellule dans le référentiel d'excel
+            Set stepRange = Cells(offsetStepRange.Row + offset, offsetStepRange.Column + offset)
+            
+            'on construit le pion avec la cellule précédemment récupérée
+            Call pawnStep.Build(stepRange)
+            
+            
+            'on redimensionne notre tableau
+            ReDim Preserve finalList(stepCounter)
+            'on ajoute la step, du mouvement de notre pion, a notre liste
+            Set finalList(stepCounter) = pawnStep
+            'on incrémente le nombre de step à notre liste
+            stepCounter = stepCounter + 1
         
-        'récupre la cellule dans le référentiel du damier
-        Set offsetPawnRange = Range(offsetPawnPosition)
-        
-        'récupere la veritable cellule dans le référentiel d'excel
-        Set pawnRange = Cells(offsetPawnRange.Row + offset, offsetPawnRange.Column + offset)
-        
-        'on construit le pion avec la cellule précédemment récupéré
-        Call Memory.Build(pawnRange)
+        Next step
         
     End If
     
+    PawnAndMovesFromMemory = finalList
+    
+End Property
+
+
+
+'/// PROPRIÉTÉ  : Écris sur le plateau de jeu dans la zone "mémoire" la position du pion passé en parametre
+'/// PARAMÈTRE  : PawnModel
+'/// RETOUR     : Acun
+Public Property Let MemoryMoves(pawn As PawnModel)
+
+    Dim Column As String
+    Dim Row As String
+    Dim memorizedMove As String
+    Dim pawnStepList() As String
+    
+    'permet d'écrire sur le plateau les coordonées dans le référentiel du plateau et non le référentiel d'excel
+    Dim offset As Integer
+    
+    'le damier commencant en "B2", on a un offset de 1 sur la colonne et de 1 sur l ligne par rapport a "A1"
+    offset = 1
+    
+    'afin de récuper la lettre correspondant a la colonne, on convertie la valeur de la colonne en charactere ASCII
+    Column = Chr(64 + (pawn.CurrentRange.Column - offset))
+    'on convertie notre valeur numéric en chaine de charactere : Integer to String
+    Row = CStr(pawn.CurrentRange.Row - offset)
+    
+    memorizedMove = Column + Row
+    
+    pawnStepList = Split(LTrim(Range("MemoryValue").Value))
+    
+    If Not IsInArray(memorizedMove, pawnStepList) Then
+        Range("MemoryValue").Value = Range("MemoryValue").Value + " " + memorizedMove
+        Range("MemoryValue").Characters(Start:=3).Font.Color = RGB(255, 0, 0)
+    End If
+        
 End Property
 
 
@@ -311,6 +369,44 @@ Property Get CardinalCoef(Direction As EWindRose) As Variant
     End If
     
 End Property
+
+
+
+'/// PROCÉDURE  :
+'/// PARAMÈTRE  :
+'/// RETOUR     :
+Public Sub CleanMemory(Optional pAfterAttack As Boolean)
+
+    
+    Dim firstPawn As Boolean
+    Dim pawnStep As PawnModel
+    Dim pawnStepList As Variant
+    pawnStepList = Me.PawnAndMovesFromMemory
+    
+    
+    If Not IsArrayNullOrEmpty(pawnStepList) Then
+        
+        If pAfterAttack Then
+            ReDim Preserve pawnStepList(UBound(pawnStepList) - 1)
+        Else
+            firstPawn = True
+        End If
+    
+        For Each step In pawnStepList
+        
+            If firstPawn Then
+                firstPawn = False
+            Else
+                Set pawnStep = step
+                pawnStep.CurrentRange.ClearContents
+            End If
+            
+        Next step
+    End If
+
+    Range("Memory").ClearContents
+    
+End Sub
 
 
 
