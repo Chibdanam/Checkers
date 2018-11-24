@@ -92,7 +92,7 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                         ElseIf checkerBoard.CurrentTurn = EColor.Black Then
                         
                             'fais jouer un bot
-                            Call Bot.Run
+                            Call Bot.Run2
                             'change la couleur afficher sur le plateau
                             Call checkerBoard.SwitchTurn
                             
@@ -142,27 +142,69 @@ End Sub
 Private Sub Worksheet_SelectionChange(ByVal Target As Range)
 
   
-'    Dim checkerBoard As BoardModel
-'
-'    'on instancie un object correspondant a notre plateau de jeu
-'    Set checkerBoard = New BoardModel
-'
-'    'selon la section dans laquelle on a cliqué
-'    Select Case checkerBoard.GetSection(Target)
-'
-'        'si on a cliqué sur le damier
-'        Case ESection.Game
-'
-'            'selon la valeur actuelle de configuration de la partie
-'            Select Case checkerBoard.ConfigPlayer
-'
-'            End Select
-'
-'        Case ESection.ConfigPlayer
-'
-'            Call Worksheet_BeforeDoubleClick(Target, False)
-'
-'    End Select
+    Dim checkerBoard As BoardModel
+    Dim nextStep As PawnModel
+    Dim lastStep As PawnModel
+    Dim move As MoveModel
+    Dim stepCount As Integer
+    Dim pawnStepList() As PawnModel
+
+    'on instancie un object correspondant a notre plateau de jeu
+    Set checkerBoard = New BoardModel
+
+    'selon la section dans laquelle on a cliqué
+    Select Case checkerBoard.GetSection(Target)
+
+        'si on a cliqué sur le damier
+        Case ESection.Game
+
+            'selon la valeur actuelle de configuration de la partie
+            Select Case checkerBoard.ConfigPlayer
+                
+                'Dans le cas ou un humain joue un tour
+                Case EConfig.SinglePlayer, EConfig.TwoPlayer
+                    
+                    'si on a un pion en mémoire
+                    If Not IsArrayNullOrEmpty(checkerBoard.PawnAndMovesFromMemory) Then
+                    
+                        'on récupère toutes les step de déplacement mémorisées
+                        pawnStepList = checkerBoard.PawnAndMovesFromMemory
+                        'on regarde le nombre total de step mémorisées
+                        stepCount = UBound(pawnStepList)
+                        
+                        'on instancie un nouvel objet pion
+                        Set nextStep = New PawnModel
+                        'on lui attribue la cellule sur laquelle le clic a eu lieu
+                        Call nextStep.Build(Target)
+                        
+                        'si la cellule ciblé n'a pas de pion
+                        If Not nextStep.IsPawn Then
+                        
+                            'on recupere la derniere step de la liste
+                            Set lastStep = pawnStepList(stepCount)
+                            
+                            Set move = New MoveModel
+                            Call move.Build(lastStep, nextStep)
+                            
+                            'si le mouvement depuis le dernier emplacement en mémoire vers l'emplacement ciblé correspond a une attaque
+                            If move.IsAttack Then
+                                'on enregistre l'emplacement ciblé
+                                checkerBoard.MemoryMoves = nextStep
+                                Call lastStep.MarkMoveStep(nextStep)
+                            End If
+                            
+                        End If
+                    
+                    End If
+                    
+            End Select
+
+        Case ESection.ConfigPlayer
+
+            Call Worksheet_BeforeDoubleClick(Target, False)
+
+    End Select
 
 End Sub
+
 

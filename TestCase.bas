@@ -12,19 +12,19 @@ Public Sub TestBecomeQueen()
     Range("D3").Value = "O"
     Range("F3").Value = "O"
     Range("H3").Value = "O"
-    Range("B3").Font.ColorIndex = 2
-    Range("D3").Font.ColorIndex = 2
-    Range("F3").Font.ColorIndex = 2
-    Range("H3").Font.ColorIndex = 2
+    Range("B3").Font.Color = RGB(255, 255, 255)
+    Range("D3").Font.Color = RGB(255, 255, 255)
+    Range("F3").Font.Color = RGB(255, 255, 255)
+    Range("H3").Font.Color = RGB(255, 255, 255)
     
     Range("C8").Value = "O"
     Range("E8").Value = "O"
     Range("G8").Value = "O"
     Range("I8").Value = "O"
-    Range("C8").Font.ColorIndex = -4105
-    Range("E8").Font.ColorIndex = -4105
-    Range("G8").Font.ColorIndex = -4105
-    Range("I8").Font.ColorIndex = -4105
+    Range("C8").Font.Color = RGB(0, 0, 0)
+    Range("E8").Font.Color = RGB(0, 0, 0)
+    Range("G8").Font.Color = RGB(0, 0, 0)
+    Range("I8").Font.Color = RGB(0, 0, 0)
 
 End Sub
 
@@ -40,14 +40,14 @@ Public Sub TestAttack()
     Range("TurnValue") = "Black"
 
     Range("F5").Value = "O"
-    Range("B8").Font.ColorIndex = -4105
+    Range("B8").Font.Color = RGB(0, 0, 0)
     
     Range("G4").Value = "O"
     Range("G6").Value = "O"
     Range("E6").Value = "O"
-    Range("G4").Font.ColorIndex = 2
-    Range("G6").Font.ColorIndex = 2
-    Range("E6").Font.ColorIndex = 2
+    Range("G4").Font.Color = RGB(255, 255, 255)
+    Range("G6").Font.Color = RGB(255, 255, 255)
+    Range("E6").Font.Color = RGB(255, 255, 255)
     
 End Sub
 
@@ -63,20 +63,20 @@ Public Sub TestQueenMove()
     Range("E4").Value = Chr(169)
     Range("D5").Value = Chr(169)
     Range("C6").Value = Chr(169)
-    Range("F3").Font.ColorIndex = 2
-    Range("E4").Font.ColorIndex = 2
-    Range("D5").Font.ColorIndex = 2
-    Range("C6").Font.ColorIndex = 2
+    Range("F3").Font.Color = RGB(255, 255, 255)
+    Range("E4").Font.Color = RGB(255, 255, 255)
+    Range("D5").Font.Color = RGB(255, 255, 255)
+    Range("C6").Font.Color = RGB(255, 255, 255)
     
     Range("H5").Value = "O"
     Range("H7").Value = "O"
     Range("I8").Value = "O"
-    Range("H5").Font.ColorIndex = -4105
-    Range("H7").Font.ColorIndex = -4105
-    Range("I8").Font.ColorIndex = -4105
+    Range("H5").Font.Color = RGB(0, 0, 0)
+    Range("H7").Font.Color = RGB(0, 0, 0)
+    Range("I8").Font.Color = RGB(0, 0, 0)
     
     Range("G8").Value = "O"
-    Range("G8").Font.ColorIndex = 2
+    Range("G8").Font.Color = RGB(255, 255, 255)
     
 End Sub
 
@@ -88,8 +88,8 @@ Public Sub TestYouWin()
     
     Range("F3").Value = "O"
     Range("E4").Value = "O"
-    Range("F3").Font.ColorIndex = 2
-    Range("E4").Font.ColorIndex = -4105
+    Range("F3").Font.Color = RGB(255, 255, 255)
+    Range("E4").Font.Color = RGB(0, 0, 0)
     
 End Sub
 
@@ -102,12 +102,12 @@ Public Sub TestWeird()
     
     Range("G4").Value = Chr(169)
     Range("H9").Value = "O"
-    Range("G4").Font.ColorIndex = 2
-    Range("H9").Font.ColorIndex = 2
+    Range("G4").Font.Color = RGB(255, 255, 255)
+    Range("H9").Font.Color = RGB(255, 255, 255)
     
     Range("D9").Value = Chr(169)
     Range("I8").Value = "O"
-    Range("D9").Font.ColorIndex = -4105
-    Range("I8").Font.ColorIndex = -4105
+    Range("D9").Font.Color = RGB(0, 0, 0)
+    Range("I8").Font.Color = RGB(0, 0, 0)
     
 End Sub

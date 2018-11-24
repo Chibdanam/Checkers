@@ -133,9 +133,9 @@ Public Sub Initalisation()
     Next cell
 
     'associe la partie basse du damier a la couleur blanche
-    Range("B7:I9").Font.ColorIndex = 2
+    Range("B7:I9").Font.Color = RGB(255, 255, 255)
     'noir
-    Range("B2:I4").Font.ColorIndex = -4105
+    Range("B2:I4").Font.Color = RGB(0, 0, 0)
 
 End Sub
 

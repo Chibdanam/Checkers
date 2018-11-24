@@ -172,8 +172,8 @@ Property Get IsMove() As Boolean
             IsMove = True
         End If
         
-    'si le pion est véritablement un pion
-    ElseIf prvPawn.IsPawn Then
+    'si le pion n'est pas une dame
+    Else
         
         'si le mouvement respect les régles du mouvement d'un pion
         If IsPawnMove() Then
@@ -203,8 +203,8 @@ Property Get IsAttack() As Boolean
             IsAttack = True
         End If
         
-    'si le pion est véritablement un pion
-    ElseIf prvPawn.IsPawn Then
+    'si le pion n'est pas une dame
+    Else
         
         'si le mouvement respect les régles d'attaque d'un pion
         If IsPawnAttack() Then
@@ -225,15 +225,10 @@ Property Get IsPawnMove() As Boolean
     'on initialise le retour a false
     IsPawnMove = False
     
-    'si le pion n'est pas une dame, et si le pion n'a aucun allié pouvant attaquer
-    If Not prvPawn.IsQueen And Not prvPawn.HasAttackingAlly Then
-        
-        'si le déplacement n'est que d'une case,
-        'et si le déplacement suivant Y est positif ( vers le bas ) si le pion est Noir, ou Négatif (vers le haut) si le pion est blanc
-        If Norme = 1 And Yvector = prvPawn.Orientation Then
-            IsPawnMove = True
-        End If
-        
+    'si le déplacement n'est que d'une case,
+    'et si le déplacement suivant Y est positif ( vers le bas ) si le pion est Noir, ou Négatif (vers le haut) si le pion est blanc
+    If Norme = 1 And Yvector = prvPawn.Orientation Then
+        IsPawnMove = True
     End If
        
 End Property
@@ -248,31 +243,26 @@ Property Get IsPawnAttack() As Boolean
     'on initialise le retour a false
     IsPawnAttack = False
     
-    'si le pion n'est pas une dame
-    If Not prvPawn.IsQueen Then
-    
-        'si le déplacement est de deux cases
-        If Norme = 2 Then
-            
-            'on instancie un objet pion pour représenter le pion attaqué
-            Dim enemyPawn As PawnModel
-            Set enemyPawn = New PawnModel
-            
-            'on récupere la cellule entre la position initiale et la position finale du pion
-            Dim enemyCell As Range
-            Set enemyCell = Cells(prvTarget.Row - Sgn(Yvector) * 1, prvTarget.Column - Sgn(Xvector) * 1)
-            
-            'on construit un objet pion a partir de la cellule
-            Call enemyPawn.Build(enemyCell)
-            
-            'si l'objet pion est véritablement un pion, et s'il n'est pas de la couleur du pion attaquant
-            If enemyPawn.IsPawn And enemyPawn.Color <> prvPawn.Color Then
-            
-                'on garde les informations du pion tué dans la variable privée
-                Set prvEnemyKilled = enemyPawn
-                IsPawnAttack = True
-                
-            End If
+    'si le déplacement est de deux cases
+    If Norme = 2 Then
+        
+        'on instancie un objet pion pour représenter le pion attaqué
+        Dim enemyPawn As PawnModel
+        Set enemyPawn = New PawnModel
+        
+        'on récupere la cellule entre la position initiale et la position finale du pion
+        Dim enemyCell As Range
+        Set enemyCell = Cells(prvTarget.Row - Sgn(Yvector) * 1, prvTarget.Column - Sgn(Xvector) * 1)
+        
+        'on construit un objet pion a partir de la cellule
+        Call enemyPawn.Build(enemyCell)
+        
+        'si l'objet pion est véritablement un pion, et s'il n'est pas de la couleur du pion attaquant
+        If enemyPawn.IsPawn And enemyPawn.Color = prvPawn.EnemyColor Then
+        
+            'on garde les informations du pion tué dans la variable privée
+            Set prvEnemyKilled = enemyPawn
+            IsPawnAttack = True
             
         End If
         
@@ -300,8 +290,8 @@ Property Get IsQueenMove() As Boolean
     'on initialise le retour a false
     IsQueenMove = False
     
-    'si aucun pion allié ne peut attaquer, et si la déplacement est sur la diagonale, et si le pion est une dame
-    If Not prvPawn.HasAttackingAlly And Norme <> 0 And prvPawn.IsQueen Then
+    'si la déplacement est sur la diagonale
+    If Norme <> 0 Then
     
         'on instancie un objet pion
         Set pawnCandidate = New PawnModel
@@ -384,8 +374,8 @@ Property Get IsQueenAttack() As Boolean
     'on initialise le retour a false
     IsQueenAttack = False
     
-    'si aucun pion allié ne peut attaquer, et si la déplacement est sur la diagonale, et si le pion est une dame
-    If Norme <> 0 And prvPawn.IsQueen Then
+    'si le déplacement est sur la diagonale
+    If Norme <> 0 Then
     
         'on récupere les coeeficients associés à la direction du déplacement
         coefVector = board.CardinalCoef(Me.Direction)
@@ -432,6 +422,7 @@ Property Get IsQueenAttack() As Boolean
                             'on l'enregistre
                             pawnEnemy.Row = pawnCandidate.Row
                             pawnEnemy.Column = pawnCandidate.Column
+                            Call pawnEnemy.Build(pawnEnemy.CurrentRange)
                             
                             'notre déplacement commence a partir de cette case
                             minVector = iVector

@@ -12,6 +12,7 @@ Public Function Play(Target As Range) As Boolean
     Dim pawn As PawnModel
     Dim enemyPawn As PawnModel
     Dim checkerBoard As BoardModel
+    Dim pawnStepList As Variant
 
     Set checkerBoard = New BoardModel
     Set pawn = New PawnModel
@@ -23,26 +24,121 @@ Public Function Play(Target As Range) As Boolean
     'si la cellule ciblé est un pion de notre couleur
     If pawn.IsPawn() And pawn.Color = checkerBoard.CurrentTurn Then
         
+        Call checkerBoard.CleanMemory
+        
         'on mémorise le pion sur le plateau
         checkerBoard.Memory = pawn
     
     'si la cellule ciblé est vide
     ElseIf Not pawn.IsPawn() Then
         
-        'si un pion est mémorisé sur le plateau
-        If checkerBoard.Memory.IsPawn() Then
+        pawnStepList = checkerBoard.PawnAndMovesFromMemory
+        
+        Dim pawnInitalState As PawnModel
+        
+        'si au moins un pion est mémorisé sur le plateau
+        If Not IsArrayNullOrEmpty(pawnStepList) Then
             
-            'on instancie le pion en mémoire
-            Dim pawnInitalState As PawnModel
-            Set pawnInitalState = checkerBoard.Memory
+            'si un seul pion est mémorisé
+            If UBound(pawnStepList) = 0 Then
+                
+                'on instancie le pion en mémoire
+                Set pawnInitalState = pawnStepList(0)
+    
+                'si le mouvement du pion mémorisé vers la cellule ciblé est possible
+                If pawnInitalState.IsPawn() And _
+                   pawnInitalState.Color = checkerBoard.CurrentTurn And _
+                   pawnInitalState.TryMoveTo(pawn, True) Then
+                    'on efface le pion mémorisé
+                   Call checkerBoard.CleanMemory
+                    'un pion s'est dépacé
+                    Play = True
+    
+                End If
             
-            'si le mouvement du pion mémorisé vers la cellule ciblé est possible
-            If pawnInitalState.TryMoveTo(pawn) Then
-                'on efface le pion mémorisé
-                Range("Memory").ClearContents
-                'un pion s'est dépacé
+            'si plusieurs pions sont mémorisés
+            ElseIf UBound(pawnStepList) > 0 Then
+            
+                Dim moveStepCount As Integer
+                moveStepCount = 0
+                
+                Dim pawnFinalState As PawnModel
+                Dim finalMove As Boolean
+                Dim doMoves As Boolean
+                
                 Play = True
-               
+                finalMove = False
+                doMoves = True
+                
+                'tant qu'on a pas effectuer la totalité des déplacements mémorisés
+                While Not finalMove
+                    
+                    'on initialise le pion a déplacer et la cible de son déplacement
+                    Set pawnInitalState = pawnStepList(moveStepCount)
+                    Set pawnFinalState = pawnStepList(moveStepCount + 1)
+                    
+                    'si la cible du mouvement en cours est la cellule où l'on a double cliqué
+                    If pawnFinalState.CurrentRange.Address = pawn.CurrentRange.Address Then
+                        'alors ce déplacement est le dernier a effectuer
+                        finalMove = True
+                    End If
+                    
+                    If (pawnInitalState.IsPawn() Or pawnInitalState.IsStepMove()) And pawnFinalState.IsStepMove() Then
+                    
+                        If Not pawnInitalState.TryMoveTo(pawnFinalState, False) Then
+                        
+                            doMoves = False
+                            
+                        End If
+                        
+                    End If
+                    
+                    moveStepCount = moveStepCount + 1
+                    
+                Wend
+                
+                If doMoves Then
+                
+                    finalMove = False
+                    moveStepCount = 0
+                    
+                    While Not finalMove
+                    
+                        'on initialise le pion a déplacer et la cible de son déplacement
+                        Set pawnInitalState = pawnStepList(moveStepCount)
+                        Set pawnFinalState = pawnStepList(moveStepCount + 1)
+                        
+                        'si la cible du mouvement en cours est la cellule où l'on a double cliqué
+                        If pawnFinalState.CurrentRange.Address = pawn.CurrentRange.Address Then
+                            'alors ce déplacement est le dernier a effectuer
+                            finalMove = True
+                        End If
+                        
+                        If (pawnInitalState.IsPawn() Or pawnInitalState.IsStepMove()) And pawnFinalState.IsStepMove() Then
+                        
+                            If pawnInitalState.TryMoveTo(pawnFinalState, True) Then
+                                
+                                'un pion s'est dépacé
+                                Play = True
+                                
+                            End If
+                            
+                        End If
+                        
+                        moveStepCount = moveStepCount + 1
+                    
+                    Wend
+                
+                        
+                    'on efface le pion mémorisé
+                    Call checkerBoard.CleanMemory(Play)
+                            
+                    
+                End If
+                
+                
+                
+        
             End If
             
         End If
@@ -87,4 +183,26 @@ Public Function GetPawns(pColor As EColor) As Variant
     
 End Function
 
+
+Function IsArrayNullOrEmpty(arr As Variant) As Boolean
+    
+    On Error Resume Next
+    
+    IsArrayNullOrEmpty = True
+    
+    If IsArray(arr) And _
+    Not IsError(LBound(arr, 1)) And _
+    LBound(arr, 1) <= UBound(arr, 1) And _
+    Not IsEmpty(arr) And _
+    UBound(arr) > -1 Then
+        IsArrayNullOrEmpty = False
+    End If
+    
+    Exit Function
+    
+End Function
+
+Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
+  IsInArray = (UBound(Filter(arr, stringToBeFound)) > -1)
+End Function
 
