@@ -8,11 +8,18 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
 
-'/// PROCÉDURE  : Se déclenche lorsqu'un double clic survient sur la feuille et transmet en parametre la range de la cellule cliquée
-'/// PARAMÈTRE  : Range, Boolean
+'/// PROCï¿½DURE  : Se dï¿½clenche lorsqu'un double clic survient sur la feuille et transmet en parametre la range de la cellule cliquï¿½e
+'/// PARAMï¿½TRE  : Range, Boolean
 '/// RETOUR     : Aucun (evenement)
 Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean)
-    
+
+  'Si Cancel a sa valeur par dÃ©faut ou Ã©gal Ã  False, alors aprÃ¨s la procÃ©dure, 
+  'Excel va continuer en traitant le clic droit comme il le fait par dÃ©faut. 
+
+  'Si Cancel est Ã  True, alors Excel ne va pas faire son traitement habituel, 
+  'Excel considÃ¨re que l'Ã©vÃ©nement du clic droit est entiÃ¨rement pris en charge par la procÃ©dure.
+  Cancel = true
+
     Dim checkerBoard As BoardModel
     Dim pawn As PawnModel
     Dim enemyPawn As PawnModel
@@ -20,10 +27,10 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
     'on instancie un object correspondant a notre plateau de jeu
     Set checkerBoard = New BoardModel
    
-    'selon la section dans laquelle on a cliqué
+    'selon la section dans laquelle on a cliquï¿½
     Select Case checkerBoard.GetSection(Target)
     
-        'si on a cliqué sur le damier
+        'si on a cliquï¿½ sur le damier
         Case ESection.Game
         
             'selon la valeur actuelle de configuration de la partie
@@ -33,9 +40,9 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                 Case EConfig.TwoPlayer
                     
                     'si l'action correspond au mouvement d'un pion
-                    If Game.Play(Target) Then
+                    If Player.Run(Target) Then
                     
-                        'vérifie s'il y a un vainqueur
+                        'vï¿½rifie s'il y a un vainqueur
                         Call checkerBoard.SearchWinner
                         
                         'change la couleur afficher sur le plateau
@@ -47,9 +54,9 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                 Case EConfig.SinglePlayer
                 
                     'si l'action correspond au mouvement d'un pion
-                    If Game.Play(Target) Then
+                    If Player.Run(Target) Then
                     
-                        'vérifie s'il y a un vainqueur
+                        'vï¿½rifie s'il y a un vainqueur
                         Call checkerBoard.SearchWinner
                         
                         'change la couleur afficher sur le plateau
@@ -61,7 +68,7 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                             'fais jouer un tour au bot
                             Call Bot.Run
                             
-                            'vérifie s'il y a un vainqueur
+                            'vï¿½rifie s'il y a un vainqueur
                             Call checkerBoard.SearchWinner
                             
                             'change la couleur afficher sur le plateau
@@ -98,16 +105,16 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                             
                         End If
                         
-                        'vérifie s'il y a un vainqueur
+                        'vï¿½rifie s'il y a un vainqueur
                         Call checkerBoard.SearchWinner
-                        'on incrémente le nombre de tour
+                        'on incrï¿½mente le nombre de tour
                         turnCount = turnCount + 1
                     Wend
                     
             End Select
             
                 
-        'cas de clic sur la configuration des joueurs, on incrémente la configuration
+        'cas de clic sur la configuration des joueurs, on incrï¿½mente la configuration
         Case ESection.ConfigPlayer
         
             'si la configuration actuelle est 1 joueurs
@@ -129,40 +136,9 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
         Case ESection.Restart
             'formate le plateau de jeux sur la feuille excel
             Call BoardConstructeur.FormatBoard
-            'initialise les pions a leur position de départ
+            'initialise les pions a leur position de dï¿½part
             Call BoardConstructeur.Initalisation
             
     End Select
-End Sub
-
-
-
-
-
-Private Sub Worksheet_SelectionChange(ByVal Target As Range)
-
-  
-'    Dim checkerBoard As BoardModel
-'
-'    'on instancie un object correspondant a notre plateau de jeu
-'    Set checkerBoard = New BoardModel
-'
-'    'selon la section dans laquelle on a cliqué
-'    Select Case checkerBoard.GetSection(Target)
-'
-'        'si on a cliqué sur le damier
-'        Case ESection.Game
-'
-'            'selon la valeur actuelle de configuration de la partie
-'            Select Case checkerBoard.ConfigPlayer
-'
-'            End Select
-'
-'        Case ESection.ConfigPlayer
-'
-'            Call Worksheet_BeforeDoubleClick(Target, False)
-'
-'    End Select
-
 End Sub
 

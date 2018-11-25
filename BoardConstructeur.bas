@@ -1,6 +1,6 @@
 Attribute VB_Name = "BoardConstructeur"
-'/// PROCÉDURE  : formate la feuille excel en plateau de jeu par defaut
-'/// PARAMÈTRE  : Aucun
+'/// PROCï¿½DURE  : formate la feuille excel en plateau de jeu par defaut
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Aucun (sub)
 Public Sub FormatBoard()
 
@@ -18,7 +18,7 @@ Public Sub FormatBoard()
     For Each cell In Range("B2:I9")
         'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur clair, sinon la sombre
         If (cell.Column + cell.Row) Mod 2 = 0 Then
-            'color la cellule en blanc cassé
+            'color la cellule en blanc cassï¿½
             cell.Interior.Color = 13434879
         Else
             'color la cellule en marron
@@ -45,7 +45,7 @@ Public Sub FormatBoard()
     Range("A9").Value = "8"
     
     
-    'On modifie les parametres de toutes les cellules comprises sur l'air de jeu et a coté
+    'On modifie les parametres de toutes les cellules comprises sur l'air de jeu et a cotï¿½
     With Range("A1:N11")
         'Hauteur de la cellule
         .RowHeight = 25
@@ -67,11 +67,11 @@ Public Sub FormatBoard()
     Range("K2:M2").MergeCells = True
     'Bouton Restart
     With Range("K2:M2")
-        'Écris la valeur de la cellule
+        'ï¿½cris la valeur de la cellule
         .Value = "Restart"
-        'Définit les contours par un trait continue
+        'Dï¿½finit les contours par un trait continue
         .Borders.LineStyle = xlContinuous
-        'Définit l'épaisseur du contour : gros
+        'Dï¿½finit l'ï¿½paisseur du contour : gros
         .Borders.Weight = xlThick
         'Couleur du fond de cellule blanc
         .Interior.ColorIndex = 2
@@ -99,7 +99,7 @@ Public Sub FormatBoard()
         .Borders.Weight = xlThick
     End With
     
-    'Pion en mémoire
+    'Pion en mï¿½moire
     Range("K9:M9").MergeCells = True
     With Range("K9:M9")
         .Value = ""
@@ -111,31 +111,88 @@ Public Sub FormatBoard()
     'on masque toutes les colonnes et lignes au dela en bas et a droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
+
+    Call BoardConstructeur.SetNameRanged
+    
 End Sub
 
 
 
-'/// PROCÉDURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par defaut
-'/// PARAMÈTRE  : Aucun
+'/// PROCï¿½DURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par defaut
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Aucun (sub)
 Public Sub Initalisation()
 
-    'supprime toutes les valeurs écrites sur le damier
+    'supprime toutes les valeurs ï¿½crites sur le damier
     Range("B2:I9").ClearContents
     
     'boucle sur toutes les cellules comprises sur les 3 premiere et sur les 3 dernieres lignes du damier
     For Each cell In Union(Range("B7:I9"), Range("B2:I4"))
         'Si la somme de l'index de colonne et de l'index de ligne est impaire, alors on positionne un pion
         If (cell.Column + cell.Row) Mod 2 <> 0 Then
-            'Un pion est symbolisé par la lettre O majuscule
+            'Un pion est symbolisï¿½ par la lettre O majuscule
             cell.Value = "O"
         End If
     Next cell
 
     'associe la partie basse du damier a la couleur blanche
-    Range("B7:I9").Font.ColorIndex = 2
+    Range("B7:I9").Font.Color = RGB(255, 255, 255)
     'noir
-    Range("B2:I4").Font.ColorIndex = -4105
+    Range("B2:I4").Font.Color = RGB(0, 0, 0)
+
+End Sub
+
+
+
+Public Sub SetNameRanged()
+
+
+    'Acces par l'interface graphique : Formules -> Noms dï¿½finis -> Gestionnaire de noms
+
+    'On instancie l'objet Plateau en parametrant plusieurs emplacement par defaut
+    
+    On Error Resume Next
+    
+    'Correspond a l'air de jeu du damier
+    If IsError(Range("Game").Select) Then
+        ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
+    End If
+    
+    'Correspond au bouton "Restart" a cotï¿½ du damier
+    If IsError(Range("Restart").Select) Then
+        ActiveWorkbook.Names.Add Name:="Restart", RefersToR1C1:="=Feuil1!R2C11:R2C13"
+    End If
+    
+
+    'Correspond ï¿½ la zone indiquant la couleurs du joueur du tour en cours
+    If IsError(Range("Turn").Select) Then
+        ActiveWorkbook.Names.Add Name:="Turn", RefersToR1C1:="=Feuil1!R5C11:R5C13"
+    End If
+
+    'afin de vï¿½rifier des ï¿½galitï¿½ de valeur, il est necessaire d'avoir une range contenant uniquement une seule cellule
+    If IsError(Range("TurnValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="TurnValue", RefersToR1C1:="=Feuil1!R5C11"
+    End If
+
+
+    'Correspond au bouton de configuration du nombre de joueur
+    If IsError(Range("ConfigPlayer").Select) Then
+        ActiveWorkbook.Names.Add Name:="ConfigPlayer", RefersToR1C1:="=Feuil1!R7C11:R7C13"
+    End If
+
+    If IsError(Range("ConfigPlayerValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="ConfigPlayerValue", RefersToR1C1:="=Feuil1!R7C11"
+    End If
+    
+
+    'Correspond a la zone tampon permettant de savoir si un pion est en mï¿½moire
+    If IsError(Range("Memory").Select) Then
+        ActiveWorkbook.Names.Add Name:="Memory", RefersToR1C1:="=Feuil1!R9C11:R9C13"
+    End If
+
+    If IsError(Range("MemoryValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="MemoryValue", RefersToR1C1:="=Feuil1!R9C11"
+    End If
 
 End Sub
 

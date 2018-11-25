@@ -5,9 +5,10 @@
 		"BoardModel": "BoardModel.cls",
 		"Bot": "Bot.bas",
 		"Enums": "Enums.bas",
-		"Game": "Game.bas",
 		"MoveModel": "MoveModel.cls",
 		"PawnModel": "PawnModel.cls",
-		"TestCase": "TestCase.bas"
+		"Player": "Player.bas",
+		"TestCase": "TestCase.bas",
+		"Tools": "Tools.bas"
 	}
 }

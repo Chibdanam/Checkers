@@ -8,54 +8,17 @@ Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 
-'/// CONSTRUCTEUR: methode appelé lors de l'instanciation de l'objet
-'/// PARAMÈTRE   : Aucun (evenement constructeur)
+'/// CONSTRUCTEUR: methode appelï¿½ lors de l'instanciation de l'objet
+'/// PARAMï¿½TRE   : Aucun (evenement constructeur)
 '/// RETOUR      : Aucun (evenement)
 Private Sub class_Initialize()
-
-
-    'On instancie l'objet Plateau en parametrant plusieurs emplacement par defaut
-    
-    On Error GoTo Catch
-    
-    'cette condition permet en réalité de tester si le paramétrage des range nommées a été fait (exemple Range("Game"), plutot que Range("B2:I9"))
-    If Not (Application.Intersect(Range("B2"), Range("Game")) Is Nothing) Then
-        'Alors les noms de plages sont déja définis dans le classeur
-    End If
-    
-    Exit Sub
-    
-Catch:
-    
-    'Acces par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
-    
-    'Correspond a l'air de jeu du damier
-    ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
-    
-    'Correspond au bouton "Restart" a coté du damier
-    ActiveWorkbook.Names.Add Name:="Restart", RefersToR1C1:="=Feuil1!R2C11:R2C13"
-    
-    'Correspond à la zone indiquant la couleurs du joueur du tour en cours
-    ActiveWorkbook.Names.Add Name:="Turn", RefersToR1C1:="=Feuil1!R5C11:R5C13"
-    
-    'Correspond au bouton de configuration du nombre de joueur
-    ActiveWorkbook.Names.Add Name:="ConfigPlayer", RefersToR1C1:="=Feuil1!R7C11:R7C13"
-    
-    'Correspond a la zone tampon permettant de savoir si un pion est en mémoire
-    ActiveWorkbook.Names.Add Name:="Memory", RefersToR1C1:="=Feuil1!R9C11:R9C13"
-    
-    
-    'afin de vérifier des égalité de valeur, il est necessaire d'avoir une range contenant uniquement une seule cellule
-    ActiveWorkbook.Names.Add Name:="TurnValue", RefersToR1C1:="=Feuil1!R5C11"
-    ActiveWorkbook.Names.Add Name:="ConfigPlayerValue", RefersToR1C1:="=Feuil1!R7C11"
-    ActiveWorkbook.Names.Add Name:="MemoryValue", RefersToR1C1:="=Feuil1!R9C11"
     
 End Sub
 
 
 
-'/// DESTRUCTEUR: methode appelé lors de la destruction de l'objet
-'/// PARAMÈTRE  : Aucun (evenement destructeur)
+'/// DESTRUCTEUR: methode appelï¿½ lors de la destruction de l'objet
+'/// PARAMï¿½TRE  : Aucun (evenement destructeur)
 '/// RETOUR     : Aucun (evenemnt)
 Private Sub class_Terminate()
 
@@ -63,8 +26,8 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne le nom de la section dans laquelle se trouve la Range passée en parametre
-'/// PARAMÈTRE  : Range
+'/// PROPRIï¿½Tï¿½  : Retourne le nom de la section dans laquelle se trouve la Range passï¿½e en parametre
+'/// PARAMï¿½TRE  : Range
 '/// RETOUR     : ESection
 Public Property Get GetSection(cell As Range) As ESection
 
@@ -84,8 +47,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne la valeur de l'enumeration EColor associée de la valeur écrite sur le damier
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne la valeur de l'enumeration EColor associï¿½e de la valeur ï¿½crite sur le damier
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : EColor
 Public Property Get CurrentTurn() As EColor
 
@@ -94,7 +57,7 @@ Public Property Get CurrentTurn() As EColor
     ElseIf Range("TurnValue") = "Black" Then
         CurrentTurn = EColor.Black
     Else
-        'Si aucune valeur attendue n'est trouvé, on la parametre a "White" par defaut
+        'Si aucune valeur attendue n'est trouvï¿½, on la parametre a "White" par defaut
         CurrentTurn = EColor.White
         Range("TurnValue") = "White"
     End If
@@ -103,8 +66,8 @@ End Property
 
 
 
-'/// PROCÉDURE  : Change la couleur afficher sur le plateau de jeu
-'/// PARAMÈTRE  : Aucun
+'/// PROCï¿½DURE  : Change la couleur afficher sur le plateau de jeu
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SwitchTurn()
 
@@ -120,8 +83,8 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Aucun
 Property Let CurrentTurn(pColor As EColor)
 
@@ -135,19 +98,19 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne la valeur écrite sur le damier puis renvoie la valeur de l'enumeration EConfig associée
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne la valeur ï¿½crite sur le damier puis renvoie la valeur de l'enumeration EConfig associï¿½e
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : EConfig
 Public Property Get ConfigPlayer() As EConfig
     
-    If Range("ConfigPlayerValue") = "1 Players" Then
+    If Range("ConfigPlayerValue") = "1 Player" Then
         ConfigPlayer = EConfig.SinglePlayer
     ElseIf Range("ConfigPlayerValue").Value = "2 Players" Then
         ConfigPlayer = EConfig.TwoPlayer
     ElseIf Range("ConfigPlayerValue").Value = "Automa" Then
         ConfigPlayer = EConfig.Automate
     Else
-        'Si aucune valeur attendue n'est trouvé, on la parametre a "1 Player" par defaut
+        'Si aucune valeur attendue n'est trouvï¿½, on la parametre a "1 Player" par defaut
         ConfigPlayer = SinglePlayer
         Range("ConfigPlayerValue") = "1 Player"
     End If
@@ -156,8 +119,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Ecris la valeur passé en parametre sur la plateau de jeu
-'/// PARAMÈTRE  : EConfig
+'/// PROPRIï¿½Tï¿½  : Ecris la valeur passï¿½ en parametre sur la plateau de jeu
+'/// PARAMï¿½TRE  : EConfig
 '/// RETOUR     : Aucun
 Public Property Let ConfigPlayer(Config As EConfig)
 
@@ -173,23 +136,23 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Écris sur le plateau de jeu dans la zone "mémoire" la position du pion passé en parametre
-'/// PARAMÈTRE  : PawnModel
+'/// PROPRIï¿½Tï¿½  : ï¿½cris sur le plateau de jeu dans la zone "mï¿½moire" la position du pion passï¿½ en parametre
+'/// PARAMï¿½TRE  : PawnModel
 '/// RETOUR     : Acun
 Public Property Let Memory(pawn As PawnModel)
 
     Dim Column As String
     Dim Row As String
     
-    'permet d'écrire sur le plateau les coordonées dans le référentiel du plateau et non le référentiel d'excel
+    'permet d'ï¿½crire sur le plateau les coordonï¿½es dans le rï¿½fï¿½rentiel du plateau et non le rï¿½fï¿½rentiel d'excel
     Dim offset As Integer
     
     'le damier commencant en "B2", on a un offset de 1 sur la colonne et de 1 sur l ligne par rapport a "A1"
     offset = 1
     
-    'afin de récuper la lettre correspondant a la colonne, on convertie la valeur de la colonne en charactere ASCII
+    'afin de rï¿½cuper la lettre correspondant a la colonne, on convertie la valeur de la colonne en charactere ASCII
     Column = Chr(64 + (pawn.CurrentRange.Column - offset))
-    'on convertie notre valeur numéric en chaine de charactere : Integer to String
+    'on convertie notre valeur numï¿½ric en chaine de charactere : Integer to String
     Row = CStr(pawn.CurrentRange.Row - offset)
     
     Range("MemoryValue").Value = Column + Row
@@ -198,8 +161,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne le pion écris en mémoire sur le plateau de jeu
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne le pion ï¿½cris en mï¿½moire sur le plateau de jeu
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : PawnModel
 Public Property Get Memory() As PawnModel
 
@@ -212,19 +175,19 @@ Public Property Get Memory() As PawnModel
     
     offset = 1
     
-    'si la range "mémoire" n'est pas vie
+    'si la range "mï¿½moire" n'est pas vie
     If Not IsEmpty(Range("MemoryValue")) Then
         
-        'on récupere la valeur écrite sur le plateau
+        'on rï¿½cupere la valeur ï¿½crite sur le plateau
         offsetPawnPosition = Range("MemoryValue").Value
         
-        'récupre la cellule dans le référentiel du damier
+        'rï¿½cupre la cellule dans le rï¿½fï¿½rentiel du damier
         Set offsetPawnRange = Range(offsetPawnPosition)
         
-        'récupere la veritable cellule dans le référentiel d'excel
+        'rï¿½cupere la veritable cellule dans le rï¿½fï¿½rentiel d'excel
         Set pawnRange = Cells(offsetPawnRange.Row + offset, offsetPawnRange.Column + offset)
         
-        'on construit le pion avec la cellule précédemment récupéré
+        'on construit le pion avec la cellule prï¿½cï¿½demment rï¿½cupï¿½rï¿½
         Call Memory.Build(pawnRange)
         
     End If
@@ -233,8 +196,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Ecris sur la plateau de jeu "You Win" si il ne reste qu'un seul joueur
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Ecris sur la plateau de jeu "You Win" si il ne reste qu'un seul joueur
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SearchWinner()
 
@@ -251,7 +214,7 @@ Public Sub SearchWinner()
         Set pawn = New PawnModel
         Call pawn.Build(Cells(cell.Row, cell.Column))
         
-        'si le pion est véritablement un pion
+        'si le pion est vï¿½ritablement un pion
         If pawn.IsPawn Then
         
             'si le pion est noir
@@ -263,7 +226,7 @@ Public Sub SearchWinner()
                 whiteFound = True
             End If
             
-            'si on a trouvé un pion blanc et un pion noir
+            'si on a trouvï¿½ un pion blanc et un pion noir
             If whiteFound And blackFound Then
                 Exit For
             End If
@@ -271,7 +234,7 @@ Public Sub SearchWinner()
         End If
     Next cell
     
-    'si une des couleurs n'est pas trouvé
+    'si une des couleurs n'est pas trouvï¿½
     If Not whiteFound Or Not blackFound Then
         Range("TurnValue") = "You Win"
     End If
@@ -280,8 +243,8 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne true si "You win" est écris sur le plateau
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne true si "You win" est ï¿½cris sur le plateau
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Boolean
 Property Get IsWinner() As Boolean
 
@@ -295,8 +258,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne un tableau comprenant les coefficients associés à la direction du déplacement
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIï¿½Tï¿½  : Retourne un tableau comprenant les coefficients associï¿½s ï¿½ la direction du dï¿½placement
+'/// PARAMï¿½TRE  : Aucun
 '/// RETOUR     : Variant (tableau de la forme (x,y))
 Property Get CardinalCoef(Direction As EWindRose) As Variant
     
