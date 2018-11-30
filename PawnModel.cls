@@ -7,6 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+Option Base 0
+
 Private prvRow As Integer       '/// VARIABLE PRIVÉE : Ligne
 Private prvColumn As Integer    '/// VARIABLE PRIVÉE : Colonne
 Private prvColor As EColor      '/// VARIABLE PRIVÉE : Couleur
@@ -83,7 +86,7 @@ End Property
 '/// PROPRIÉTÉ : Modifie la variable privée correspondant à la colonne
 '/// PARAMÈTRE : Integer
 '/// RETOUR    : Aucun (Let)
-Public Property Let Column(pColumn As Integer)
+Public Property Let Column(ByVal pColumn As Integer)
     prvColumn = pColumn
 End Property
 
@@ -101,7 +104,7 @@ End Property
 '/// PROPRIÉTÉ : Modifie la variable privée correspondant à la ligne
 '/// PARAMÈTRE : Integer
 '/// RETOUR    : Aucun (Let)
-Public Property Let Row(pRow As Integer)
+Public Property Let Row(ByVal pRow As Integer)
     prvRow = pRow
 End Property
 
@@ -112,6 +115,16 @@ End Property
 '/// RETOUR     : Range
 Public Property Get CurrentRange() As Range
     Set CurrentRange = Cells(prvRow, prvColumn)
+End Property
+
+
+
+'/// PROPRIÉTÉ  : Modifie les variables privées correspondant à la ligne et à la colonne du pion
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Range
+Public Property Let CurrentRange(ByVal pRange As Range)
+    Me.Row = pRange.Row
+    Me.Column = pRange.Column
 End Property
 
 
@@ -128,7 +141,7 @@ End Property
 '/// PROPRIÉTÉ  : Change la couleur du pion
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Aucun
-Public Property Let Color(pColor As EColor)
+Public Property Let Color(ByVal pColor As EColor)
     
     prvColor = pColor
     
@@ -186,7 +199,7 @@ End Property
 '/// PROPRIÉTÉ  : Modifie la variable privée correspondant au rang du pion et le transforme en dame
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
-Public Property Let IsQueen(pIsQueen As Boolean)
+Public Property Let IsQueen(ByVal pIsQueen As Boolean)
     
     prvIsQueen = pIsQueen
     
@@ -210,7 +223,7 @@ End Property
 '/// PROPRIÉTÉ  : Modifie la variable privée correspondant à l'etat du pion
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
-Public Property Let IsPawn(pIsPawn As Boolean)
+Public Property Let IsPawn(ByVal pIsPawn As Boolean)
     prvIsPawn = pIsPawn
 End Property
 
@@ -236,7 +249,7 @@ End Sub
 '///              Retourne vrai si le pion peut se déplacer
 '/// PARAMÈTRE  : Pion (à la position finale après déplacement), Bouléen indiquant si on déplace le pion
 '/// RETOUR     : Boolean
-Public Function TryMoveTo(pTarget As PawnModel, pDoMove As Boolean) As Boolean
+Public Function TryMoveTo(ByVal pTarget As PawnModel, ByVal pDoMove As Boolean) As Boolean
     
     If Me.CanMoveTo(pTarget) Then
         TryMoveTo = True
@@ -252,7 +265,7 @@ End Function
 '/// PROCÉDURE  : Déplace le pion vers la position passé en paramètre
 '/// PARAMÈTRE  : Pion (é la position finale après déplacement)
 '/// RETOUR     : Aucun
-Public Sub MoveTo(ByRef pTarget As PawnModel)
+Public Sub MoveTo(ByVal pTarget As PawnModel)
 Dim move As MoveModel
 
     Set move = New MoveModel
@@ -264,16 +277,14 @@ Dim move As MoveModel
         move.EnemyKilled.CurrentRange.ClearContents
     End If
     
-    'on transmet la valeur (pion ou dame) et la couleur du pion à la cellule de destination
-    pTarget.CurrentRange.Value = Me.CurrentRange.Value
-    pTarget.Color = Me.Color
-    Call pTarget.Build(pTarget.CurrentRange)
-    
-    'on vérifie si le pion peut devenir une dame
-    Call pTarget.TryBecomeQueen
-    
     'on efface le pion de sa position initial
     Me.CurrentRange.ClearContents
+    'on associe la nouvelle range au pion
+    Me.CurrentRange = pTarget.CurrentRange
+    'on vérifie si le pion peut devenir une dame
+    Call Me.TryBecomeQueen
+    'on imprime le pion sur le plateau à sa nouvelle position
+    Call PrintPawnOnBoard
     
 End Sub
 
@@ -282,7 +293,7 @@ End Sub
 '/// PROPRIÉTÉ  : Vérifie si le mouvement est autorisé
 '/// PARAMÈTRE  : Pion (é la position finale après déplacement)
 '/// RETOUR     : Boolean
-Public Property Get CanMoveTo(pTarget As PawnModel) As Boolean
+Public Property Get CanMoveTo(ByVal pTarget As PawnModel) As Boolean
 Dim move As MoveModel
     
     'on initialise le retour de la fonction a false
@@ -306,16 +317,17 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get CanAttack() As Boolean
+Dim board As BoardModel
+Dim targetCandidate As PawnModel
 Dim move As MoveModel
-Dim outOfRange As Boolean
-Dim iVector As Integer
 Dim coefVector As Variant
 Dim cardinalDirections As Variant
-Dim Row As Integer, Column As Integer
-Dim Direction As EWindRose
+Dim cardinalDirection As Variant
+Dim outOfRange As Boolean
+Dim iVector As Integer
+Dim nextRow As Integer
+Dim nextColumn As Integer
 Dim nextCell As Range
-Dim targetCandidate As PawnModel
-Dim board As BoardModel
     
     'on initialise le retour de la fonction a false
     CanAttack = False
@@ -333,9 +345,8 @@ Dim board As BoardModel
         'pour chaque direction possible dans le tableau des directions possible
         For Each cardinalDirection In cardinalDirections
         
-            Direction = cardinalDirection
             'on récupère les coefficients associés à la direction du déplacement
-            coefVector = board.CardinalCoef(Direction)
+            coefVector = board.CardinalCoef(cardinalDirection)
             
             iVector = 0
             outOfRange = False
@@ -348,11 +359,11 @@ Dim board As BoardModel
                 
                     iVector = iVector + 1
                     
-                    Row = Me.Row + iVector * coefVector(0)
-                    Column = Me.Column + iVector * coefVector(1)
+                    nextRow = Me.Row + iVector * coefVector(0)
+                    nextColumn = Me.Column + iVector * coefVector(1)
                     
                     'on récupère les coordonnées de la nième cellule sur la diagonale
-                    Set nextCell = Cells(Row, Column)
+                    Set nextCell = Cells(nextRow, nextColumn)
                     
                     'si cellule sur damier
                     If board.GetSection(nextCell) = ESection.Game Then
@@ -375,16 +386,12 @@ Dim board As BoardModel
                                 Exit Property
                                 
                             End If
-                                
                          End If
-                            
                     'si cellule hors du damier
                     Else
                         outOfRange = True
                     End If
-                    
                 Wend
-            
             'si le pion n'est pas une dame
             Else
                 
@@ -416,17 +423,11 @@ Dim board As BoardModel
                                 Exit Property
                                 
                             End If
-                                
                          End If
-                         
                     End If
-                    
                 End If
-                
             End If
-            
         Next cardinalDirection
-        
     End If
     
 End Property
@@ -497,15 +498,10 @@ Dim board As BoardModel
                             Exit Property
                             
                         End If
-                        
                     End If
-                            
                 End If
-                
             End If
-            
         Next cardinalDirection
-    
     End If
             
 End Property
@@ -516,29 +512,44 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get HasAttackingAlly() As Boolean
-Dim pawnList As Variant
-Dim currentPawn As PawnModel
+Dim alliesPawn As Variant
+Dim allyPawn As Variant
     
-    Set currentPawn = New PawnModel
+    'Set currentPawn = New PawnModel
     
     HasAttackingAlly = False
     
     'on récupère le tableau des pions alliés
-    pawnList = Tools.GetPawns(Me.Color)
+    alliesPawn = Tools.GetPawns(Me.Color)
     
     'pour chaque pion allié dans le tableau de pion alliés
-    For Each pawn In pawnList
-    
-        Set currentPawn = pawn
+    For Each allyPawn In alliesPawn
         
         'si le pion allié peut attaquer
-        If currentPawn.CanAttack Then
+        If allyPawn.CanAttack Then
         
             HasAttackingAlly = True
             Exit For
-        
         End If
-    
-    Next pawn
-
+    Next allyPawn
 End Property
+
+
+
+'/// PROCÉDURE   : Écrit le pion sur le plateau
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Private Sub PrintPawnOnBoard()
+        
+    If Me.IsPawn And Me.IsQueen Then
+        Me.CurrentRange.Value = Chr(169)
+    ElseIf Me.IsPawn Then
+        Me.CurrentRange.Value = "O"
+    End If
+    If Me.Color = EColor.White Then
+        Me.CurrentRange.Font.Color = RGB(255, 255, 255)
+    ElseIf Me.Color = EColor.Black Then
+        Me.CurrentRange.Font.Color = RGB(0, 0, 0)
+    End If
+        
+End Sub

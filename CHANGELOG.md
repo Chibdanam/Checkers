@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - respect de la norme "prefixer les variables passés en paramètres par un p"
 - définition ajouté pour chaque fonction
 - toutes les fonctions sont déclarés explicitement Public ou Private
-
+- update générale => Option Explicit, toutes les variables doivent être déclarées             
+- update générale => Option Base 0, les Arrays comment à "0" (Option Base 1 => les Arrays coment à 1)
+                               
 ## Feuille
 - ajout Cancel = true sur l'evenement BeforeDoubleClic 
 

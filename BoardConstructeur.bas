@@ -1,11 +1,12 @@
 Attribute VB_Name = "BoardConstructeur"
+Option Explicit
+Option Base 0
+
 '/// PROCÉDURE  : formate la feuille Excel en plateau de jeu par défaut
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub FormatBoard()
-
-    'variable temporaire qui va nous permettre d'agir sur chaque cellule du damier une par une
-    Dim cell As Range
+Dim cell As Range
     
     'On met toutes les cases, du plateau et autour, vide et gris clair
     With Range("A1:N11")
@@ -122,7 +123,7 @@ End Sub
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub Initialisation()
-
+Dim cell As Range
     'supprime toutes les valeurs écrites sur le damier
     Range("B2:I9").ClearContents
     

@@ -7,6 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+Option Base 0
+
 Private prvPawn As PawnModel        '/// VARIABLE PRIVÉE : Pion que l'on veut déplacer
 Private prvTarget As PawnModel      '/// VARIABLE PRIVÉE : Cible du déplacement
 Private prvEnemyKilled As PawnModel '/// VARIABLE PRIVÉE : Ennemi tué lors du déplacement
@@ -44,7 +47,7 @@ End Sub
 '/// PROCÉDURE  : Permet d'associer des valeurs aux variables privées
 '/// PARAMÈTRES : Pion , Pion état final
 '/// RETOUR     : Aucun
-Public Sub Build(pPawn As PawnModel, pTarget As PawnModel)
+Public Sub Build(ByVal pPawn As PawnModel, ByVal pTarget As PawnModel)
     
     'on associe des valeurs aux variables privées de notre objet 'move'
     Set prvPawn = pPawn
@@ -421,8 +424,7 @@ Dim board As BoardModel
             IsQueenAttack = True
             
             'on enregistre le pion capturé
-            prvEnemyKilled.Row = pawnEnemy.Row
-            prvEnemyKilled.Column = pawnEnemy.Column
+            prvEnemyKilled.CurrentRange = pawnEnemy.CurrentRange
             
         End If
         

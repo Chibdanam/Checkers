@@ -1,8 +1,11 @@
 Attribute VB_Name = "Player"
+Option Explicit
+Option Base 0
+
 '/// FONCTION   : Joue un tour comme si un humain interagissait avec le damier. Retourne true si un pion est déplacé
 '/// PARAMÈTRE  : Range
 '/// RETOUR     : Boolean
-Public Function Run(pTarget As Range) As Boolean
+Public Function Run(ByVal pTarget As Range) As Boolean
 Dim pawn As PawnModel
 Dim enemyPawn As PawnModel
 Dim checkerBoard As BoardModel

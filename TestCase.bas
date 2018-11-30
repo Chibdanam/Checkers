@@ -1,5 +1,9 @@
 Attribute VB_Name = "TestCase"
+Option Explicit
+Option Base 0
+
 Public Sub TestVoid()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -11,10 +15,11 @@ Public Sub TestVoid()
                 "|-| |-| |-| |-| |" + vbNewLine + _
                 "| |-| |-| |-| |-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestStart()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-|b|-|b|-|b|-|b|" + vbNewLine + _
@@ -26,10 +31,11 @@ Public Sub TestStart()
                 "|-|w|-|w|-|w|-|w|" + vbNewLine + _
                 "|w|-|w|-|w|-|w|-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestBecomeQueen()
+Dim blueprint As String
     
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -41,10 +47,11 @@ Public Sub TestBecomeQueen()
                 "|-| |-|b|-| |-| |" + vbNewLine + _
                 "| |-| |-| |-| |-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestAttack()
+Dim blueprint As String
     
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -56,10 +63,11 @@ Public Sub TestAttack()
                 "|-| |-| |-| |-| |" + vbNewLine + _
                 "| |-| |-| |-| |-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestQueenMove()
+Dim blueprint As String
     
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -71,10 +79,11 @@ Public Sub TestQueenMove()
                 "|-| |-| |-|w|-|b|" + vbNewLine + _
                 "| |-| |-| |-| |-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestYouWin()
+Dim blueprint As String
     
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -86,10 +95,11 @@ Public Sub TestYouWin()
                 "|-| |-| |-| |-| |" + vbNewLine + _
                 "| |-| |-| |-| |-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestWeird()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
@@ -101,10 +111,11 @@ Public Sub TestWeird()
                 "|-| |-| |-| |-|b|" + vbNewLine + _
                 "| |-|B|-| |-|w|-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestSituation()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-|b|-|b|-|b|-|b|" + vbNewLine + _
@@ -116,10 +127,11 @@ Public Sub TestSituation()
                 "|-|w|-|w|-|w|-|w|" + vbNewLine + _
                 "|w|-|w|-|w|-|w|-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestSituationOK()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-|b|-|b|-|b|-|b|" + vbNewLine + _
@@ -131,10 +143,11 @@ Public Sub TestSituationOK()
                 "|-|w|-|w|-|w|-|w|" + vbNewLine + _
                 "|w|-|w|-|w|-|w|-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub
 
 Public Sub TestSituationKO()
+Dim blueprint As String
 
     '             a b c d e f g h
     blueprint = "|-|b|-|b|-|b|-|b|" + vbNewLine + _
@@ -146,5 +159,5 @@ Public Sub TestSituationKO()
                 "|-| |-|w|-|w|-|w|" + vbNewLine + _
                 "|w|-|w|-|w|-|w|-|"
                 
-    Call Compute(blueprint)
+    Call Tools.Compute(blueprint)
 End Sub

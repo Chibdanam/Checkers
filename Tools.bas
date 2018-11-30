@@ -1,4 +1,7 @@
 Attribute VB_Name = "Tools"
+Option Explicit
+Option Base 0
+
 '/// https://www.exceltrick.com/formulas_macros/vba-wait-and-sleep-functions/?
 'Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 
@@ -7,9 +10,11 @@ Attribute VB_Name = "Tools"
 '/// FONCTION   : Retourne un tableau contenant tous les pions de la couleur passée en PARAMÈTRE
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Variant (tableau de pion)
-Public Function GetPawns(pColor As EColor) As Variant
+Public Function GetPawns(ByVal pColor As EColor) As Variant
 Dim pawnList() As PawnModel
+Dim pawnCandidate As PawnModel
 Dim pawnCounter As Integer
+Dim cell As Range
 
     pawnCounter = 0
     
@@ -18,7 +23,7 @@ Dim pawnCounter As Integer
         
         'on instancie un objet pion et on le construit avec la range de la cellule actuelle
         Set pawnCandidate = New PawnModel
-        Call pawnCandidate.Build(cell.Cells(1, 1))
+        Call pawnCandidate.Build(cell)
         
         'si le pion est véritablement un pion et est de la couleur passée en PARAMÈTRE
         If pawnCandidate.IsPawn And pawnCandidate.Color = pColor Then
@@ -44,7 +49,7 @@ End Function
 '/// FONCTION   : Retourne vrai si le tableau est null ou vide
 '/// PARAMÈTRE  : Variant
 '/// RETOUR     : Booléen
-Public Function IsArrayNullOrEmpty(pArray As Variant) As Boolean
+Public Function IsArrayNullOrEmpty(ByVal pArray As Variant) As Boolean
     
     On Error Resume Next
     
@@ -67,7 +72,7 @@ End Function
 '/// FONCTION   : Retourne vrai si l'élément "xxxToBeFound" est présent dans le tableau passé en paramètre
 '/// PARAMÈTRE  : Element à trouver (ici l'élement est de type string), Variant (où chercher l'élément)
 '/// RETOUR     : Booléen
-Public Function IsInArray(pStringToBeFound As String, pArray As Variant) As Boolean
+Public Function IsInArray(ByVal pStringToBeFound As String, ByVal pArray As Variant) As Boolean
   IsInArray = (UBound(Filter(pArray, pStringToBeFound)) > -1)
 End Function
 
@@ -80,10 +85,12 @@ Public Function MakeBlueprintFromBoard() As String
 Dim blueprint As String
 Dim line As String
 Dim mark As String
+Dim boardRow As Range
+Dim cell As Range
     
-    For Each Row In Range("Game").rows
+    For Each boardRow In Range("Game").rows
         blueprint = blueprint + "|"
-        For Each cell In Row.Cells
+        For Each cell In boardRow.Cells
             With cell
                 If (.Column + .Row) Mod 2 = 0 Then
                     mark = "-|"
@@ -102,7 +109,7 @@ Dim mark As String
             blueprint = blueprint + mark
         Next cell
         blueprint = blueprint + vbNewLine
-    Next Row
+    Next boardRow
     
     blueprint = Left(blueprint, Len(blueprint) - 2)
     
@@ -115,23 +122,25 @@ End Function
 '/// PARAMÈTRE  : String
 '/// RETOUR     : Aucun
 Public Sub Compute(ByVal pBoardPattern As String)
-Dim rows() As String
-Dim cellsMock() As String
+Dim patternRows As Variant
+Dim patternRow As Variant
+Dim cellsMock As Variant
+Dim cellMock As Variant
 Dim rowCounter As Integer
 Dim columnCounter
         
     Application.ScreenUpdating = False
     
     rowCounter = 1
-    rows = Split(pBoardPattern, vbNewLine)
-    For Each Row In rows
+    patternRows = Split(pBoardPattern, vbNewLine)
+    For Each patternRow In patternRows
         rowCounter = rowCounter + 1
         columnCounter = 1
-        cellsMock = Split(Right(Left(Row, Len(Row) - 1), Len(Row) - 2), "|")
-        For Each cell In cellsMock
+        cellsMock = Split(Right(Left(patternRow, Len(patternRow) - 1), Len(patternRow) - 2), "|")
+        For Each cellMock In cellsMock
             columnCounter = columnCounter + 1
             With Cells(rowCounter, columnCounter)
-                Select Case cell
+                Select Case cellMock
                     Case "w"
                         .Font.Color = RGB(255, 255, 255)
                         .Value = "O"
@@ -148,7 +157,7 @@ Dim columnCounter
                         .ClearContents
                 End Select
             End With
-        Next cell
-    Next Row
+        Next cellMock
+    Next patternRow
     Application.ScreenUpdating = True
 End Sub

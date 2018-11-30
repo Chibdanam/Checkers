@@ -7,6 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+Option Base 0
+
 Private prvInitialWhitePawns As Variant     '/// VARIABLE PRIVÉE : Liste de pion allié initiale
 Private prvInitialBlackPawns As Variant     '/// VARIABLE PRIVÉE : Liste de pion enemi initiale
 Private prvSnapshot As String               '/// VARIABLE PRIVÉE : String représentant une configuration du plateau
@@ -106,10 +109,12 @@ End Property
 '/// FONCTION   : Cherche les pions manquant ou en trop dans une liste de pion par rapport a une autre liste de pion
 '/// PARAMÈTRE  : Variant, Variant, Boolean
 '/// RETOUR     : Variant
-Private Function GetMissmatchedPawnsFromSnapshot(pPawnsInitial As Variant, pPawnsFinal As Variant, pMissing As Boolean) As Variant
+Private Function GetMissmatchedPawnsFromSnapshot(ByVal pPawnsInitial As Variant, ByVal pPawnsFinal As Variant, ByVal pMissing As Boolean) As Variant
 Dim missmatchedPawns() As PawnModel
 Dim pawnsToFind As Variant
+Dim pawn As Variant
 Dim pawnsCandidate As Variant
+Dim pawnCandidate As Variant
 Dim missmatchedPawnsCount As Integer
 Dim match As Boolean
         

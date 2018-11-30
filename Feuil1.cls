@@ -7,6 +7,11 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
+Option Explicit                             '/// Toutes les variables doivent être déclarées
+Option Base 0                               '/// Les Arrays comment à "0"
+
+
+
 '/// PROCÉDURE  : Se déclenche lorsqu'un double clic survient sur la feuille et transmet en paramètre la range de la cellule cliquée
 '/// PARAMÈTRE  : Range, Boolean
 '/// RETOUR     : Aucun (évènement)

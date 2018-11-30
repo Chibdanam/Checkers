@@ -7,6 +7,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
+Option Explicit
+Option Base 0
+
 '/// CONSTRUCTEUR: méthode appelé lors de l'instanciation de l'objet
 '/// PARAMÈTRE   : Aucun
 '/// RETOUR      : Aucun
@@ -26,7 +29,7 @@ End Sub
 '/// PROPRIÉTÉ  : Retourne le nom de la section dans laquelle se trouve la Range passée en paramètre
 '/// PARAMÈTRE  : Range
 '/// RETOUR     : ESection
-Public Property Get GetSection(pCell As Range) As ESection
+Public Property Get GetSection(ByVal pCell As Range) As ESection
 
     'par défaut, on définit la valeur de retour à Hors limite
     GetSection = ESection.OutOfLimit
@@ -83,7 +86,7 @@ End Sub
 '/// PROPRIÉTÉ  : Retourne la couleur du joueur du tour en cours
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
-Property Let CurrentTurn(pColor As EColor)
+Property Let CurrentTurn(ByVal pColor As EColor)
 
     If pColor = EColor.Black Then
         Range("TurnValue") = "Black"
@@ -119,10 +122,10 @@ End Property
 '/// PROPRIÉTÉ  : Modifie la configuration du plateau de jeu
 '/// PARAMÈTRE  : EConfig
 '/// RETOUR     : Aucun
-Public Property Let ConfigPlayer(Config As EConfig)
+Public Property Let ConfigPlayer(ByVal Config As EConfig)
 
     If Config = EConfig.SinglePlayer Then
-        Range("ConfigPlayer") = "1 Players"
+        Range("ConfigPlayer") = "1 Player"
     ElseIf Config = EConfig.TwoPlayer Then
         Range("ConfigPlayer") = "2 Players"
     ElseIf Config = EConfig.Automate Then
@@ -136,13 +139,12 @@ End Property
 '/// PROPRIÉTÉ  : écris sur le plateau de jeu dans la zone "mémoire" la position du pion passé en paramètre
 '/// PARAMÈTRE  : PawnModel
 '/// RETOUR     : Aucun
-Public Property Let Memory(pawn As PawnModel)
+Public Property Let Memory(ByVal pawn As PawnModel)
 Dim Column As String
 Dim Row As String
-    
+Dim offset As Integer
+
     'permet d'écrire sur le plateau les coordonnées dans le référentiel du plateau et non le référentiel d’Excel
-    Dim offset As Integer
-    
     'le damier commençant en "B2", on a un offset de 1 sur la colonne et de 1 sur la ligne par rapport à "A1"
     offset = 1
     
@@ -195,8 +197,10 @@ End Property
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SearchWinner()
-Dim whiteFound As Boolean, blackFound As Boolean
+Dim whiteFound As Boolean
+Dim blackFound As Boolean
 Dim pawn As PawnModel
+Dim cell As Range
     
     whiteFound = False
     blackFound = False
@@ -206,7 +210,7 @@ Dim pawn As PawnModel
         
         'on instancie et construit un pion avec la cellule actuelle
         Set pawn = New PawnModel
-        Call pawn.Build(Cells(cell.Row, cell.Column))
+        Call pawn.Build(cell)
         
         'si le pion est véritablement un pion
         If pawn.IsPawn Then
@@ -255,7 +259,7 @@ End Property
 '/// PROPRIÉTÉ  : Retourne un tableau comprenant les coefficients associés à la direction du déplacement
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Variant (tableau de la forme (x,y))
-Property Get CardinalCoef(pDirection As EWindRose) As Variant
+Property Get CardinalCoef(ByVal pDirection As EWindRose) As Variant
     
     If pDirection = EWindRose.SouthEast Then
         CardinalCoef = Array(1, 1)
