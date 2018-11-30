@@ -7,22 +7,17 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
-'/// VARIABLE PRIVï¿½E : Ligne
-Private prvRow As Integer
-'/// VARIABLE PRIVï¿½E : Colonne
-Private prvColumn As Integer
-'/// VARIABLE PRIVï¿½E : Couleur
-Private prvColor As EColor
-'/// VARIABLE PRIVï¿½E : Couleur
-Private prvIsPawn As Boolean
-'/// VARIABLE PRIVï¿½E : Colonne
-Private prvIsQueen As Boolean
+Private prvRow As Integer       '/// VARIABLE PRIVÉE : Ligne
+Private prvColumn As Integer    '/// VARIABLE PRIVÉE : Colonne
+Private prvColor As EColor      '/// VARIABLE PRIVÉE : Couleur
+Private prvIsPawn As Boolean    '/// VARIABLE PRIVÉE : est véritablement un pion
+Private prvIsQueen As Boolean   '/// VARIABLE PRIVÉE : est une dame
 
 
 
-'/// CONSTRUCTEUR: methode appelï¿½ lors de l'instanciation de l'objet
-'/// PARAMï¿½TRE   : Aucun (evenement constructeur)
-'/// RETOUR      : Aucun (evenement)
+'/// CONSTRUCTEUR: méthode appelé lors de l'instanciation de l'objet
+'/// PARAMÈTRE   : Aucun
+'/// RETOUR      : Aucun
 Private Sub class_Initialize()
     'on initialise les variables avec les valeurs de la cellule A1
     prvRow = 1
@@ -31,24 +26,24 @@ End Sub
 
 
 
-'/// DESTRUCTEUR: methode appelï¿½ lors de la destruction de l'objet
-'/// PARAMï¿½TRE  : Aucun (evenement destructeur)
-'/// RETOUR     : Aucun (evenemnt)
+'/// DESTRUCTEUR: méthode appelé lors de la destruction de l'objet
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
 Private Sub class_Terminate()
     
 End Sub
 
 
 
-'/// PROCï¿½DURE  : parametre tous les attributs du pion ï¿½ partir d'une range
-'/// PARAMï¿½TRE  : Range
+'/// PROCÉDURE  : paramètre tous les attributs du pion à partir d'une range
+'/// PARAMÈTRE  : Range
 '/// RETOUR     : Aucun
 Public Sub Build(ByVal cell As Range)
     
     prvRow = cell.Row
     prvColumn = cell.Column
 
-        '/// On dï¿½finit la variable privï¿½ de couleur du pion
+    '/// On définit la variable privée de couleur du pion
     
     If cell.Font.Color = RGB(255, 255, 255) Then
         prvColor = EColor.White
@@ -56,7 +51,7 @@ Public Sub Build(ByVal cell As Range)
         prvColor = EColor.Black
     End If
     
-    '/// On dï¿½finit si la cellule contient un pion
+    '/// On définit si la cellule contient un pion
     
     If Not IsEmpty(cell) And (Me.Color = EColor.Black Or Me.Color = EColor.White) Then
         prvIsPawn = True
@@ -64,7 +59,7 @@ Public Sub Build(ByVal cell As Range)
         prvIsPawn = False
     End If
     
-    '/// On dï¿½finit la variable privï¿½ d'ï¿½tat Dame du pion, si la valeur de la cellule est ï¿½ alors c'est une dame
+    '/// On définit la variable privée d'état Dame du pion, si la valeur de la cellule est à alors c'est une dame
     
     If InStr(Chr(169), cell.Value) Then
         prvIsQueen = True
@@ -76,8 +71,8 @@ End Sub
 
 
 
-'/// PROPRIï¿½Tï¿½ : Retourne la colonne du pion
-'/// PARAMï¿½TRE : Aucun
+'/// PROPRIÉTÉ : Retourne la colonne du pion
+'/// PARAMÈTRE : Aucun
 '/// RETOUR    : Integer
 Public Property Get Column() As Integer
     Column = prvColumn
@@ -85,8 +80,8 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½ : Modifie la variable privï¿½e correspondant ï¿½ la colonne
-'/// PARAMï¿½TRE : Integer
+'/// PROPRIÉTÉ : Modifie la variable privée correspondant à la colonne
+'/// PARAMÈTRE : Integer
 '/// RETOUR    : Aucun (Let)
 Public Property Let Column(pColumn As Integer)
     prvColumn = pColumn
@@ -94,9 +89,8 @@ End Property
 
 
 
-
-'/// PROPRIï¿½Tï¿½ : Retourne la couleur du pion
-'/// PARAMï¿½TRE : Aucun
+'/// PROPRIÉTÉ : Retourne la ligne du pion
+'/// PARAMÈTRE : Aucun
 '/// RETOUR    : Integer
 Public Property Get Row() As Integer
     Row = prvRow
@@ -104,8 +98,8 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½ : Modifie la variable privï¿½e correspondant ï¿½ la ligne
-'/// PARAMï¿½TRE : Integer
+'/// PROPRIÉTÉ : Modifie la variable privée correspondant à la ligne
+'/// PARAMÈTRE : Integer
 '/// RETOUR    : Aucun (Let)
 Public Property Let Row(pRow As Integer)
     prvRow = pRow
@@ -113,20 +107,17 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne la valeur de la range du pion
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne la valeur de la range du pion
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Range
 Public Property Get CurrentRange() As Range
-
-    'Construit une range sur la cellule correspondant a la ligne et a la colonne des variables privï¿½es du pion
     Set CurrentRange = Cells(prvRow, prvColumn)
-    
 End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne la couleur associï¿½ a la cellule de la range du pion
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne la couleur du pion
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : EColor
 Public Property Get Color() As EColor
    Color = prvColor
@@ -134,29 +125,26 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Change la couleur de la cellule de la range du pion
-'/// PARAMï¿½TRE  : EColor
+'/// PROPRIÉTÉ  : Change la couleur du pion
+'/// PARAMÈTRE  : EColor
 '/// RETOUR     : Aucun
 Public Property Let Color(pColor As EColor)
     
     prvColor = pColor
     
     Select Case pColor
-    
         Case EColor.White
             CurrentRange.Font.Color = RGB(255, 255, 255)
-            
         Case EColor.Black
             CurrentRange.Font.Color = RGB(0, 0, 0)
-            
     End Select
     
 End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne la couleur opposï¿½e a la cellule de la range du pion
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne la couleur des pions énnemis
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : EColor
 Public Property Get EnemyColor() As EColor
     
@@ -170,11 +158,11 @@ End Property
 
 
 
-'/// FONCTION   : Retourne 1 si le pion est noir, -1 s'il est blanc
-'///              Cela correspond a la direction vers laquelle le pion a le droit de se dï¿½placer
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne 1 si le pion est noir, -1 s'il est blanc
+'///              Cela correspond à la direction selon Y (les lignes) vers laquelle le pion a le droit de se déplacer
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Integer
-Property Get Orientation() As Integer
+Public Property Get Orientation() As Integer
     
     If Me.Color = EColor.White Then
         Orientation = -1
@@ -186,18 +174,18 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne vrai si le pion est une Dame
-'/// PARAMï¿½TRE  : Aucun
-'/// retourne   : Boolean
+'/// PROPRIÉTÉ  : Retourne vrai si le pion est une Dame
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Boolean
 Public Property Get IsQueen() As Boolean
     IsQueen = prvIsQueen
 End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne vrai si le pion est une Dame
-'/// PARAMï¿½TRE  : Aucun
-'/// retourne   : Boolean
+'/// PROPRIÉTÉ  : Modifie la variable privée correspondant au rang du pion et le transforme en dame
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Boolean
 Public Property Let IsQueen(pIsQueen As Boolean)
     
     prvIsQueen = pIsQueen
@@ -210,36 +198,33 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne vrai si le pion est vï¿½ritablement un pion
-'/// PARAMï¿½TRE  : Aucun
-'/// retourne   : Boolean
+'/// PROPRIÉTÉ  : Retourne vrai si le pion est véritablement un pion
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Boolean
 Public Property Get IsPawn() As Boolean
     IsPawn = prvIsPawn
 End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne vrai si le pion est vï¿½ritablement un pion
-'/// PARAMï¿½TRE  : Aucun
-'/// retourne   : Boolean
+'/// PROPRIÉTÉ  : Modifie la variable privée correspondant à l'etat du pion
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Boolean
 Public Property Let IsPawn(pIsPawn As Boolean)
     prvIsPawn = pIsPawn
 End Property
 
 
 
-'/// FONCTION   : Transforme le pion en dame s'il est sur la derniere ligne de son orientation
-'/// PARAMï¿½TRE  : Aucun
+'/// PROCÉDURE  : Transforme le pion en dame s'il est sur la dernière ligne de son orientation
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub TryBecomeQueen()
 
     If Not IsQueen Then
-    
         If Me.Color = EColor.Black And Me.Row = 9 Or _
            Me.Color = EColor.White And Me.Row = 2 Then
-
             Me.IsQueen = True
-                
         End If
     End If
     
@@ -247,49 +232,44 @@ End Sub
 
 
 
-'/// PROPRIï¿½Tï¿½  : Vï¿½rifie si le mouvement est autorisï¿½ et, si possible, dï¿½place le pion
-'///              Retourne vrai si le pion peut se dï¿½placer
-'/// PARAMï¿½TRE  : Pion (ï¿½ la position final apres dï¿½placement), Boulï¿½en indiquant si on dï¿½place le pion
+'/// FONCTION   : Vérifie si le mouvement est autorisé et, si possible, déplace le pion.
+'///              Retourne vrai si le pion peut se déplacer
+'/// PARAMÈTRE  : Pion (à la position finale après déplacement), Bouléen indiquant si on déplace le pion
 '/// RETOUR     : Boolean
 Public Function TryMoveTo(pTarget As PawnModel, pDoMove As Boolean) As Boolean
     
     If Me.CanMoveTo(pTarget) Then
-        
         TryMoveTo = True
-        
         If pDoMove Then
-        
             Call MoveTo(pTarget)
-        
         End If
-        
     End If
     
 End Function
 
 
 
-'/// PROPRIï¿½Tï¿½  : dï¿½place le pion vers la position passï¿½ en parametre
-'/// PARAMï¿½TRE  : Pion (ï¿½ la position final apres dï¿½placement)
+'/// PROCÉDURE  : Déplace le pion vers la position passé en paramètre
+'/// PARAMÈTRE  : Pion (é la position finale après déplacement)
 '/// RETOUR     : Aucun
-Private Sub MoveTo(ByRef pTarget As PawnModel)
-    
-    Dim move As MoveModel
+Public Sub MoveTo(ByRef pTarget As PawnModel)
+Dim move As MoveModel
+
     Set move = New MoveModel
     Call move.Build(Me, pTarget)
     
     'si c'est une attaque
     If move.IsAttack Then
-        'on efface le pion mangï¿½
+        'on efface le pion mangé
         move.EnemyKilled.CurrentRange.ClearContents
     End If
     
-    'on transmet la valeur (pion ou dame) et la couleur du pion a la cellule de destination
+    'on transmet la valeur (pion ou dame) et la couleur du pion à la cellule de destination
     pTarget.CurrentRange.Value = Me.CurrentRange.Value
     pTarget.Color = Me.Color
     Call pTarget.Build(pTarget.CurrentRange)
     
-    'on vï¿½rifie si le pion peut devenir une dame
+    'on vérifie si le pion peut devenir une dame
     Call pTarget.TryBecomeQueen
     
     'on efface le pion de sa position initial
@@ -299,21 +279,20 @@ End Sub
 
 
 
-'/// PROPRIï¿½Tï¿½  : Vï¿½rifie si le mouvement est autorisï¿½
-'/// PARAMï¿½TRE  : Pion (ï¿½ la position final apres dï¿½placement)
+'/// PROPRIÉTÉ  : Vérifie si le mouvement est autorisé
+'/// PARAMÈTRE  : Pion (é la position finale après déplacement)
 '/// RETOUR     : Boolean
 Public Property Get CanMoveTo(pTarget As PawnModel) As Boolean
-    
-    Dim move As MoveModel
+Dim move As MoveModel
     
     'on initialise le retour de la fonction a false
     CanMoveTo = False
     
-    'on instancie un nouvel object dï¿½placement que l'on construit avec le pion actuelle et le pion ï¿½ la position finale souhaitï¿½
+    'on instancie un nouvel objet déplacement que l'on construit avec le pion actuel et le pion à la position finale souhaité
     Set move = New MoveModel
     Call move.Build(Me, pTarget)
     
-    'si c'est un dï¿½placement et aucun pion alliï¿½ ne peut attaquer ou que ce dï¿½placement est une attaque
+    'si c'est un déplacement et aucun pion allié ne peut attaquer ou que ce déplacement est une attaque
     If (move.IsMove And Not Me.HasAttackingAlly) Or move.IsAttack Then
         CanMoveTo = True
     End If
@@ -323,23 +302,20 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne true si le pion peut attaquer
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne true si le pion peut attaquer
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get CanAttack() As Boolean
-    
-    Dim move As MoveModel
-    
-    Dim outOfRange As Boolean
-    Dim iVector As Integer
-    Dim coefVector As Variant
-    Dim cardinalDirections As Variant
-    Dim Row As Integer, Column As Integer
-    Dim Direction As EWindRose
-    
-    Dim nextCell As Range
-    Dim targetCandidate As PawnModel
-    Dim board As BoardModel
+Dim move As MoveModel
+Dim outOfRange As Boolean
+Dim iVector As Integer
+Dim coefVector As Variant
+Dim cardinalDirections As Variant
+Dim Row As Integer, Column As Integer
+Dim Direction As EWindRose
+Dim nextCell As Range
+Dim targetCandidate As PawnModel
+Dim board As BoardModel
     
     'on initialise le retour de la fonction a false
     CanAttack = False
@@ -348,7 +324,7 @@ Public Property Get CanAttack() As Boolean
     Set board = New BoardModel
     Set move = New MoveModel
 
-    'si le pion est vï¿½ritablement un pion
+    'si le pion est véritablement un pion
     If Me.IsPawn Then
     
         'on construit un tableau remplit des 4 directions possibles
@@ -358,7 +334,7 @@ Public Property Get CanAttack() As Boolean
         For Each cardinalDirection In cardinalDirections
         
             Direction = cardinalDirection
-            'on rï¿½cupere les coefficients associï¿½s ï¿½ la direction du dï¿½placement
+            'on récupère les coefficients associés à la direction du déplacement
             coefVector = board.CardinalCoef(Direction)
             
             iVector = 0
@@ -367,7 +343,7 @@ Public Property Get CanAttack() As Boolean
             'si le pion est une dame
             If IsQueen Then
             
-                'Tant qu'on a pas dï¿½tï¿½cter un pion a manger ou la fin du plateau, on boucle
+                'Tant qu’on n’a pas détecter un pion à manger ou la fin du plateau, on boucle
                 While Not (outOfRange)
                 
                     iVector = iVector + 1
@@ -375,7 +351,7 @@ Public Property Get CanAttack() As Boolean
                     Row = Me.Row + iVector * coefVector(0)
                     Column = Me.Column + iVector * coefVector(1)
                     
-                    'on rï¿½cupï¿½re les coordonnï¿½es de la n-ieme cellule sur la diagonale
+                    'on récupère les coordonnées de la nième cellule sur la diagonale
                     Set nextCell = Cells(Row, Column)
                     
                     'si cellule sur damier
@@ -385,13 +361,13 @@ Public Property Get CanAttack() As Boolean
                         Set targetCandidate = New PawnModel
                         Call targetCandidate.Build(nextCell)
                         
-                        'si la case est vide et est prete a accueillir un dï¿½placement
+                        'si la case est vide et est prête a accueillir un déplacement
                         If Not targetCandidate.IsPawn Then
                             
-                            'on construit un objet dï¿½placement a partir du pion actuel et la cellule en cours de test comme destination de mouvement
+                            'on construit un objet déplacement à partir du pion actuel et la cellule en cours de test comme destination de mouvement
                             Call move.Build(Me, targetCandidate)
                             
-                            'si le dï¿½placement est une attaque
+                            'si le déplacement est une attaque
                             If move.IsAttack Then
                             
                                 CanAttack = True
@@ -426,13 +402,13 @@ Public Property Get CanAttack() As Boolean
                         Set targetCandidate = New PawnModel
                         Call targetCandidate.Build(nextCell)
                         
-                        'si la case est vide et est prete a accueillir un dï¿½placement
+                        'si la case est vide et est prête à accueillir un déplacement
                         If Not targetCandidate.IsPawn Then
                             
-                            'on construit un objet dï¿½placement a partir du pion actuel et la cellule en cours de test comme destination de mouvement
+                            'on construit un objet déplacement à partir du pion actuel et la cellule en cours de test comme destination de mouvement
                             Call move.Build(Me, targetCandidate)
                             
-                            'si le dï¿½placement est une attaque
+                            'si le déplacement est une attaque
                             If move.IsAttack Then
                             
                                 CanAttack = True
@@ -457,26 +433,23 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne true si le pion peut se dï¿½placer
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne true si le pion peut se déplacer
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get CanMove() As Boolean
-    
-    Dim move As MoveModel
-    
+Dim move As MoveModel
+Dim coefVector As Variant
+Dim cardinalDirections As Variant
+Dim Row As Integer, Column As Integer
+Dim Direction As EWindRose
+Dim nextCell As Range
+Dim targetCandidate As PawnModel
+Dim board As BoardModel
+
     'on initialise le retour de la fonction a false
     CanMove = False
     
-    Dim coefVector As Variant
-    Dim cardinalDirections As Variant
-    Dim Row As Integer, Column As Integer
-    Dim Direction As EWindRose
-    
-    Dim nextCell As Range
-    Dim targetCandidate As PawnModel
-    Dim board As BoardModel
-    
-    'si aucun alliï¿½ ne peut attaquer
+    'si aucun allié ne peut attaquer
     If Me.IsPawn And Not Me.HasAttackingAlly Then
     
         Set targetCandidate = New PawnModel
@@ -490,7 +463,7 @@ Public Property Get CanMove() As Boolean
         For Each cardinalDirection In cardinalDirections
         
             Direction = cardinalDirection
-            'on rï¿½cupere les coefficients associï¿½s ï¿½ la direction du dï¿½placement
+            'on récupère les coefficients associés à la direction du déplacement
             coefVector = board.CardinalCoef(Direction)
             
             'si le pion est une dame
@@ -500,7 +473,7 @@ Public Property Get CanMove() As Boolean
                 Row = Me.Row + 1 * coefVector(0)
                 Column = Me.Column + 1 * coefVector(1)
                 
-                'on rï¿½cupï¿½re les coordonnï¿½es de la n-ieme cellule sur la diagonale
+                'on récupère les coordonnées de la nième cellule sur la diagonale
                 Set nextCell = Cells(Row, Column)
                 
                 'si cellule sur damier
@@ -510,13 +483,13 @@ Public Property Get CanMove() As Boolean
                     Set targetCandidate = New PawnModel
                     Call targetCandidate.Build(nextCell)
                     
-                    'si la case est vide et est prete a accueillir un dï¿½placement
+                    'si la case est vide et est prête à accueillir un déplacement
                     If Not targetCandidate.IsPawn Then
                         
-                        'on construit un objet dï¿½placement a partir du pion actuel et la cellule en cours de test comme destination de mouvement
+                        'on construit un objet déplacement à partir du pion actuel et la cellule en cours de test comme destination de mouvement
                         Call move.Build(Me, targetCandidate)
                         
-                        'si le dï¿½plcament est un mouvement
+                        'si le déplacement est un mouvement
                         If move.IsMove Then
                         
                             CanMove = True
@@ -539,28 +512,26 @@ End Property
 
 
 
-'/// PROPRIï¿½Tï¿½  : Retourne true si un alliï¿½ peut attaquer
-'/// PARAMï¿½TRE  : Aucun
+'/// PROPRIÉTÉ  : Retourne true si un allié peut attaquer
+'/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get HasAttackingAlly() As Boolean
-
-    Dim pawnList As Variant
-    Dim currentPawn As PawnModel
+Dim pawnList As Variant
+Dim currentPawn As PawnModel
     
     Set currentPawn = New PawnModel
     
-    'on initialise le retour de la fonction a false
     HasAttackingAlly = False
     
-    'on rï¿½cupï¿½re le tableau des pions alliï¿½s
+    'on récupère le tableau des pions alliés
     pawnList = Tools.GetPawns(Me.Color)
     
-    'pour chaque pion alliï¿½ dans le tableau de pion alliï¿½
+    'pour chaque pion allié dans le tableau de pion alliés
     For Each pawn In pawnList
     
         Set currentPawn = pawn
         
-        'si le pion alliï¿½ peut attaquer
+        'si le pion allié peut attaquer
         If currentPawn.CanAttack Then
         
             HasAttackingAlly = True
@@ -569,6 +540,5 @@ Public Property Get HasAttackingAlly() As Boolean
         End If
     
     Next pawn
-
 
 End Property

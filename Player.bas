@@ -1,41 +1,40 @@
 Attribute VB_Name = "Player"
-'/// FONCTION   : Joue un tour comme si un humain interagissait avec la damier. Returne true si un pion est dï¿½placï¿½
-'/// PARAMï¿½TRE  : Range
+'/// FONCTION   : Joue un tour comme si un humain interagissait avec le damier. Retourne true si un pion est déplacé
+'/// PARAMÈTRE  : Range
 '/// RETOUR     : Boolean
-Public Function Run(Target As Range) As Boolean
-
-    Dim pawn As PawnModel
-    Dim enemyPawn As PawnModel
-    Dim checkerBoard As BoardModel
+Public Function Run(pTarget As Range) As Boolean
+Dim pawn As PawnModel
+Dim enemyPawn As PawnModel
+Dim checkerBoard As BoardModel
+Dim pawnInitalState As PawnModel
 
     Set checkerBoard = New BoardModel
     Set pawn = New PawnModel
-    Call pawn.Build(Target)
+    Call pawn.Build(pTarget)
     
-    'tant qu'aucun pion ne s'est dï¿½placï¿½, c'est encore a nous de jouer
-    Play = False
+    'tant qu'aucun pion ne s'est déplacé, c'est encore à nous de jouer
+    Run = False
     
-    'si la cellule ciblï¿½ est un pion de notre couleur
+    'si la cellule ciblée est un pion de notre couleur
     If pawn.IsPawn() And pawn.Color = checkerBoard.CurrentTurn Then
         
-        'on mï¿½morise le pion sur le plateau
+        'on mémorise le pion sur le plateau
         checkerBoard.Memory = pawn
     
-    'si la cellule ciblï¿½ est vide
+    'si la cellule ciblée est vide
     ElseIf Not pawn.IsPawn() Then
         
-        'si un pion est mï¿½morisï¿½ sur le plateau
+        'si un pion est mémorisé sur le plateau
         If checkerBoard.Memory.IsPawn() Then
             
-            'on instancie le pion en mï¿½moire
-            Dim pawnInitalState As PawnModel
+            'on instancie le pion en mémoire
             Set pawnInitalState = checkerBoard.Memory
             
-            'si le mouvement du pion mï¿½morisï¿½ vers la cellule ciblï¿½ est possible
+            'si le mouvement du pion mémorisé vers la cellule ciblée est possible
             If pawnInitalState.TryMoveTo(pawn, True) Then
-                'on efface le pion mï¿½morisï¿½
+                'on efface le pion mémorisé
                 Range("Memory").ClearContents
-                'un pion s'est dï¿½pacï¿½
+                'un pion s'est déplacé
                 Run = True
                
             End If
@@ -45,9 +44,3 @@ Public Function Run(Target As Range) As Boolean
     End If
     
 End Function
-
-
-
-
-
-

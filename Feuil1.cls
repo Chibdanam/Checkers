@@ -7,30 +7,31 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
+'/// PROCÉDURE  : Se déclenche lorsqu'un double clic survient sur la feuille et transmet en paramètre la range de la cellule cliquée
+'/// PARAMÈTRE  : Range, Boolean
+'/// RETOUR     : Aucun (évènement)
+Private Sub Worksheet_BeforeDoubleClick(ByVal pTarget As Range, pCancel As Boolean)
+Dim checkerBoard As BoardModel
+Dim pawn As PawnModel
+Dim enemyPawn As PawnModel
+Dim ysnp As YouShallNotPassModel
+Dim deamonReapled As Integer
+Dim turnCount As Integer
 
-'/// PROCï¿½DURE  : Se dï¿½clenche lorsqu'un double clic survient sur la feuille et transmet en parametre la range de la cellule cliquï¿½e
-'/// PARAMï¿½TRE  : Range, Boolean
-'/// RETOUR     : Aucun (evenement)
-Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean)
-
-  'Si Cancel a sa valeur par dÃ©faut ou Ã©gal Ã  False, alors aprÃ¨s la procÃ©dure, 
-  'Excel va continuer en traitant le clic droit comme il le fait par dÃ©faut. 
-
-  'Si Cancel est Ã  True, alors Excel ne va pas faire son traitement habituel, 
-  'Excel considÃ¨re que l'Ã©vÃ©nement du clic droit est entiÃ¨rement pris en charge par la procÃ©dure.
-  Cancel = true
-
-    Dim checkerBoard As BoardModel
-    Dim pawn As PawnModel
-    Dim enemyPawn As PawnModel
+    'Si Cancel a sa valeur par défaut ou Égal à False, alors après la fin de cette procédure,
+    'Excel va continuer en traitant le clic droit comme il le fait par défaut.
     
-    'on instancie un object correspondant a notre plateau de jeu
+    'Si Cancel est à True, alors Excel ne va pas faire son traitement habituel,
+    'Excel considère que l’évènement du clic droit est entièrement pris en charge par la procédure.
+    pCancel = True
+    
+    'on instancie un objet correspondant à notre plateau de jeu
     Set checkerBoard = New BoardModel
    
-    'selon la section dans laquelle on a cliquï¿½
-    Select Case checkerBoard.GetSection(Target)
+    'selon la section dans laquelle on a cliqué
+    Select Case checkerBoard.GetSection(pTarget)
     
-        'si on a cliquï¿½ sur le damier
+        'si on a cliqué sur le damier
         Case ESection.Game
         
             'selon la valeur actuelle de configuration de la partie
@@ -40,13 +41,13 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                 Case EConfig.TwoPlayer
                     
                     'si l'action correspond au mouvement d'un pion
-                    If Player.Run(Target) Then
-                    
-                        'vï¿½rifie s'il y a un vainqueur
-                        Call checkerBoard.SearchWinner
-                        
+                    If Player.Run(pTarget) Then
+
                         'change la couleur afficher sur le plateau
                         Call checkerBoard.SwitchTurn
+                    
+                        'vérifie s'il y a un vainqueur
+                        Call checkerBoard.SearchWinner
                     
                     End If
                     
@@ -54,91 +55,77 @@ Private Sub Worksheet_BeforeDoubleClick(ByVal Target As Range, Cancel As Boolean
                 Case EConfig.SinglePlayer
                 
                     'si l'action correspond au mouvement d'un pion
-                    If Player.Run(Target) Then
-                    
-                        'vï¿½rifie s'il y a un vainqueur
-                        Call checkerBoard.SearchWinner
-                        
-                        'change la couleur afficher sur le plateau
+                    If Player.Run(pTarget) Then
                         Call checkerBoard.SwitchTurn
+                        Call checkerBoard.SearchWinner
                         
                         's'il n'y a pas de vainqueur
                         If Not checkerBoard.IsWinner Then
-                        
-                            'fais jouer un tour au bot
                             Call Bot.Run
-                            
-                            'vï¿½rifie s'il y a un vainqueur
-                            Call checkerBoard.SearchWinner
-                            
-                            'change la couleur afficher sur le plateau
                             Call checkerBoard.SwitchTurn
-                            
+                            Call checkerBoard.SearchWinner
                         End If
-                        
                     End If
                 
                 'si en mode IA vs IA
                 Case EConfig.Automate
                     
-                    Dim turnCount As Integer
+                    'instancie le vérificateur
+                    Set ysnp = New YouShallNotPassModel
+
+                    'représente le compteur d'erreurs effectuées par le bot
+                    deamonReapled = 0
                     turnCount = 0
                     
-                    'tant qu'il n'y a pas de vainqueur et qu'on a jouer moins de 300 tour
-                    While Not checkerBoard.IsWinner And turnCount < 300
-                    
-                        'si la couleur du joueur en cours est blanc
+                    'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
+                    While Not checkerBoard.IsWinner And turnCount < 300 And deamonReapled < 3
+                        
+                        'sauvegarde la configuration du plateau avant le tour du bot
+                        Call ysnp.Snapshot
+                        
                         If checkerBoard.CurrentTurn = EColor.White Then
-                        
-                            'fais jouer un bot
                             Call Bot.Run
-                            'change la couleur afficher sur le plateau
-                            Call checkerBoard.SwitchTurn
-                            
-                        'si la couleur du joueur en cours est blanc
                         ElseIf checkerBoard.CurrentTurn = EColor.Black Then
-                        
-                            'fais jouer un bot
                             Call Bot.Run
-                            'change la couleur afficher sur le plateau
-                            Call checkerBoard.SwitchTurn
-                            
                         End If
                         
-                        'vï¿½rifie s'il y a un vainqueur
-                        Call checkerBoard.SearchWinner
-                        'on incrï¿½mente le nombre de tour
-                        turnCount = turnCount + 1
+                        'si les actions du bot correspondent a un mouvement accépté
+                        If ysnp.IsSuccess Then
+                            deamonReapled = 0
+                            turnCount = turnCount + 1
+                            Call checkerBoard.SwitchTurn
+                            Call checkerBoard.SearchWinner
+                        Else
+                            deamonReapled = deamonReapled + 1
+                        End If
+                        
                     Wend
+                    
+                    If deamonReapled = 3 Then
+                        MsgBox "You Filthy cheater !"
+                    End If
                     
             End Select
             
                 
-        'cas de clic sur la configuration des joueurs, on incrï¿½mente la configuration
+        'cas de clic sur la configuration des joueurs, on incrémente la configuration
         Case ESection.ConfigPlayer
         
-            'si la configuration actuelle est 1 joueurs
+            'on incrémente le type de partie dans l'ordre -> 1joueurs, 2joueurs, ia vs ia
             If checkerBoard.ConfigPlayer = EConfig.SinglePlayer Then
-                'on passe en configuration 2 joueurs
                 checkerBoard.ConfigPlayer = EConfig.TwoPlayer
-                
-            'si la configuration actuelle est 2 joueurs
             ElseIf checkerBoard.ConfigPlayer = EConfig.TwoPlayer Then
-                'on passe en configuration IA vs IA
                 checkerBoard.ConfigPlayer = EConfig.Automate
-                
-            'si la configuration actuelle n'est ni 1 joueurs, ni 2 joueurs
             Else
                 checkerBoard.ConfigPlayer = EConfig.SinglePlayer
             End If
         
         'cas de clic sur le bouton restart
         Case ESection.Restart
-            'formate le plateau de jeux sur la feuille excel
+            'formate le plateau de jeux sur la feuille Excel
             Call BoardConstructeur.FormatBoard
-            'initialise les pions a leur position de dï¿½part
-            Call BoardConstructeur.Initalisation
+            'initialise les pions à leur position de départ
+            Call BoardConstructeur.Initialisation
             
     End Select
 End Sub
-

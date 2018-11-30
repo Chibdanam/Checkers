@@ -1,7 +1,7 @@
 Attribute VB_Name = "BoardConstructeur"
-'/// PROCï¿½DURE  : formate la feuille excel en plateau de jeu par defaut
-'/// PARAMï¿½TRE  : Aucun
-'/// RETOUR     : Aucun (sub)
+'/// PROCÉDURE  : formate la feuille Excel en plateau de jeu par défaut
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
 Public Sub FormatBoard()
 
     'variable temporaire qui va nous permettre d'agir sur chaque cellule du damier une par une
@@ -14,14 +14,14 @@ Public Sub FormatBoard()
         .MergeCells = False
     End With
 
-    'on recupere toute les cellules qui composent notre damier
+    'on récupère toutes les cellules qui composent notre damier
     For Each cell In Range("B2:I9")
-        'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur clair, sinon la sombre
+        'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur claire, sinon la sombre
         If (cell.Column + cell.Row) Mod 2 = 0 Then
-            'color la cellule en blanc cassï¿½
+            'colore la cellule en blanc cassé
             cell.Interior.Color = 13434879
         Else
-            'color la cellule en marron
+            'colore la cellule en marron
             cell.Interior.Color = 3368601
         End If
     Next cell
@@ -45,15 +45,15 @@ Public Sub FormatBoard()
     Range("A9").Value = "8"
     
     
-    'On modifie les parametres de toutes les cellules comprises sur l'air de jeu et a cotï¿½
+    'On modifie les paramètres de toutes les cellules comprises sur l'aire de jeu et a coté
     With Range("A1:N11")
         'Hauteur de la cellule
         .RowHeight = 25
         'Largeur de colonne
         .ColumnWidth = 4
-        'Aligne le texte au centre de le cellule horizontalement
+        'Aligne le texte au centre de la cellule horizontalement
         .HorizontalAlignment = xlCenter
-        'Aligne le texte au centre de le cellule verticalement
+        'Aligne le texte au centre de la cellule verticalement
         .VerticalAlignment = xlCenter
          With .Font
             'Taille de la police
@@ -67,17 +67,17 @@ Public Sub FormatBoard()
     Range("K2:M2").MergeCells = True
     'Bouton Restart
     With Range("K2:M2")
-        'ï¿½cris la valeur de la cellule
+        'écris la valeur de la cellule
         .Value = "Restart"
-        'Dï¿½finit les contours par un trait continue
+        'Définit les contours par un trait continue
         .Borders.LineStyle = xlContinuous
-        'Dï¿½finit l'ï¿½paisseur du contour : gros
+        'Définit l'épaisseur du contour : gros
         .Borders.Weight = xlThick
         'Couleur du fond de cellule blanc
         .Interior.ColorIndex = 2
     End With
     
-    'En-Tete de l'indicateur du tour en cours
+    'En-Tête de l'indicateur du tour en cours
     Range("K4:M4").MergeCells = True
     Range("K4:M4").Value = "Turn"
     
@@ -99,7 +99,7 @@ Public Sub FormatBoard()
         .Borders.Weight = xlThick
     End With
     
-    'Pion en mï¿½moire
+    'Pion en mémoire
     Range("K9:M9").MergeCells = True
     With Range("K9:M9")
         .Value = ""
@@ -108,7 +108,7 @@ Public Sub FormatBoard()
         .Borders.Weight = xlThick
     End With
     
-    'on masque toutes les colonnes et lignes au dela en bas et a droite de la case Q14
+    'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
@@ -118,19 +118,19 @@ End Sub
 
 
 
-'/// PROCï¿½DURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par defaut
-'/// PARAMï¿½TRE  : Aucun
-'/// RETOUR     : Aucun (sub)
-Public Sub Initalisation()
+'/// PROCÉDURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par défaut
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Public Sub Initialisation()
 
-    'supprime toutes les valeurs ï¿½crites sur le damier
+    'supprime toutes les valeurs écrites sur le damier
     Range("B2:I9").ClearContents
     
-    'boucle sur toutes les cellules comprises sur les 3 premiere et sur les 3 dernieres lignes du damier
+    'boucle sur toutes les cellules comprises sur les 3 premières et sur les 3 dernières lignes du damier
     For Each cell In Union(Range("B7:I9"), Range("B2:I4"))
         'Si la somme de l'index de colonne et de l'index de ligne est impaire, alors on positionne un pion
         If (cell.Column + cell.Row) Mod 2 <> 0 Then
-            'Un pion est symbolisï¿½ par la lettre O majuscule
+            'Un pion est symbolisé par la lettre O majuscule
             cell.Value = "O"
         End If
     Next cell
@@ -144,36 +144,37 @@ End Sub
 
 
 
+'/// PROCÉDURE  : Vérifie la présence des plages nommées, utilisés par le damier, dans le classeur excel
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
 Public Sub SetNameRanged()
 
+    'Accès par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
 
-    'Acces par l'interface graphique : Formules -> Noms dï¿½finis -> Gestionnaire de noms
-
-    'On instancie l'objet Plateau en parametrant plusieurs emplacement par defaut
+    'On instancie l'objet Plateau en paramétrant plusieurs emplacements par défaut
     
     On Error Resume Next
     
-    'Correspond a l'air de jeu du damier
+    'Correspond à l'air de jeu du damier
     If IsError(Range("Game").Select) Then
         ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
     End If
     
-    'Correspond au bouton "Restart" a cotï¿½ du damier
+    'Correspond au bouton "Restart" à côté du damier
     If IsError(Range("Restart").Select) Then
         ActiveWorkbook.Names.Add Name:="Restart", RefersToR1C1:="=Feuil1!R2C11:R2C13"
     End If
     
 
-    'Correspond ï¿½ la zone indiquant la couleurs du joueur du tour en cours
+    'Correspond à la zone indiquant la couleur du joueur du tour en cours
     If IsError(Range("Turn").Select) Then
         ActiveWorkbook.Names.Add Name:="Turn", RefersToR1C1:="=Feuil1!R5C11:R5C13"
     End If
 
-    'afin de vï¿½rifier des ï¿½galitï¿½ de valeur, il est necessaire d'avoir une range contenant uniquement une seule cellule
+    'afin de vérifier des égalités de valeur, il est nécessaire d'avoir une range contenant uniquement une seule cellule
     If IsError(Range("TurnValue").Select) Then
         ActiveWorkbook.Names.Add Name:="TurnValue", RefersToR1C1:="=Feuil1!R5C11"
     End If
-
 
     'Correspond au bouton de configuration du nombre de joueur
     If IsError(Range("ConfigPlayer").Select) Then
@@ -185,7 +186,7 @@ Public Sub SetNameRanged()
     End If
     
 
-    'Correspond a la zone tampon permettant de savoir si un pion est en mï¿½moire
+    'Correspond à la zone tampon permettant de savoir si un pion est en mémoire
     If IsError(Range("Memory").Select) Then
         ActiveWorkbook.Names.Add Name:="Memory", RefersToR1C1:="=Feuil1!R9C11:R9C13"
     End If
@@ -195,9 +196,3 @@ Public Sub SetNameRanged()
     End If
 
 End Sub
-
-
-
-
-
-

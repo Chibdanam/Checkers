@@ -13,3 +13,9 @@
 # License
 
 https://choosealicense.com/licenses/gpl-3.0/
+
+
+## Contributing
+Please fork this repository and contribute back using pull requests.
+
+Any contributions, large or small, major features, bugfixes and integration tests are welcomed and appreciated but will be thoroughly reviewed and discussed.

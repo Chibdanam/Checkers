@@ -9,6 +9,7 @@
 		"PawnModel": "PawnModel.cls",
 		"Player": "Player.bas",
 		"TestCase": "TestCase.bas",
-		"Tools": "Tools.bas"
+		"Tools": "Tools.bas",
+		"YouShallNotPassModel": "YouShallNotPassModel.cls"
 	}
 }
