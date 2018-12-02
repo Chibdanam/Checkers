@@ -1,5 +1,44 @@
 # Aide
 
+<!-- TOC -->
+
+- [Instructions de module](#instructions-de-module)
+  - [Option Base](#Option-Base)
+  - [Option Explicit](#Option-Explicit)
+- [Gestion des Arrays](#Gestion-des-Arrays)
+  - [UBound](#UBound)
+  - [LBound](#LBound)
+  - [Redim](#Redim)
+- [Gestion d'erreurs](#Gestion-d'erreurs)
+  - [IsError](#IsError)
+- [Enumération](#Enumération)
+    - [Enum](#Enum)
+- [Manipulation de chaines de caractères](#Manipulation-de-chaines-de-caractères)
+  - [Left](#Left)
+  - [Right](#Right)
+  - [Mid](#Mid)
+  - [Split](#Split)
+  - [Trim](#Trim)
+- [Module de Classe](#Module-de-Classe)
+  - [class_Initialize et class_Terminate](#class_Initialize-et-class_Terminate)
+- [Methodes](#Methodes)
+  - [Public](#Public)
+  - [Private](#Private)
+  - [ByVal](#ByVal)
+  - [ByRef](#ByRef)
+  - [Property Get / Let](#Property-Get-/-Let)
+- [Instructions](#Instructions)
+  - [Call](#Call)
+  - [Set](#Set)
+  - [New](#New)
+  - [With](#With)
+  - [Select Case](#Select-Case)
+  - [For Each](#For-Each)
+- [Application](#Application)
+  - [ActiveWorkbook.Names.Add](#ActiveWorkbook.Names.Add)
+  - [Debug](#Debug)
+
+<!-- /TOC -->
 
 ## Instructions de module
 
