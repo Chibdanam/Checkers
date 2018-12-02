@@ -12,7 +12,7 @@ Option Base 0
 
 Private prvInitialWhitePawns As Variant     '/// VARIABLE PRIVÉE : Liste de pion allié initiale
 Private prvInitialBlackPawns As Variant     '/// VARIABLE PRIVÉE : Liste de pion enemi initiale
-Private prvSnapshot As String               '/// VARIABLE PRIVÉE : String représentant une configuration du plateau
+Private prvSavedSnapshot As String               '/// VARIABLE PRIVÉE : String représentant une configuration du plateau
 
 
 
@@ -36,12 +36,18 @@ End Sub
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub Snapshot()
-
     prvInitialWhitePawns = Tools.GetPawns(EColor.White)
     prvInitialBlackPawns = Tools.GetPawns(EColor.Black)
-    
-    prvSnapshot = Tools.MakeBlueprintFromBoard
-    
+    prvSavedSnapshot = Tools.MakeBlueprintFromBoard
+End Sub
+
+
+
+'/// PROCÉDURE  : Restore la snapshot en tant que configuration de la partie
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Public Sub Rollback()
+    Call Tools.Compute(prvSavedSnapshot)
 End Sub
 
 
@@ -80,7 +86,7 @@ Dim originalTarget As PawnModel
     currentSnapshot = Tools.MakeBlueprintFromBoard
     
     If UBound(missingAllies) = 0 And UBound(newAllies) = 0 Then
-        Call Tools.Compute(prvSnapshot)
+        Call Tools.Compute(prvSavedSnapshot)
         
         Set originalPawn = New PawnModel
         Call originalPawn.Build(missingAllies(0).CurrentRange)
@@ -93,11 +99,7 @@ Dim originalTarget As PawnModel
             If mockSnapshot = currentSnapshot Then
                 IsSuccess = True
             End If
-        Else
-            Call Tools.Compute(prvSnapshot)
         End If
-    Else
-        Call Tools.Compute(prvSnapshot)
     End If
     
     Application.ScreenUpdating = True

@@ -16,7 +16,7 @@ Option Base 0                               '/// Les Arrays comment à "0"
 '/// PARAMÈTRE  : Range, Boolean
 '/// RETOUR     : Aucun (évènement)
 Private Sub Worksheet_BeforeDoubleClick(ByVal pTarget As Range, pCancel As Boolean)
-Dim checkerBoard As BoardModel
+Dim board As BoardModel
 Dim pawn As PawnModel
 Dim enemyPawn As PawnModel
 Dim ysnp As YouShallNotPassModel
@@ -31,19 +31,19 @@ Dim turnCount As Integer
     pCancel = True
     
     'on instancie un objet correspondant à notre plateau de jeu
-    Set checkerBoard = New BoardModel
+    Set board = New BoardModel
    
     'représente le compteur d'erreurs effectuées par le bot
     deamonReapled = 0
 
     'selon la section dans laquelle on a cliqué
-    Select Case checkerBoard.GetSection(pTarget)
+    Select Case board.GetSection(pTarget)
     
         'si on a cliqué sur le damier
         Case ESection.Game
         
             'selon la valeur actuelle de configuration de la partie
-            Select Case checkerBoard.ConfigPlayer
+            Select Case board.ConfigPlayer
             
                 'si en mode 2 joueurs
                 Case EConfig.TwoPlayers
@@ -52,10 +52,10 @@ Dim turnCount As Integer
                     If Player.Run(pTarget) Then
 
                         'change la couleur afficher sur le plateau
-                        Call checkerBoard.SwitchTurn
+                        Call board.SwitchTurn
                     
                         'vérifie s'il y a un vainqueur
-                        Call checkerBoard.SearchWinner
+                        Call board.SearchWinner
                     
                     End If
                     
@@ -64,11 +64,11 @@ Dim turnCount As Integer
                 
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
-                        Call checkerBoard.SwitchTurn
-                        Call checkerBoard.SearchWinner
+                        Call board.SwitchTurn
+                        Call board.SearchWinner
                         
                         's'il n'y a pas de vainqueur
-                        If Not checkerBoard.IsWinner Then
+                        If Not board.IsWinner Then
 
                             'instancie le vérificateur
                             Set ysnp = New YouShallNotPassModel
@@ -81,10 +81,11 @@ Dim turnCount As Integer
                         'si les actions du bot correspondent a un mouvement accépté
                         If ysnp.IsSuccess Then
                             deamonReapled = 0
-                            Call checkerBoard.SwitchTurn
-                            Call checkerBoard.SearchWinner
+                            Call board.SwitchTurn
+                            Call board.SearchWinner
                         Else
                             deamonReapled = deamonReapled + 1
+                            Call ysnp.RollBack()
                         End If
                         End If
                     End If
@@ -96,23 +97,24 @@ Dim turnCount As Integer
                     turnCount = 0
                     
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
-                    While Not checkerBoard.IsWinner And turnCount < 300 And deamonReapled < 3
+                    While Not board.IsWinner And turnCount < 300 And deamonReapled < 3
                     
                         Call ysnp.Snapshot
                         
-                        If checkerBoard.CurrentTurn = EColor.White Then
+                        If board.CurrentTurn = EColor.White Then
                             Call Bot.Run
-                        ElseIf checkerBoard.CurrentTurn = EColor.Black Then
+                        ElseIf board.CurrentTurn = EColor.Black Then
                             Call Bot.Run
                         End If
                         
                         If ysnp.IsSuccess Then
                             deamonReapled = 0
                             turnCount = turnCount + 1
-                            Call checkerBoard.SwitchTurn
-                            Call checkerBoard.SearchWinner
+                            Call board.SwitchTurn
+                            Call board.SearchWinner
                         Else
                             deamonReapled = deamonReapled + 1
+                            Call ysnp.RollBack()
                         End If
                         
                     Wend
@@ -128,12 +130,12 @@ Dim turnCount As Integer
         Case ESection.ConfigPlayer
         
             'on incrémente le type de partie dans l'ordre -> 1joueurs, 2joueurs, ia vs ia
-            If checkerBoard.ConfigPlayer = EConfig.SinglePlayer Then
-                checkerBoard.ConfigPlayer = EConfig.TwoPlayers
-            ElseIf checkerBoard.ConfigPlayer = EConfig.TwoPlayers Then
-                checkerBoard.ConfigPlayer = EConfig.Automate
+            If board.ConfigPlayer = EConfig.SinglePlayer Then
+                board.ConfigPlayer = EConfig.TwoPlayers
+            ElseIf board.ConfigPlayer = EConfig.TwoPlayers Then
+                board.ConfigPlayer = EConfig.Automate
             Else
-                checkerBoard.ConfigPlayer = EConfig.SinglePlayer
+                board.ConfigPlayer = EConfig.SinglePlayer
             End If
         
         'cas de clic sur le bouton restart

@@ -8,10 +8,10 @@ Option Base 0
 Public Function Run(ByVal pTarget As Range) As Boolean
 Dim pawn As PawnModel
 Dim enemyPawn As PawnModel
-Dim checkerBoard As BoardModel
+Dim board As BoardModel
 Dim pawnInitalState As PawnModel
 
-    Set checkerBoard = New BoardModel
+    Set board = New BoardModel
     Set pawn = New PawnModel
     Call pawn.Build(pTarget)
     
@@ -19,19 +19,19 @@ Dim pawnInitalState As PawnModel
     Run = False
     
     'si la cellule ciblée est un pion de notre couleur
-    If pawn.IsPawn() And pawn.Color = checkerBoard.CurrentTurn Then
+    If pawn.IsPawn() And pawn.Color = board.CurrentTurn Then
         
         'on mémorise le pion sur le plateau
-        checkerBoard.Memory = pawn
+        board.Memory = pawn
     
     'si la cellule ciblée est vide
     ElseIf Not pawn.IsPawn() Then
         
         'si un pion est mémorisé sur le plateau
-        If checkerBoard.Memory.IsPawn() Then
+        If board.Memory.IsPawn() Then
             
             'on instancie le pion en mémoire
-            Set pawnInitalState = checkerBoard.Memory
+            Set pawnInitalState = board.Memory
             
             'si le mouvement du pion mémorisé vers la cellule ciblée est possible
             If pawnInitalState.TryMoveTo(pawn, True) Then

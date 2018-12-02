@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [1.0.0] - 2018-11-30
+## [1.0.0] - 2018-12-02
 
 ## Général
 - la couleur des pions n'est plus gérer avec .ColorIndex mais avec .Color = RGB(x,y,z)
-- respect de la norme "prefixer les variables passés en paramètres par un p"
+- respect de la norme "prefixer les variables passés en paramètres par un 'p'"
 - définition ajouté pour chaque fonction
 - toutes les fonctions sont déclarés explicitement Public ou Private
 - update générale => Option Explicit, toutes les variables doivent être déclarées             
@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - ajout Cancel = true sur l'evenement BeforeDoubleClic 
 
 ## Module
+
+### Enums
+- ajout fonction EnumString() 
 
 ### Tools
 - ajout module Tools 
@@ -54,4 +57,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### YouShallNotPassModel
 - ajout module de classe YouShallNotPassModel
 - ajout procédure Snapshot()
-- ajout propriété IsSuccess() 
+- ajout propriété IsSuccess()
+- ajout procédure Rollback()
