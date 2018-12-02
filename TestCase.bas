@@ -161,3 +161,19 @@ Dim blueprint As String
                 
     Call Tools.Compute(blueprint)
 End Sub
+
+Public Sub TestSituationBlocked()
+Dim blueprint As String
+
+    '             a b c d e f g h
+    blueprint = "|-| |-| |-|b|-| |" + vbNewLine + _
+                "| |-| |-| |-|b|-|" + vbNewLine + _
+                "|-| |-| |-| |-|w|" + vbNewLine + _
+                "| |-| |-| |-| |-|" + vbNewLine + _
+                "|-| |-| |-| |-| |" + vbNewLine + _
+                "| |-| |-| |-| |-|" + vbNewLine + _
+                "|-| |-| |-| |-| |" + vbNewLine + _
+                "| |-| |-| |-| |-|"
+                
+    Call Tools.Compute(blueprint)
+End Sub

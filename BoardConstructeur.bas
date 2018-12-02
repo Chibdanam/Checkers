@@ -20,10 +20,10 @@ Dim cell As Range
         'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur claire, sinon la sombre
         If (cell.Column + cell.Row) Mod 2 = 0 Then
             'colore la cellule en blanc cassé
-            cell.Interior.Color = 13434879
+            cell.Interior.Color = RGB(255, 255, 200)
         Else
             'colore la cellule en marron
-            cell.Interior.Color = 3368601
+            cell.Interior.Color = RGB(150, 100, 50)
         End If
     Next cell
     

@@ -33,6 +33,9 @@ Dim turnCount As Integer
     'on instancie un objet correspondant à notre plateau de jeu
     Set checkerBoard = New BoardModel
    
+    'représente le compteur d'erreurs effectuées par le bot
+    deamonReapled = 0
+
     'selon la section dans laquelle on a cliqué
     Select Case checkerBoard.GetSection(pTarget)
     
@@ -43,7 +46,7 @@ Dim turnCount As Integer
             Select Case checkerBoard.ConfigPlayer
             
                 'si en mode 2 joueurs
-                Case EConfig.TwoPlayer
+                Case EConfig.TwoPlayers
                     
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
@@ -66,26 +69,35 @@ Dim turnCount As Integer
                         
                         's'il n'y a pas de vainqueur
                         If Not checkerBoard.IsWinner Then
+
+                            'instancie le vérificateur
+                            Set ysnp = New YouShallNotPassModel
+
+                            'sauvegarde la configuration du plateau avant le tour du bot
+                            Call ysnp.Snapshot
+
                             Call Bot.Run
+
+                        'si les actions du bot correspondent a un mouvement accépté
+                        If ysnp.IsSuccess Then
+                            deamonReapled = 0
                             Call checkerBoard.SwitchTurn
                             Call checkerBoard.SearchWinner
+                        Else
+                            deamonReapled = deamonReapled + 1
+                        End If
                         End If
                     End If
                 
                 'si en mode IA vs IA
                 Case EConfig.Automate
                     
-                    'instancie le vérificateur
                     Set ysnp = New YouShallNotPassModel
-
-                    'représente le compteur d'erreurs effectuées par le bot
-                    deamonReapled = 0
                     turnCount = 0
                     
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
                     While Not checkerBoard.IsWinner And turnCount < 300 And deamonReapled < 3
-                        
-                        'sauvegarde la configuration du plateau avant le tour du bot
+                    
                         Call ysnp.Snapshot
                         
                         If checkerBoard.CurrentTurn = EColor.White Then
@@ -94,7 +106,6 @@ Dim turnCount As Integer
                             Call Bot.Run
                         End If
                         
-                        'si les actions du bot correspondent a un mouvement accépté
                         If ysnp.IsSuccess Then
                             deamonReapled = 0
                             turnCount = turnCount + 1
@@ -107,7 +118,7 @@ Dim turnCount As Integer
                     Wend
                     
                     If deamonReapled = 3 Then
-                        MsgBox "You Filthy cheater !"
+                        MsgBox "You Failed"
                     End If
                     
             End Select
@@ -118,8 +129,8 @@ Dim turnCount As Integer
         
             'on incrémente le type de partie dans l'ordre -> 1joueurs, 2joueurs, ia vs ia
             If checkerBoard.ConfigPlayer = EConfig.SinglePlayer Then
-                checkerBoard.ConfigPlayer = EConfig.TwoPlayer
-            ElseIf checkerBoard.ConfigPlayer = EConfig.TwoPlayer Then
+                checkerBoard.ConfigPlayer = EConfig.TwoPlayers
+            ElseIf checkerBoard.ConfigPlayer = EConfig.TwoPlayers Then
                 checkerBoard.ConfigPlayer = EConfig.Automate
             Else
                 checkerBoard.ConfigPlayer = EConfig.SinglePlayer

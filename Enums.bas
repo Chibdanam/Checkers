@@ -4,25 +4,25 @@ Attribute VB_Name = "Enums"
 '/// ÉNUMÉRATION : Représente les deux couleurs que peuvent avoir les pions
 '/// VALEURS     : Blanc, Noir
 Public Enum EColor
-    White
-    Black
+    White = 0
+    Black = 1
 End Enum
 
 '/// ÉNUMÉRATION : Représente la configuration du jeu
 '/// VALEURS     : 1 joueur, 2 joueurs, IA vs IA
 Public Enum EConfig
-    SinglePlayer
-    TwoPlayer
-    Automate
+    SinglePlayer = 10
+    TwoPlayers = 11
+    Automate = 12
 End Enum
 
 '/// ÉNUMÉRATION : Représente une zone du plateau de jeu
 '/// VALEURS     : Le jeu (le damier), Le bouton restaart, La zone affichant la configuration du jeu, Le reste
 Public Enum ESection
-    Game
-    Restart
-    ConfigPlayer
-    OutOfLimit
+    Game = 20
+    Restart = 21
+    ConfigPlayer = 22
+    OutOfLimit = 23
 End Enum
 
 '/// ÉNUMÉRATION : Représente les 4 diagonales possible pour un déplacer
@@ -33,3 +33,38 @@ Public Enum EWindRose
     SouthEast
     SouthWest
 End Enum
+
+
+
+'/// FONCTION   : Retourne la valeur de l'énum sous la forme de string
+'/// PARAMÈTRE  : Enum
+'/// RETOUR     : String 
+Public Function EnumString(pEnum As Variant) As String
+    Select Case pEnum
+
+        'EColor
+        Case EColor.White
+            EnumString = "White"
+        Case EColor.Black
+            EnumString = "Black"
+
+        'EConfig
+        Case EConfig.SinglePlayer
+            EnumString = "SinglePlayer"
+        Case EConfig.TwoPlayers
+            EnumString = "TwoPlayers"
+        Case EConfig.Automate
+            EnumString = "Automate"
+
+        'ESection
+        Case ESection.Game
+            EnumString = "Game"
+        Case ESection.Restart
+            EnumString = "Restart"
+        Case ESection.ConfigPlayer
+            EnumString = "ConfigPlayer"
+        Case ESection.OutOfLimit
+            EnumString = "OutOfLimit"
+
+    End Select
+End Function

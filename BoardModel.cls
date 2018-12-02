@@ -52,30 +52,30 @@ End Property
 '/// RETOUR     : EColor
 Public Property Get CurrentTurn() As EColor
 
-    If Range("TurnValue") = "White" Then
+    If Range("TurnValue") = EnumString(EColor.White) Then
         CurrentTurn = EColor.White
-    ElseIf Range("TurnValue") = "Black" Then
+    ElseIf Range("TurnValue") = EnumString(EColor.Black) Then
         CurrentTurn = EColor.Black
     Else
         'Si aucune valeur attendue n'est trouvée, on la paramètre à "White" par défaut
         CurrentTurn = EColor.White
-        Range("TurnValue") = "White"
+        Range("TurnValue") = EnumString(EColor.White)
     End If
     
 End Property
 
 
 
-'/// PROCÉDURE  : Change la couleur afficher sur le plateau de jeu
+'/// PROCÉDURE  : Change la couleur affichée sur le plateau de jeu
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SwitchTurn()
 
     If Range("TurnValue") <> "You Win" Then
-        If CurrentTurn = EColor.Black Then
-            CurrentTurn = EColor.White
-        ElseIf CurrentTurn = EColor.White Then
-            CurrentTurn = EColor.Black
+        If Me.CurrentTurn = EColor.Black Then
+            Me.CurrentTurn = EColor.White
+        ElseIf Me.CurrentTurn = EColor.White Then
+            Me.CurrentTurn = EColor.Black
         End If
     End If
     
@@ -87,13 +87,7 @@ End Sub
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Property Let CurrentTurn(ByVal pColor As EColor)
-
-    If pColor = EColor.Black Then
-        Range("TurnValue") = "Black"
-    ElseIf pColor = EColor.White Then
-        Range("TurnValue") = "White"
-    End If
-    
+    Range("TurnValue") = EnumString(pColor)
 End Property
 
 
@@ -103,16 +97,16 @@ End Property
 '/// RETOUR     : EConfig
 Public Property Get ConfigPlayer() As EConfig
     
-    If Range("ConfigPlayerValue") = "1 Player" Then
+    If Range("ConfigPlayerValue") = EnumString(EConfig.SinglePlayer) Then
         ConfigPlayer = EConfig.SinglePlayer
-    ElseIf Range("ConfigPlayerValue").Value = "2 Players" Then
-        ConfigPlayer = EConfig.TwoPlayer
-    ElseIf Range("ConfigPlayerValue").Value = "Automa" Then
+    ElseIf Range("ConfigPlayerValue").Value = EnumString(EConfig.TwoPlayers) Then
+        ConfigPlayer = EConfig.TwoPlayers
+    ElseIf Range("ConfigPlayerValue").Value = EnumString(EConfig.Automate) Then
         ConfigPlayer = EConfig.Automate
     Else
         'Si aucune valeur attendue n'est trouvée, on la paramètre a "1 Player" par défaut
-        ConfigPlayer = SinglePlayer
-        Range("ConfigPlayerValue") = "1 Player"
+        ConfigPlayer = EConfig.SinglePlayer
+        Range("ConfigPlayerValue") = EnumString(EConfig.SinglePlayer)
     End If
     
 End Property
@@ -122,16 +116,8 @@ End Property
 '/// PROPRIÉTÉ  : Modifie la configuration du plateau de jeu
 '/// PARAMÈTRE  : EConfig
 '/// RETOUR     : Aucun
-Public Property Let ConfigPlayer(ByVal Config As EConfig)
-
-    If Config = EConfig.SinglePlayer Then
-        Range("ConfigPlayer") = "1 Player"
-    ElseIf Config = EConfig.TwoPlayer Then
-        Range("ConfigPlayer") = "2 Players"
-    ElseIf Config = EConfig.Automate Then
-        Range("ConfigPlayer") = "Automa"
-    End If
-        
+Public Property Let ConfigPlayer(ByVal pConfig As EConfig)
+        Range("ConfigPlayer") =  EnumString(pConfig)
 End Property
 
 
@@ -139,7 +125,7 @@ End Property
 '/// PROPRIÉTÉ  : écris sur le plateau de jeu dans la zone "mémoire" la position du pion passé en paramètre
 '/// PARAMÈTRE  : PawnModel
 '/// RETOUR     : Aucun
-Public Property Let Memory(ByVal pawn As PawnModel)
+Public Property Let Memory(ByVal pPawn As PawnModel)
 Dim Column As String
 Dim Row As String
 Dim offset As Integer
@@ -149,9 +135,9 @@ Dim offset As Integer
     offset = 1
     
     'afin de récupérer la lettre correspondant à la colonne, on convertie la valeur de la colonne en caractère ASCII
-    Column = Chr(64 + (pawn.CurrentRange.Column - offset))
+    Column = Chr(64 + (pPawn.CurrentRange.Column - offset))
     'on convertie notre valeur numérique en chaine de caractère : Integer to String
-    Row = CStr(pawn.CurrentRange.Row - offset)
+    Row = CStr(pPawn.CurrentRange.Row - offset)
     
     Range("MemoryValue").Value = Column + Row
         

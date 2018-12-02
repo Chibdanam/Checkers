@@ -223,7 +223,7 @@ End Property
 '/// PROPRIÉTÉ  : Modifie la variable privée correspondant à l'etat du pion
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
-Public Property Let IsPawn(ByVal pIsPawn As Boolean)
+Public Property Let IsPawn(pIsPawn As Boolean)
     prvIsPawn = pIsPawn
 End Property
 
@@ -284,7 +284,7 @@ Dim move As MoveModel
     'on vérifie si le pion peut devenir une dame
     Call Me.TryBecomeQueen
     'on imprime le pion sur le plateau à sa nouvelle position
-    Call PrintPawnOnBoard
+    Call Me.PrintPawnOnBoard
     
 End Sub
 
@@ -536,10 +536,10 @@ End Property
 
 
 
-'/// PROCÉDURE   : Écrit le pion sur le plateau
+'/// PROCÉDURE  : Écrit le pion sur le plateau
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
-Private Sub PrintPawnOnBoard()
+Public Sub PrintPawnOnBoard()
         
     If Me.IsPawn And Me.IsQueen Then
         Me.CurrentRange.Value = Chr(169)
