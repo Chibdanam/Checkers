@@ -441,8 +441,8 @@ Public Property Get CanMove() As Boolean
 Dim move As MoveModel
 Dim coefVector As Variant
 Dim cardinalDirections As Variant
+Dim cardinalDirection As Variant
 Dim Row As Integer, Column As Integer
-Dim Direction As EWindRose
 Dim nextCell As Range
 Dim targetCandidate As PawnModel
 Dim board As BoardModel
@@ -463,9 +463,8 @@ Dim board As BoardModel
         'pour chaque direction possible dans le tableau des directions possible
         For Each cardinalDirection In cardinalDirections
         
-            Direction = cardinalDirection
             'on récupère les coefficients associés à la direction du déplacement
-            coefVector = board.CardinalCoef(Direction)
+            coefVector = board.CardinalCoef(cardinalDirection)
             
             'si le pion est une dame
             'ou si on est en train de tester une direction au nord pour un pion blanc, sud pour un pion noir

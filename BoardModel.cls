@@ -26,6 +26,144 @@ End Sub
 
 
 
+'/// PROCÉDURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par défaut
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Public Sub Initialisation()
+Dim blueprint As String
+
+    '             a b c d e f g h
+    blueprint = "|-|b|-|b|-|b|-|b|" + vbNewLine + _
+                "|b|-|b|-|b|-|b|-|" + vbNewLine + _
+                "|-|b|-|b|-|b|-|b|" + vbNewLine + _
+                "| |-| |-| |-| |-|" + vbNewLine + _
+                "|-| |-| |-| |-| |" + vbNewLine + _
+                "|w|-|w|-|w|-|w|-|" + vbNewLine + _
+                "|-|w|-|w|-|w|-|w|" + vbNewLine + _
+                "|w|-|w|-|w|-|w|-|"
+                
+    Call Tools.Compute(blueprint)
+End Sub
+
+
+
+'/// PROCÉDURE  : formate la feuille Excel en plateau de jeu par défaut
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Public Sub FormatBoard()
+Dim cell As Range
+    
+    'On met toutes les cases, du plateau et autour, vide et gris clair
+    With Range("A1:N11")
+        .ClearContents
+        .Interior.Color = RGB(230, 230, 230)
+        .MergeCells = False
+    End With
+
+    'on récupère toutes les cellules qui composent notre damier
+    For Each cell In Range("B2:I9")
+        'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur claire, sinon la sombre
+        If (cell.Column + cell.Row) Mod 2 = 0 Then
+            'colore la cellule en blanc cassé
+            cell.Interior.Color = RGB(255, 255, 200)
+        Else
+            'colore la cellule en marron
+            cell.Interior.Color = RGB(150, 100, 50)
+        End If
+    Next cell
+    
+    Range("B1").Value = "A"
+    Range("C1").Value = "B"
+    Range("D1").Value = "C"
+    Range("E1").Value = "D"
+    Range("F1").Value = "E"
+    Range("G1").Value = "F"
+    Range("H1").Value = "G"
+    Range("I1").Value = "H"
+    
+    Range("A2").Value = "1"
+    Range("A3").Value = "2"
+    Range("A4").Value = "3"
+    Range("A5").Value = "4"
+    Range("A6").Value = "5"
+    Range("A7").Value = "6"
+    Range("A8").Value = "7"
+    Range("A9").Value = "8"
+    
+    
+    'On modifie les paramètres de toutes les cellules comprises sur l'aire de jeu et a coté
+    With Range("A1:N11")
+        'Hauteur de la cellule
+        .RowHeight = 25
+        'Largeur de colonne
+        .ColumnWidth = 4
+        'Aligne le texte au centre de la cellule horizontalement
+        .HorizontalAlignment = xlCenter
+        'Aligne le texte au centre de la cellule verticalement
+        .VerticalAlignment = xlCenter
+         With .Font
+            'Taille de la police
+            .Size = 14
+            'Met en gras
+            .Bold = True
+        End With
+    End With
+    
+    'Fusionne les cellules
+    Range("K2:M2").MergeCells = True
+    'Bouton Restart
+    With Range("K2:M2")
+        'écris la valeur de la cellule
+        .Value = "Restart"
+        'Définit les contours par un trait continue
+        .Borders.LineStyle = xlContinuous
+        'Définit l'épaisseur du contour : gros
+        .Borders.Weight = xlThick
+        'Couleur du fond de cellule blanc
+        .Interior.ColorIndex = 2
+    End With
+    
+    'En-Tête de l'indicateur du tour en cours
+    Range("K4:M4").MergeCells = True
+    Range("K4:M4").Value = "Turn"
+    
+    'Indicateur couleur du tour en cours
+    Range("K5:M5").MergeCells = True
+    With Range("K5:M5")
+        .Value = "White"
+        .Interior.ColorIndex = 2
+        .Borders.LineStyle = xlContinuous
+        .Borders.Weight = xlThick
+    End With
+    
+    'Configuration du nombre de joueur
+    Range("K7:M7").MergeCells = True
+    With Range("K7:M7")
+        .Value = "SinglePlayer"
+        .Interior.ColorIndex = 2
+        .Borders.LineStyle = xlContinuous
+        .Borders.Weight = xlThick
+    End With
+    
+    'Pion en mémoire
+    Range("K9:M9").MergeCells = True
+    With Range("K9:M9")
+        .Value = ""
+        .Interior.ColorIndex = 2
+        .Borders.LineStyle = xlContinuous
+        .Borders.Weight = xlThick
+    End With
+    
+    'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
+    Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
+    Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
+
+    Call SetNameRanged
+    
+End Sub
+
+
+
 '/// PROPRIÉTÉ  : Retourne le nom de la section dans laquelle se trouve la Range passée en paramètre
 '/// PARAMÈTRE  : Range
 '/// RETOUR     : ESection
@@ -71,7 +209,7 @@ End Property
 '/// RETOUR     : Aucun
 Public Sub SwitchTurn()
 
-    If Range("TurnValue") <> "You Win" Then
+    If Range("TurnValue") = EnumString(EColor.Black) Or Range("TurnValue") = EnumString(EColor.White) Then
         If Me.CurrentTurn = EColor.Black Then
             Me.CurrentTurn = EColor.White
         ElseIf Me.CurrentTurn = EColor.White Then
@@ -117,7 +255,7 @@ End Property
 '/// PARAMÈTRE  : EConfig
 '/// RETOUR     : Aucun
 Public Property Let ConfigPlayer(ByVal pConfig As EConfig)
-        Range("ConfigPlayer") =  EnumString(pConfig)
+        Range("ConfigPlayer") = EnumString(pConfig)
 End Property
 
 
@@ -179,50 +317,100 @@ End Property
 
 
 
-'/// PROCÉDURE  : Ecris sur le plateau de jeu "You Win" s’il ne reste qu'un seul joueur
+'/// PROCÉDURE  : Ecris sur le plateau de jeu "You Win" s’il ne reste qu'un seul joueur ou "Draw" en cas d'égalité
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SearchWinner()
-Dim whiteFound As Boolean
-Dim blackFound As Boolean
-Dim pawn As PawnModel
-Dim cell As Range
+Dim blackPawns As Variant
+Dim whitePawns As Variant
+Dim enemyPawns As Variant
+Dim pawn As Variant
+Dim canEnemyAttack As Boolean
     
-    whiteFound = False
-    blackFound = False
-    
-    'pour chaque cellule du damier
-    For Each cell In Range("Game")
+    If Range("TurnValue") = "White" Or Range("TurnValue") = "Black" Then
+        blackPawns = Tools.GetPawns(EColor.Black)
+        whitePawns = Tools.GetPawns(EColor.White)
         
-        'on instancie et construit un pion avec la cellule actuelle
-        Set pawn = New PawnModel
-        Call pawn.Build(cell)
+        If Tools.IsArrayNullOrEmpty(blackPawns) Or _
+           Tools.IsArrayNullOrEmpty(whitePawns) Then
         
-        'si le pion est véritablement un pion
-        If pawn.IsPawn Then
+            'si une couleur n'a plus de pion
+            Range("TurnValue") = "You Win"
+            
+        Else
         
-            'si le pion est noir
-            If pawn.Color = EColor.Black Then
-                blackFound = True
-                
-            'si le pion est blanc
-            Else
-                whiteFound = True
+            If Me.CurrentTurn = EColor.White Then
+                enemyPawns = blackPawns
+            ElseIf Me.CurrentTurn = EColor.Black Then
+                enemyPawns = whitePawns
             End If
             
-            'si on a trouvé un pion blanc et un pion noir
-            If whiteFound And blackFound Then
-                Exit For
-            End If
+            For Each pawn In enemyPawns
+                If pawn.CanMove Or pawn.CanAttack Then
+                    canEnemyAttack = True
+                End If
+            Next pawn
             
+            If Not canEnemyAttack Then
+                Range("TurnValue") = "Draw"
+            End If
         End If
-    Next cell
+    End If
+
+End Sub
+
+
+'/// PROCÉDURE  : Vérifie la présence des plages nommées, utilisés par le damier, dans le classeur excel
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : Aucun
+Public Sub SetNameRanged()
+
+    'Accès par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
+
+    'On instancie l'objet Plateau en paramétrant plusieurs emplacements par défaut
     
-    'si une des couleurs n'est pas trouvé
-    If Not whiteFound Or Not blackFound Then
-        Range("TurnValue") = "You Win"
+    On Error Resume Next
+    
+    'Correspond à l'air de jeu du damier
+    If IsError(Range("Game").Select) Then
+        ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
     End If
     
+    'Correspond au bouton "Restart" à côté du damier
+    If IsError(Range("Restart").Select) Then
+        ActiveWorkbook.Names.Add Name:="Restart", RefersToR1C1:="=Feuil1!R2C11:R2C13"
+    End If
+    
+
+    'Correspond à la zone indiquant la couleur du joueur du tour en cours
+    If IsError(Range("Turn").Select) Then
+        ActiveWorkbook.Names.Add Name:="Turn", RefersToR1C1:="=Feuil1!R5C11:R5C13"
+    End If
+
+    'afin de vérifier des égalités de valeur, il est nécessaire d'avoir une range contenant uniquement une seule cellule
+    If IsError(Range("TurnValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="TurnValue", RefersToR1C1:="=Feuil1!R5C11"
+    End If
+
+    'Correspond au bouton de configuration du nombre de joueur
+    If IsError(Range("ConfigPlayer").Select) Then
+        ActiveWorkbook.Names.Add Name:="ConfigPlayer", RefersToR1C1:="=Feuil1!R7C11:R7C13"
+    End If
+
+    If IsError(Range("ConfigPlayerValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="ConfigPlayerValue", RefersToR1C1:="=Feuil1!R7C11"
+    End If
+    
+
+    'Correspond à la zone tampon permettant de savoir si un pion est en mémoire
+    If IsError(Range("Memory").Select) Then
+        ActiveWorkbook.Names.Add Name:="Memory", RefersToR1C1:="=Feuil1!R9C11:R9C13"
+    End If
+
+    If IsError(Range("MemoryValue").Select) Then
+        ActiveWorkbook.Names.Add Name:="MemoryValue", RefersToR1C1:="=Feuil1!R9C11"
+    End If
+
 End Sub
 
 
@@ -234,7 +422,8 @@ Property Get IsWinner() As Boolean
 
     IsWinner = False
     
-    If Range("TurnValue") = "You Win" Then
+    If Range("TurnValue") <> EnumString(EColor.White) And _
+       Range("TurnValue") <> EnumString(EColor.Black) Then
         IsWinner = True
     End If
     

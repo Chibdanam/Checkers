@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/fr/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.1.0] - 2018-12-04
+## Feuille1
+- update utilisation du BotManager
+- ajout vérification de bot (YouShallNotPass)
+- ajout vérification d'égalité 
+
+### BoardConstructeur
+- suppression module BoardConstructeur 
+
+### BotManager
+- ajout module BotManager
+- ajout procédure Run()
+- ajout procédure RunBot()
+
+### BoardModel
+- procédure FormatBoard() a été déplacé du module BoardConstructeur vers le module BoardModel
+- procédure Initialisation() a été déplacé du module BoardConstructeur vers le module BoardModel
+- procédure SetNameRanged() a été déplacé du module BoardConstructeur vers le module BoardModel
+- update procédure SearchWinner (detecte maintenant les égalité)
+
+
 ## [1.0.0] - 2018-12-02
 
 ## Général
@@ -15,8 +36,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - update générale => Option Explicit, toutes les variables doivent être déclarées             
 - update générale => Option Base 0, les Arrays comment à "0" (Option Base 1 => les Arrays coment à 1)
                                
-## Feuille
-- ajout Cancel = true sur l'evenement BeforeDoubleClic 
+## Feuille1
+- ajout Cancel = true sur l'evenement BeforeDoubleClic
 
 ## Module
 

@@ -222,10 +222,11 @@ TrimString = Trim("  <-Trim->  ")     ' TrimString = "<-Trim->"
 ## Methodes
 
 ### Public
-Public - Indique que la procédure est accessible à toutes les autres procédures dans tous les modules. Si elles ne sont pas explicitement spécifiées avec Public ou Private les procédures sont publiques par défaut
+Public - Indique que la procédure est accessible à toutes les autres procédures dans tous les modules. Si elles ne sont pas explicitement spécifiées avec Public ou Private **les procédures sont publiques par défaut**
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/public-statement)
 ``` 
 Public Number As Integer    ' Public Integer variable.
+Public Property Get GetN() As Integer    ' Public Integer variable.
 ```
 
 ### Private
@@ -260,7 +261,7 @@ End Function
 ```
 
 ### ByRef
-ByRef Indique qu'un argument est transmis par référence. L'élément ByRef est la valeur par défaut dans Visual Basic.
+ByRef Indique qu'un argument est transmis par référence. **L'élément ByRef est la valeur par défaut dans Visual Basic**.
 [doc](https://docs.microsoft.com/en-gb/dotnet/visual-basic/programming-guide/language-features/procedures/passing-arguments-by-value-and-by-reference)  
 ``` 
 Sub TestByRef()

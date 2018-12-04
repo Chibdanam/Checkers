@@ -28,17 +28,17 @@ End Enum
 '/// ÉNUMÉRATION : Représente les 4 diagonales possible pour un déplacer
 '/// VALEURS     : Nord Est, Nord Ouest, Sud Est, Sud Ouest
 Public Enum EWindRose
-    NorthEast
-    NorthWest
-    SouthEast
-    SouthWest
+    NorthEast = 30
+    NorthWest = 31
+    SouthEast = 32
+    SouthWest = 33
 End Enum
 
 
 
 '/// FONCTION   : Retourne la valeur de l'énum sous la forme de string
 '/// PARAMÈTRE  : Enum
-'/// RETOUR     : String 
+'/// RETOUR     : String
 Public Function EnumString(pEnum As Variant) As String
     Select Case pEnum
 
@@ -65,6 +65,17 @@ Public Function EnumString(pEnum As Variant) As String
             EnumString = "ConfigPlayer"
         Case ESection.OutOfLimit
             EnumString = "OutOfLimit"
+            
+            
+        'EWindRose
+        Case EWindRose.NorthEast
+            EnumString = "NorthEast"
+        Case EWindRose.NorthWest
+            EnumString = "NorthWest"
+        Case EWindRose.SouthEast
+            EnumString = "SouthEast"
+        Case EWindRose.SouthWest
+            EnumString = "SouthWest"
 
     End Select
 End Function

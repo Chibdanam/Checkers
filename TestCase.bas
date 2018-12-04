@@ -71,13 +71,13 @@ Dim blueprint As String
     
     '             a b c d e f g h
     blueprint = "|-| |-| |-| |-| |" + vbNewLine + _
-                "| |-| |-|B|-| |-|" + vbNewLine + _
-                "|-| |-|B|-| |-| |" + vbNewLine + _
-                "| |-|B|-| |-|b|-|" + vbNewLine + _
+                "| |-| B|-|B|-| |-|" + vbNewLine + _
+                "|-| |-| |-| |-| |" + vbNewLine + _
+                "| |-|B|-|b|-|b|-|" + vbNewLine + _
                 "|-|B|-| |-| |-| |" + vbNewLine + _
                 "| |-| |-| |-|b|-|" + vbNewLine + _
-                "|-| |-| |-|w|-|b|" + vbNewLine + _
-                "| |-| |-| |-| |-|"
+                "|-| |-| |-|w|-| |" + vbNewLine + _
+                "| |-| |-|b|-| |-|"
                 
     Call Tools.Compute(blueprint)
 End Sub
@@ -164,10 +164,11 @@ End Sub
 
 Public Sub TestSituationBlocked()
 Dim blueprint As String
-
+    Range("TurnValue") = "Black"
+    
     '             a b c d e f g h
-    blueprint = "|-| |-| |-|b|-| |" + vbNewLine + _
-                "| |-| |-| |-|b|-|" + vbNewLine + _
+    blueprint = "|-| |-| |-|b|-|b|" + vbNewLine + _
+                "| |-| |-| |-| |-|" + vbNewLine + _
                 "|-| |-| |-| |-|w|" + vbNewLine + _
                 "| |-| |-| |-| |-|" + vbNewLine + _
                 "|-| |-| |-| |-| |" + vbNewLine + _

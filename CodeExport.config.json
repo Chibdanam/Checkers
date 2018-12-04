@@ -1,7 +1,6 @@
 {
 	"Module Paths": {
 		"Feuil1": "Feuil1.cls",
-		"BoardConstructeur": "BoardConstructeur.bas",
 		"BoardModel": "BoardModel.cls",
 		"Bot": "Bot.bas",
 		"Enums": "Enums.bas",
@@ -10,6 +9,7 @@
 		"Player": "Player.bas",
 		"TestCase": "TestCase.bas",
 		"Tools": "Tools.bas",
-		"YouShallNotPassModel": "YouShallNotPassModel.cls"
+		"YouShallNotPassModel": "YouShallNotPassModel.cls",
+		"BotManager": "BotManager.bas"
 	}
 }

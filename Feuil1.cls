@@ -22,6 +22,7 @@ Dim enemyPawn As PawnModel
 Dim ysnp As YouShallNotPassModel
 Dim deamonReapled As Integer
 Dim turnCount As Integer
+Dim validLap As Boolean
 
     'Si Cancel a sa valeur par défaut ou Égal à False, alors après la fin de cette procédure,
     'Excel va continuer en traitant le clic droit comme il le fait par défaut.
@@ -50,12 +51,12 @@ Dim turnCount As Integer
                     
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
-
-                        'change la couleur afficher sur le plateau
-                        Call board.SwitchTurn
                     
                         'vérifie s'il y a un vainqueur
                         Call board.SearchWinner
+
+                        'change la couleur afficher sur le plateau
+                        Call board.SwitchTurn
                     
                     End If
                     
@@ -64,67 +65,44 @@ Dim turnCount As Integer
                 
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
-                        Call board.SwitchTurn
                         Call board.SearchWinner
+                        Call board.SwitchTurn
                         
                         's'il n'y a pas de vainqueur
                         If Not board.IsWinner Then
+                            
+                            'on appel le bot
+                            Call BotManager.Run(board.CurrentTurn)
 
-                            'instancie le vérificateur
-                            Set ysnp = New YouShallNotPassModel
-
-                            'sauvegarde la configuration du plateau avant le tour du bot
-                            Call ysnp.Snapshot
-
-                            Call Bot.Run
-
-                        'si les actions du bot correspondent a un mouvement accépté
-                        If ysnp.IsSuccess Then
-                            deamonReapled = 0
-                            Call board.SwitchTurn
+                            'vérifie s'il y a un vainqueur
                             Call board.SearchWinner
-                        Else
-                            deamonReapled = deamonReapled + 1
-                            Call ysnp.RollBack()
-                        End If
+                            
+                            'change la couleur afficher sur le plateau
+                            Call board.SwitchTurn
+                                    
                         End If
                     End If
                 
                 'si en mode IA vs IA
                 Case EConfig.Automate
                     
-                    Set ysnp = New YouShallNotPassModel
                     turnCount = 0
                     
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
                     While Not board.IsWinner And turnCount < 300 And deamonReapled < 3
                     
-                        Call ysnp.Snapshot
-                        
-                        If board.CurrentTurn = EColor.White Then
-                            Call Bot.Run
-                        ElseIf board.CurrentTurn = EColor.Black Then
-                            Call Bot.Run
-                        End If
-                        
-                        If ysnp.IsSuccess Then
-                            deamonReapled = 0
-                            turnCount = turnCount + 1
-                            Call board.SwitchTurn
-                            Call board.SearchWinner
-                        Else
-                            deamonReapled = deamonReapled + 1
-                            Call ysnp.RollBack()
-                        End If
+                        Call BotManager.Run(board.CurrentTurn)
+                        Call board.SearchWinner
+                        Call board.SwitchTurn
                         
                     Wend
                     
-                    If deamonReapled = 3 Then
-                        MsgBox "You Failed"
-                    End If
                     
             End Select
             
+            If deamonReapled = 3 Then
+                MsgBox "Bot Failed"
+            End If
                 
         'cas de clic sur la configuration des joueurs, on incrémente la configuration
         Case ESection.ConfigPlayer
@@ -141,9 +119,9 @@ Dim turnCount As Integer
         'cas de clic sur le bouton restart
         Case ESection.Restart
             'formate le plateau de jeux sur la feuille Excel
-            Call BoardConstructeur.FormatBoard
+            Call board.FormatBoard
             'initialise les pions à leur position de départ
-            Call BoardConstructeur.Initialisation
+            Call board.Initialisation
             
     End Select
 End Sub
