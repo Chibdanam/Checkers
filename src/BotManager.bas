@@ -28,7 +28,8 @@ End Sub
 Private Sub RunBot(pBotName As String)
 Dim ysnp As YouShallNotPassModel
 Dim deamonReapled As Integer
-Dim validLap As Boolean
+Dim confirmLap As Boolean
+Dim lapTimer As Single
 
     'instancie le vérificateur
     Set ysnp = New YouShallNotPassModel
@@ -36,25 +37,40 @@ Dim validLap As Boolean
     'sauvegarde la configuration du plateau avant le tour du bot
     Call ysnp.Snapshot
 
-    'tant que le bot n'a pas effectué un tour correct, et tant qu'il n'a pas effectuer 3 echec
-    While Not validLap And deamonReapled < 3
+    lapTimer = 0
+
+    'tant que le bot n'a pas effectué un tour correct
+    While Not confirmLap
         
+        lapTimer = Timer
+
         Application.Run pBotName
+        
+        'on calcul le temps d'execution du bot
+        lapTimer = (Timer - lapTimer) * 1000
+
+        Debug.Print (pBotName + ": " + CStr(lapTimer) + "ms")
 
         If ysnp.IsSuccess Then
             'on valide le tour
-            validLap = True
+            confirmLap = True
         Else
             'on incrémente le compteur d'erreur
             deamonReapled = deamonReapled + 1
+            
             'on restaure le plateau avant l'action du bot
             Call ysnp.Rollback
         End If
+        
+        If deamonReapled = 3 Or lapTimer > 5000 Then
+            confirmLap = True
+            Range("TurnValue") = pBotName + " failed"
+            MsgBox "Bot Failed" + vbNewLine + _
+                   "Name       : " + pBotName + vbNewLine + _
+                   "Wrong move : " + CStr(deamonReapled) + vbNewLine + _
+                   "Time lap   : " + CStr(lapTimer)
+
+        End If
     Wend
-    
-    If deamonReapled = 3 Then
-        Range("TurnValue") = pBotName + " failed"
-        MsgBox pBotName + " failed"
-    End If
     
 End Sub
