@@ -1,2 +1,6 @@
 .vscode/*
-~$Checkers_student.xlsm
+
+~$*
+
+src/Checkers.xlsm
+src/CodeExport*

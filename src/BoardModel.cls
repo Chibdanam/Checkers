@@ -14,6 +14,7 @@ Option Base 0
 '/// PARAMÈTRE   : Aucun
 '/// RETOUR      : Aucun
 Private Sub class_Initialize()
+    If Not Range("K2").Value = "Restart" Then Call SetNamedRange
 End Sub
 
 
@@ -158,7 +159,7 @@ Dim cell As Range
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
-    Call SetNameRanged
+    Call SetNamedRange
     
 End Sub
 
@@ -363,7 +364,7 @@ End Sub
 '/// PROCÉDURE  : Vérifie la présence des plages nommées, utilisés par le damier, dans le classeur excel
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
-Public Sub SetNameRanged()
+Public Sub SetNamedRange()
 
     'Accès par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
 

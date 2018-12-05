@@ -2,6 +2,13 @@ Attribute VB_Name = "TestCase"
 Option Explicit
 Option Base 0
 
+Public Sub TestFormatBoard()
+Dim board As BoardModel
+    Set board = New BoardModel
+    Call board.FormatBoard
+    Call board.Initialisation
+End Sub
+
 Public Sub TestVoid()
 Dim blueprint As String
 
