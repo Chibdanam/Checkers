@@ -100,10 +100,10 @@ exemple : ```board.TurnColor``` récupère la couleur du tour
 ## Module : Tools
 
 ### MakeBlueprintFromBoard
-This procedure saves the board as a string
-w = white pawn
-W = white queen
-b = black pawn
+This procedure saves the board as a string  
+w = white pawn  
+W = white queen  
+b = black pawn  
 B = black queen
 ``` 
 Dim snapshot As String
@@ -145,8 +145,13 @@ Call Tools.Compute(blueprint)
 GetPawns allows to recover all the pieces of a color on the board
 ``` 
 Dim pawnList As Variant
+Dim pawn As PawnModel
 Dim pawnListCount As Integer
+Dim rangeOfSelectedPawn As Range
 
 pawnList = Tools.GetPawns(EColor.White)
-pawnListCount = Ubound(pawnList) 
+pawnListCount = UBound(pawnList) 'return the number of pawn in the list
+
+Set pawn = pawnList(2) 'associate the second pawn in the list with the pawn variable
+Set rangeOfSelectedPawn = pawn.CurrentRange 'return the range of the selected pawn
 ```
