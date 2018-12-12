@@ -72,7 +72,7 @@ Dim validLap As Boolean
                         If Not board.IsWinner Then
                             
                             'on appel le bot
-                            Call BotManager.Run(board.CurrentTurn)
+                            Call BotManager.Run(board.TurnColor)
 
                             'vérifie s'il y a un vainqueur
                             Call board.SearchWinner
@@ -91,7 +91,7 @@ Dim validLap As Boolean
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
                     While Not board.IsWinner And turnCount < 300 And deamonReapled < 3
                     
-                        Call BotManager.Run(board.CurrentTurn)
+                        Call BotManager.Run(board.TurnColor)
                         Call board.SearchWinner
                         Call board.SwitchTurn
                         

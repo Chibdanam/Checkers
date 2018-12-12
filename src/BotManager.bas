@@ -3,8 +3,7 @@ Option Explicit
 Option Base 0
 
 
-
-'/// PROCÉDURE  : Récupère le bot en fonction de la couleur du tour puis l'exectue
+'/// PROCÉDURE  : Récupère le bot en fonction de la couleur du tour puis l'exécute
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Aucun
 Public Sub Run(pColor As EColor)
@@ -13,7 +12,7 @@ Dim bot As String
     If EnumString(pColor) = "White" Then
         bot = "Bot.Run"
     ElseIf EnumString(pColor) = "Black" Then
-        bot = "Bot.Run2"
+        bot = "Bot.Run"
     End If
 
     Call RunBot(bot)
@@ -21,8 +20,7 @@ Dim bot As String
 End Sub
 
 
-
-'/// PROCÉDURE  : Execute le bot et vérifie qu'il n'a enfreint aucunes règles
+'/// PROCÉDURE  : Exécute le bot et vérifie qu'il n'a enfreint aucunes règles
 '/// PARAMÈTRE  : String
 '/// RETOUR     : Aucun
 Private Sub RunBot(pBotName As String)
@@ -46,7 +44,7 @@ Dim lapTimer As Single
 
         Application.Run pBotName
         
-        'on calcul le temps d'execution du bot
+        'on calcule le temps d'exécution du bot
         lapTimer = (Timer - lapTimer) * 1000
 
         Debug.Print (pBotName + ": " + CStr(lapTimer) + "ms")

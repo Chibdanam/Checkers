@@ -72,7 +72,7 @@ Dim originalTarget As PawnModel
 
     Set board = New BoardModel
     
-    If board.CurrentTurn = EColor.White Then
+    If board.TurnColor = EColor.White Then
         alliesInitial = prvInitialWhitePawns
         alliesFinal = Tools.GetPawns(EColor.White)
     Else

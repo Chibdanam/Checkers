@@ -189,15 +189,15 @@ End Property
 '/// PROPRIÉTÉ  : Retourne la valeur de l'énumération EColor associée de la valeur écrite sur le damier
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : EColor
-Public Property Get CurrentTurn() As EColor
+Public Property Get TurnColor() As EColor
 
     If Range("TurnValue") = EnumString(EColor.White) Then
-        CurrentTurn = EColor.White
+        TurnColor = EColor.White
     ElseIf Range("TurnValue") = EnumString(EColor.Black) Then
-        CurrentTurn = EColor.Black
+        TurnColor = EColor.Black
     Else
         'Si aucune valeur attendue n'est trouvée, on la paramètre à "White" par défaut
-        CurrentTurn = EColor.White
+        TurnColor = EColor.White
         Range("TurnValue") = EnumString(EColor.White)
     End If
     
@@ -211,10 +211,10 @@ End Property
 Public Sub SwitchTurn()
 
     If Range("TurnValue") = EnumString(EColor.Black) Or Range("TurnValue") = EnumString(EColor.White) Then
-        If Me.CurrentTurn = EColor.Black Then
-            Me.CurrentTurn = EColor.White
-        ElseIf Me.CurrentTurn = EColor.White Then
-            Me.CurrentTurn = EColor.Black
+        If Me.TurnColor = EColor.Black Then
+            Me.TurnColor = EColor.White
+        ElseIf Me.TurnColor = EColor.White Then
+            Me.TurnColor = EColor.Black
         End If
     End If
     
@@ -225,7 +225,7 @@ End Sub
 '/// PROPRIÉTÉ  : Retourne la couleur du joueur du tour en cours
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
-Property Let CurrentTurn(ByVal pColor As EColor)
+Property Let TurnColor(ByVal pColor As EColor)
     Range("TurnValue") = EnumString(pColor)
 End Property
 
@@ -340,9 +340,9 @@ Dim canEnemyAttack As Boolean
             
         Else
         
-            If Me.CurrentTurn = EColor.White Then
+            If Me.TurnColor = EColor.White Then
                 enemyPawns = blackPawns
-            ElseIf Me.CurrentTurn = EColor.Black Then
+            ElseIf Me.TurnColor = EColor.Black Then
                 enemyPawns = whitePawns
             End If
             

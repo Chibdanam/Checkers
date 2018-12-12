@@ -19,7 +19,7 @@ Dim pawnInitalState As PawnModel
     Run = False
     
     'si la cellule ciblée est un pion de notre couleur
-    If pawn.IsPawn() And pawn.Color = board.CurrentTurn Then
+    If pawn.IsPawn() And pawn.Color = board.TurnColor Then
         
         'on mémorise le pion sur le plateau
         board.Memory = pawn
