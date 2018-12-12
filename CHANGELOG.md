@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - procédure Initialisation() a été déplacée du module BoardConstructeur vers le module BoardModel
 - procédure SetNamedRange() a été déplacée du module BoardConstructeur vers le module BoardModel
 - update procédure SearchWinner (détecte maintenant les égalité)
+- rename propriété CurrentTurn() en TurnColor()
 
 ## [1.0.0] - 2018-12-02
 

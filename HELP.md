@@ -1,26 +1,26 @@
-# Aide
+# Summary
 
 <!-- TOC -->
 
-- [Instructions de module](#instructions-de-module)
+- [Statements](#Statements)
   - [Option Base](#Option-Base)
   - [Option Explicit](#Option-Explicit)
-- [Gestion des Arrays](#Gestion-des-Arrays)
+- [Arrays Management](#Arrays-Management)
   - [UBound](#UBound)
   - [LBound](#LBound)
   - [Redim](#Redim)
-- [Gestion d'erreurs](#Gestion-d'erreurs)
+- [Error management](#Error-management)
   - [IsError](#IsError)
-- [Enumération](#Enumération)
+- [Enumeration](#Enumeration)
     - [Enum](#Enum)
-- [Manipulation de chaines de caractères](#Manipulation-de-chaines-de-caractères)
+- [Manipulation of strings](#Manipulation-of-strings)
   - [Left](#Left)
   - [Right](#Right)
   - [Mid](#Mid)
   - [Split](#Split)
   - [Trim](#Trim)
-- [Module de Classe](#Module-de-Classe)
-  - [class_Initialize et class_Terminate](#class_Initialize-et-class_Terminate)
+- [Class Module](#Class-Module)
+  - [class_Initialize and class_Terminate](#class_Initialize-and-class_Terminate)
 - [Methodes](#Methodes)
   - [Public](#Public)
   - [Private](#Private)
@@ -40,10 +40,10 @@
 
 <!-- /TOC -->
 
-## Instructions de module
+## Statements
 
 ### Option Base
-Déclare la limite inférieure par défaut des indices de tableau
+Declares the default lower limit for array indices
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/option-base-statement)  
 ``` 
 Option Base 1 ' Set default array subscripts to 1                    
@@ -58,7 +58,7 @@ Lower = LBound(ZeroArray)   ' Returns 0
 ```
 
 ### Option Explicit
-Impose la déclaration explicite de toutes les variables du module
+Impose the explicit declaration of all the variables of the module
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/option-explicit-statement)
 ``` 
 Option Explicit ' Force explicit variable declaration
@@ -68,10 +68,10 @@ Dim counter
 For i = 1 to 10 ' Undeclared variable i generate error
 For counter = 1 to 10  ' Declared variable does not generate error
 ```
-## Gestion des Arrays
+## Arrays Management
 
 ### UBound
-Renvoie le plus grand indice disponible pour une dimension d'un tableau.
+Returns the largest index available for a dimension of a table.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/ubound-function)
 ``` 
 Dim Upper As Integer
@@ -81,7 +81,7 @@ Upper = UBound(MyArray)    ' Returns 10
 ```
 
 ### LBound
-Renvoie le plus petit indice disponible pour une dimension d'un tableau.
+Returns the smallest index available for a dimension of a table.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/lbound-function)
 ``` 
 Dim Lower
@@ -91,7 +91,7 @@ Lower = Lbound(MyArray)     ' Returns 0 or 1, depending on setting of Option Bas
 ```
 
 ### Redim 
-Redimensionne les variables de [tableau dynamique](https://silkyroad.developpez.com/vba/tableaux/#LII-B). Afin de conserver les variables déjà présentes dans le tableau, utiliser le mot clef *Preserve*.
+Resize variables in [dynamic table](https://silkyroad.developpez.com/vba/tableaux/#LII-B). In order to keep the variables already present in the table, use the keyword *Preserve*.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/redim-statement)
 ``` 
 Option Base 1
@@ -113,19 +113,19 @@ Next i
 Redim Preserve MyArray(15) ' Resize to 15 elements keeping last 10 values
 ```
 
-## Gestion d'erreurs
+## Error management
 
 ### IsError
-Renvoie un booléen indiquant si une expression retourne une erreur.
+Returns a boolean indicating whether an expression returns an error.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/iserror-function)
 ``` 
 IsError(2/0) 'Return true
 ```
 
-## Enumération
+## Enumeration
 
 ### Enum
-Les variables d’énumération sont des variables déclarées avec un type Enum. Les éléments du type Enum sont initialisés avec des valeurs constantes
+Enumeration variables are variables declared with an Enum type. Enum elements are initialized with constant values
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/enum-statement)
 ``` 
 Enum EWindRose
@@ -140,10 +140,10 @@ Dim myDirection As EWindRose
 myDirection = NorthEast
 ```
 
-## Manipulation de chaines de caractères
+## Manipulation of strings 
 
 ### Left
-Renvoie un Variant (String) contenant un nombre spécifique de caractères dans la partie gauche d'une chaîne.
+Returns a Variant (String) containing a specific number of characters on the left side of a string.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/left-function)
 ``` 
 Dim myStr
@@ -154,7 +154,7 @@ myStr = Left("Hello World", 20)  ' Returns "Hello World"
 ```
 
 ### Right
-Renvoie une valeur de type Variant (String) contenant un nombre spécifié de caractères à partir de l’extrémité droite d’une chaîne.
+Returns a Variant value (String) containing a specified number of characters from the right end of a string.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/right-function)
 ``` 
 Dim myStr
@@ -165,7 +165,7 @@ myStr = Right("Hello World", 20)   ' Returns "Hello World"
 ```
 
 ### Mid
-Retourne une valeur de type Variant ( String ) contenant un nombre indiqué de caractères extraits d'une chaîne de caractères.
+Returns a Variant value (String) containing a specified number of characters extracted from a string.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/mid-function)
 ``` 
 Dim myStr
@@ -177,7 +177,7 @@ myStr = Mid("Hello World", 5, 3)   ' Returns "o W".
 
 
 ### Split
-Renvoie un tableau unidimensionnel de base zéro contenant un nombre spécifié de sous-chaînes.
+Returns a one-dimensional zero-base array containing a specified number of substrings.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/split-function)
 ``` 
 Split("Ecam Strasbourg - Europe")
@@ -202,7 +202,7 @@ Debug.Print myStrs(1) 'return " Europe"
 
 
 ### Trim
-Renvoie une valeur de type Variant (String) contenant une copie d’une chaîne en supprimant les espaces de gauche (LTrim), les espaces de droite (RTrim) ou les deux (Trim).
+Returns a Variant (String) containing a copy of a specified string without leading spaces (LTrim), trailing spaces (RTrim), or both (Trim).
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/ltrim-rtrim-and-trim-functions)
 ``` 
 Dim TrimString
@@ -212,9 +212,9 @@ TrimString = RTrim("  <-Trim->  ")    ' TrimString = "  <-Trim->"
 TrimString = Trim("  <-Trim->  ")     ' TrimString = "<-Trim->"
 ```
 
-## Module de Classe 
+## Class Module 
 
-### class_Initialize et class_Terminate
+### class_Initialize and class_Terminate
 
 [documentation sur les modules de classe](https://sinarf.developpez.com/access/vbaclass/#L2.4)
 
@@ -222,7 +222,7 @@ TrimString = Trim("  <-Trim->  ")     ' TrimString = "<-Trim->"
 ## Methodes
 
 ### Public
-Public - Indique que la procédure est accessible à toutes les autres procédures dans tous les modules. Si elles ne sont pas explicitement spécifiées avec Public ou Private **les procédures sont publiques par défaut**
+Public - Indicates that the procedure is accessible to all other procedures in all modules. If they are not explicitly specified with Public or Private **the procedures are public by default**
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/public-statement)
 ``` 
 Public Number As Integer    ' Public Integer variable.
@@ -230,14 +230,14 @@ Public Property Get GetN() As Integer    ' Public Integer variable.
 ```
 
 ### Private
-Private - Indique que la procédure est uniquement accessible aux autres procédures du module dans lequel elle est déclarée
+Private - Indicates that the procedure is only accessible to other procedures of the module in which it is declared
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/private-statement)
 ``` 
 Private Number As Integer    ' Private Integer variable.
 ```
 
 ### ByVal
-ByVal Indique que l'argument est transmis par valeur.
+ByVal Indicates that the argument is passed by value.
 [doc](https://docs.microsoft.com/en-gb/dotnet/visual-basic/programming-guide/language-features/procedures/passing-arguments-by-value-and-by-reference)  
 ``` 
 Sub TestByVal()
@@ -261,7 +261,7 @@ End Function
 ```
 
 ### ByRef
-ByRef Indique qu'un argument est transmis par référence. **L'élément ByRef est la valeur par défaut dans Visual Basic**.
+ByRef Indicates that an argument is passed by reference. **The ByRef element is the default value in Visual Basic**.
 [doc](https://docs.microsoft.com/en-gb/dotnet/visual-basic/programming-guide/language-features/procedures/passing-arguments-by-value-and-by-reference)  
 ``` 
 Sub TestByRef()
@@ -285,25 +285,25 @@ End Function
 
 ### Property Get / Let
 
-Property **Get** permet la lecture d'une propriété d'un module de classe
+Property **Get** allows reading a property of a class module
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/property-get-statement)
 ``` 
 Private prvNom As String
 
 Property Get Nom() As String
-    ' Propriété en lecture
+    ' Propri�t� en lecture
     Nom = prvNom
 End Property
 ```
 
 
-Property **Let** permet l'écriture d'une propriété d'un module de classe
+Property **Let** allows writing a property of a class module
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/property-let-statement)
 ``` 
 Private prvNom As String
 
 Property Let Nom(pNom As String)
-    ' Propriété en écriture
+    ' Propri�t� en �criture
     prvNom = pNom
 End Property
 ```
@@ -311,21 +311,21 @@ End Property
 ## Instructions
 
 ### Call
-Transfère le contrôle à une procédure Sub , une procédure Function
+Transfers control to a Sub procedure, a Function procedure
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/call-statement)
 ``` 
 Call MySub
 ```
 
 ### Set 
-Attribue une référence d’objet à une variable ou à une propriété
+Assign an object reference to a variable or property
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/set-statement)
 ``` 
 Dim myRange As Range
 Set myRange = Range("A1")
 ```
 ### New 
-Permet de créer une nouvelle instance d'un objet.
+Create a new instance of an object.
 [doc](https://stackoverflow.com/questions/21652671/what-does-the-keyword-new-do-in-vba)
 ``` 
 Dim myObj As Object
@@ -333,7 +333,7 @@ Set myObj = New Object
 ```
 
 ### With
-L’instruction With vous permet d’effectuer une série d’instructions sur un objet spécifié sans qualifier le nom de l’objet à chaque fois.
+The With statement allows you to perform a series of instructions on a specified object without qualifying the object name each time.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/with-statement)
 ``` 
 With Range("A1")
@@ -345,7 +345,7 @@ End With
 ```
 
 ### Select Case
-Exécute un ou plusieurs groupes d' instructions, selon la valeur d'une expression.
+Execute one or more groups of statements, depending on the value of an expression.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/select-case-statement)
 ``` 
 Dim Number 
@@ -364,7 +364,7 @@ End Select
 ```
 
 ### For Each
-Répète un groupe d'instructions pour chaque élément dans un Variant ou une Collection
+Repeats a group of instructions for each element in a Variant or Collection
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/for-eachnext-statement)
 ``` 
 Dim day as Variant
@@ -387,7 +387,7 @@ Next day
 ## Application
 
 ### ActiveWorkbook.Names.Add
-Ajoute une plage nommée au classeur
+Adds a named range to the workbook
 [doc](https://docs.microsoft.com/en-gb/office/vba/api/excel.names.add)
 ``` 
 ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
@@ -396,7 +396,7 @@ Range("Game")   'refers to Range("B2:I9")
 ```
 
 ### Debug
-L'objet Debug permet d'afficher des valeurs dans la fentre immediate lors du déboggage
+Debug object can display values in the immediate window when debugging
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/debug-object)
 ``` 
 Debug.Print "Hello Immediate window"
@@ -413,7 +413,7 @@ Debug.Print Cstr(i)
 ```
 
 ### Timer
-Renvoie le nombre de secondes écoulées depuis minuit.
+Returns the number of seconds elapsed since midnight.
 [doc](https://docs.microsoft.com/en-gb/office/vba/language/reference/user-interface-help/timer-function)
 ``` 
 Dim beginTimer
