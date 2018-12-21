@@ -17,13 +17,10 @@ Option Base 0                               '/// Les Arrays comment à "0"
 '/// RETOUR     : Aucun (évènement)
 Private Sub Worksheet_BeforeDoubleClick(ByVal pTarget As Range, pCancel As Boolean)
 Dim board As BoardModel
-Dim pawn As PawnModel
-Dim enemyPawn As PawnModel
-Dim ysnp As YouShallNotPassModel
-Dim deamonReapled As Integer
 Dim turnCount As Integer
-Dim validLap As Boolean
-
+    
+    Application.ScreenUpdating = False
+    
     'Si Cancel a sa valeur par défaut ou Égal à False, alors après la fin de cette procédure,
     'Excel va continuer en traitant le clic droit comme il le fait par défaut.
     
@@ -33,9 +30,6 @@ Dim validLap As Boolean
     
     'on instancie un objet correspondant à notre plateau de jeu
     Set board = New BoardModel
-   
-    'représente le compteur d'erreurs effectuées par le bot
-    deamonReapled = 0
 
     'selon la section dans laquelle on a cliqué
     Select Case board.GetSection(pTarget)
@@ -89,20 +83,20 @@ Dim validLap As Boolean
                     turnCount = 0
                     
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
-                    While Not board.IsWinner And turnCount < 300 And deamonReapled < 3
+                    While Not board.IsWinner And turnCount < 300
                     
                         Call BotManager.Run(board.TurnColor)
                         Call board.SearchWinner
                         Call board.SwitchTurn
                         
+                        Call Tools.RefreshScreen(200)
+                        
+                        turnCount = turnCount + 1
+                        
                     Wend
                     
                     
             End Select
-            
-            If deamonReapled = 3 Then
-                MsgBox "Bot Failed"
-            End If
                 
         'cas de clic sur la configuration des joueurs, on incrémente la configuration
         Case ESection.ConfigPlayer
@@ -122,6 +116,8 @@ Dim validLap As Boolean
             Call board.FormatBoard
             'initialise les pions à leur position de départ
             Call board.Initialisation
-            
+            '
+            Call Log.NewGame
     End Select
+    Application.ScreenUpdating = True
 End Sub

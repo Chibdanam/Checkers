@@ -2,8 +2,14 @@ Attribute VB_Name = "Tools"
 Option Explicit
 Option Base 0
 
+'Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+
 '/// https://www.exceltrick.com/formulas_macros/vba-wait-and-sleep-functions/?
-'Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#If VBA7 Then
+    Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+#Else
+    Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#End If
 
 
 
@@ -88,7 +94,7 @@ Dim mark As String
 Dim boardRow As Range
 Dim cell As Range
     
-    For Each boardRow In Range("Game").rows
+    For Each boardRow In Range("Game").Rows
         blueprint = blueprint + "|"
         For Each cell In boardRow.Cells
             With cell
@@ -128,8 +134,6 @@ Dim cellsMock As Variant
 Dim cellMock As Variant
 Dim rowCounter As Integer
 Dim columnCounter
-        
-    Application.ScreenUpdating = False
     
     rowCounter = 1
     patternRows = Split(pBoardPattern, vbNewLine)
@@ -159,5 +163,38 @@ Dim columnCounter
             End With
         Next cellMock
     Next patternRow
+End Sub
+
+Public Function SheetExists(pSheetToFind As String) As Boolean
+Dim sh As Worksheet
+    SheetExists = False
+    For Each sh In Worksheets
+        If pSheetToFind = sh.Name Then
+            SheetExists = True
+            Exit Function
+        End If
+    Next sh
+End Function
+
+Function GetRangeFromTable(pSheetName As String, pTableName As String, pColumnName As String, pID As Integer) As Range
+Dim columnRange As Range
+Dim currentRowRange As Range
+
+    Set columnRange = ThisWorkbook.Sheets(pSheetName).ListObjects(pTableName).ListColumns(pColumnName).Range
+    Set currentRowRange = ThisWorkbook.Sheets(pSheetName).ListObjects(pTableName).ListRows(pID).Range
+    
+    Set GetRangeFromTable = Application.Intersect(currentRowRange, columnRange)
+End Function
+
+Public Sub DisplayOptions()
+    Call UFOptions.Show
+End Sub
+
+Public Sub RefreshScreen(Optional ByVal milliseconds As Integer)
+
     Application.ScreenUpdating = True
+    DoEvents
+    If Not IsMissing(milliseconds) Then Sleep milliseconds
+    Application.ScreenUpdating = False
+    
 End Sub

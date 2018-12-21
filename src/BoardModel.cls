@@ -53,7 +53,12 @@ End Sub
 '/// RETOUR     : Aucun
 Public Sub FormatBoard()
 Dim cell As Range
-    
+Dim btnRange As Range
+Dim btn As Button
+
+    Worksheets(1).Name = "BOARD"
+    Worksheets("BOARD").Select
+
     'On met toutes les cases, du plateau et autour, vide et gris clair
     With Range("A1:N11")
         .ClearContents
@@ -155,12 +160,21 @@ Dim cell As Range
         .Borders.Weight = xlThick
     End With
     
+    ActiveSheet.Buttons.Delete
+    Set btnRange = Range("B11:C11")
+    Set btn = ActiveSheet.Buttons.Add(btnRange.Left, btnRange.Top - (btnRange.Height / 2), btnRange.Width, btnRange.Height)
+    With btn
+      .OnAction = "Tools.DisplayOptions"
+      .Caption = "Options"
+      .Name = "BtnDisplayOptions"
+    End With
+    
     'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
     Call SetNamedRange
-    
+    Call Log.InitDataInterface
 End Sub
 
 

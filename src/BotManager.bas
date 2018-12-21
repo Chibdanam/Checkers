@@ -52,6 +52,7 @@ Dim lapTimer As Single
         If ysnp.IsSuccess Then
             'on valide le tour
             confirmLap = True
+            Call Log.CG_UpdateTurnDuration(lapTimer)
         Else
             'on incrémente le compteur d'erreur
             deamonReapled = deamonReapled + 1
