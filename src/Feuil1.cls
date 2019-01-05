@@ -47,10 +47,7 @@ Dim turnCount As Integer
                     If Player.Run(pTarget) Then
                     
                         'vérifie s'il y a un vainqueur
-                        Call board.SearchWinner
-
-                        'change la couleur afficher sur le plateau
-                        Call board.SwitchTurn
+                        Call board.EndTurn
                     
                     End If
                     
@@ -59,20 +56,16 @@ Dim turnCount As Integer
                 
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
-                        Call board.SearchWinner
-                        Call board.SwitchTurn
+                        Call board.EndTurn
                         
                         's'il n'y a pas de vainqueur
-                        If Not board.IsWinner Then
+                        If Not board.IsGameOver Then
                             
                             'on appel le bot
                             Call BotManager.Run(board.TurnColor)
 
                             'vérifie s'il y a un vainqueur
-                            Call board.SearchWinner
-                            
-                            'change la couleur afficher sur le plateau
-                            Call board.SwitchTurn
+                            Call board.EndTurn
                                     
                         End If
                     End If
@@ -83,11 +76,10 @@ Dim turnCount As Integer
                     turnCount = 0
                     
                     'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
-                    While Not board.IsWinner And turnCount < 300
+                    While Not board.IsGameOver And turnCount < 300
                     
                         Call BotManager.Run(board.TurnColor)
-                        Call board.SearchWinner
-                        Call board.SwitchTurn
+                        Call board.EndTurn
                         
                         Call Tools.RefreshScreen(200)
                         
@@ -117,7 +109,7 @@ Dim turnCount As Integer
             'initialise les pions à leur position de départ
             Call board.Initialisation
             '
-            Call Log.NewGame
+            Call Log.CG_ClearData
     End Select
     Application.ScreenUpdating = True
 End Sub

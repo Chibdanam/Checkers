@@ -13,18 +13,42 @@ Public Sub InitDataInterface()
         Call Create_CURRENT_GAME_SHEET
     End If
     
-'    If Not SheetExists(cstTurnsSheet) Then
-'        Call Create_TURNS_TABLE_SHEET
-'    End If
-'
-'    If Not SheetExists(cstGamesSheet) Then
-'        Call Create_GAMES_TABLE_SHEET
-'    End If
+    If Not SheetExists(cstTurnsSheet) Then
+        Call Create_TURNS_TABLE_SHEET
+    End If
+
+    If Not SheetExists(cstGamesSheet) Then
+        Call Create_GAMES_TABLE_SHEET
+    End If
     
     If SheetExists("BOARD") Then
         Worksheets("BOARD").Select
     End If
     
+End Sub
+
+Public Sub Create_GAMES_TABLE_SHEET()
+Dim sh As Worksheet
+Dim table As ListObject
+
+    With ThisWorkbook
+        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = cstGamesSheet
+    End With
+
+    Set sh = Sheets(cstGamesSheet)
+    
+    sh.Cells.VerticalAlignment = xlTop
+    sh.Cells.HorizontalAlignment = xlLeft
+    
+    sh.Range("A1").Value = "ID"
+    sh.Range("B1").Value = "White player"
+    sh.Range("C1").Value = "Black player"
+    sh.Range("D1").Value = "Game date"
+    sh.Range("E1").Value = "Winner"
+    
+    Set table = Sheets(cstGamesSheet).ListObjects.Add(xlSrcRange, Range("A1:E1"), , xlYes)
+    table.Name = cstGamesTable
+
 End Sub
 
 Public Sub Create_CURRENT_GAME_SHEET()
@@ -51,6 +75,35 @@ Dim table As ListObject
     
     Set table = Sheets(cstCurrentGameSheet).ListObjects.Add(xlSrcRange, Range("A1:H1"), , xlYes)
     table.Name = cstCurrentTurnsTable
+    
+End Sub
+
+Public Sub Create_TURNS_TABLE_SHEET()
+Dim sh As Worksheet
+Dim table As ListObject
+
+    With ThisWorkbook
+        .Sheets.Add(After:=.Sheets(.Sheets.Count)).Name = cstTurnsSheet
+    End With
+    
+    Set sh = Sheets(cstTurnsSheet)
+    
+    sh.Cells.VerticalAlignment = xlTop
+    sh.Cells.HorizontalAlignment = xlLeft
+    
+    sh.Range("A1").Value = "ID"
+    sh.Range("B1").Value = "Game ID"
+    sh.Range("C1").Value = "Turn"
+    sh.Range("D1").Value = "Turn color"
+    sh.Range("E1").Value = "Queen move"
+    sh.Range("F1").Value = "Queen appears"
+    sh.Range("G1").Value = "Pawn jumped"
+    sh.Range("H1").Value = "Turn duration"
+    sh.Range("I1").Value = "Board initial state"
+    sh.Range("J1").Value = "Board final state"
+    
+    Set table = Sheets(cstTurnsSheet).ListObjects.Add(xlSrcRange, Range("A1:J1"), , xlYes)
+    table.Name = cstTurnsTable
     
 End Sub
 
@@ -151,9 +204,101 @@ Dim tblName As String
     
 End Sub
 
-Public Sub NewGame()
+
+Public Sub TT_UpdateGameID(ByVal pID As Integer, ByVal pGameId As Integer)
+Dim rangeToUpdate As Range
+
+    Set rangeToUpdate = GetRangeFromTable(cstTurnsSheet, cstTurnsTable, "Game ID", pID)
+    rangeToUpdate.Value = CStr(pGameId)
+
+End Sub
+
+Public Sub TT_InsertTurns(ByVal pGameId As Integer)
+Dim ID As Integer
+Dim turnRangeData As ListRows
+Dim turn As ListRow
+Dim turnsRangeData
+
+    Set turnRangeData = Sheets(cstCurrentGameSheet).ListObjects(cstCurrentTurnsTable).ListRows
+
+    For Each turn In turnRangeData
+        ID = Log.CreateNewEntryAndGetID(cstTurnsSheet, cstTurnsTable)
+        Call Log.TT_UpdateGameID(ID, pGameId)
+        turn.Range.Copy Destination:=ThisWorkbook.Worksheets(cstTurnsSheet).Cells(ID + 1, 3)
+        
+        ThisWorkbook.Sheets(cstTurnsSheet).Rows(ID + 1).RowHeight = 12.75
+    Next turn
+    
+End Sub
+
+Public Sub GT_UpdateWhitePlayer(pID As Integer, pBotName As String)
+Dim rangeToUpdate As Range
+
+    Set rangeToUpdate = GetRangeFromTable(cstGamesSheet, cstGamesTable, "White player", pID)
+    rangeToUpdate.Value = pBotName
+
+End Sub
+
+Public Sub GT_UpdateBlackPlayer(pID As Integer, pBotName As String)
+Dim rangeToUpdate As Range
+
+    Set rangeToUpdate = GetRangeFromTable(cstGamesSheet, cstGamesTable, "Black player", pID)
+    rangeToUpdate.Value = pBotName
+
+End Sub
+
+Public Sub GT_UpdateWinner(pID As Integer, pBotName As String)
+Dim rangeToUpdate As Range
+
+    Set rangeToUpdate = GetRangeFromTable(cstGamesSheet, cstGamesTable, "Winner", pID)
+    rangeToUpdate.Value = pBotName
+
+End Sub
+
+Public Sub GT_UpdateGameDate(pID As Integer, pDate As Date)
+Dim rangeToUpdate As Range
+
+    Set rangeToUpdate = GetRangeFromTable(cstGamesSheet, cstGamesTable, "Game date", pID)
+    rangeToUpdate.Value = CStr(pDate)
+
+End Sub
+
+Public Sub GT_InsertGame(pWhiteBotName As String, pBlackBotName As String)
+Dim ID As Integer
+
+    ID = Log.CreateNewEntryAndGetID(cstGamesSheet, cstGamesTable)
+    
+    Call Log.GT_UpdateWhitePlayer(ID, pWhiteBotName)
+    Call Log.GT_UpdateBlackPlayer(ID, pBlackBotName)
+    'Call Log.GT_UpdateWinner(ID,)
+    Call Log.GT_UpdateGameDate(ID, Now)
+    
+    Call TT_InsertTurns(ID)
+   
+End Sub
+
+Public Sub CG_ClearData()
 
     With Worksheets(cstCurrentGameSheet).ListObjects(cstCurrentTurnsTable)
+        If Not .DataBodyRange Is Nothing Then
+            .DataBodyRange.Rows.Delete
+        End If
+    End With
+    
+End Sub
+
+Public Sub TT_ClearData()
+
+    With Worksheets(cstTurnsSheet).ListObjects(cstTurnsTable)
+        If Not .DataBodyRange Is Nothing Then
+            .DataBodyRange.Rows.Delete
+        End If
+    End With
+    
+End Sub
+
+Public Sub GT_ClearData()
+    With Worksheets(cstGamesSheet).ListObjects(cstGamesTable)
         If Not .DataBodyRange Is Nothing Then
             .DataBodyRange.Rows.Delete
         End If

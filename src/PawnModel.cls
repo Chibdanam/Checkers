@@ -299,13 +299,17 @@ Dim move As MoveModel
     'on initialise le retour de la fonction a false
     CanMoveTo = False
     
-    'on instancie un nouvel objet déplacement que l'on construit avec le pion actuel et le pion à la position finale souhaité
-    Set move = New MoveModel
-    Call move.Build(Me, pTarget)
-    
-    'si c'est un déplacement et aucun pion allié ne peut attaquer ou que ce déplacement est une attaque
-    If (move.IsMove And Not Me.HasAttackingAlly) Or move.IsAttack Then
-        CanMoveTo = True
+    If Me.IsPawn And Not pTarget.IsPawn And Not (Application.Intersect(pTarget.CurrentRange, Range("Game")) Is Nothing) Then
+
+        'on instancie un nouvel objet déplacement que l'on construit avec le pion actuel et le pion à la position finale souhaité
+        Set move = New MoveModel
+        Call move.Build(Me, pTarget)
+        
+        'si c'est un déplacement et aucun pion allié ne peut attaquer ou que ce déplacement est une attaque
+        If (move.IsMove And Not Me.HasAttackingAlly) Or move.IsAttack Then
+            CanMoveTo = True
+        End If
+
     End If
     
     

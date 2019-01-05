@@ -167,12 +167,8 @@ End Sub
 
 Public Function SheetExists(pSheetToFind As String) As Boolean
 Dim sh As Worksheet
-    SheetExists = False
     For Each sh In Worksheets
-        If pSheetToFind = sh.Name Then
-            SheetExists = True
-            Exit Function
-        End If
+        If pSheetToFind = sh.Name Then SheetExists = True
     Next sh
 End Function
 
@@ -198,3 +194,42 @@ Public Sub RefreshScreen(Optional ByVal milliseconds As Integer)
     Application.ScreenUpdating = False
     
 End Sub
+
+
+Public Function GetBotList() As Variant
+Dim module As Variant
+Dim botList() As String
+Dim botName As String
+Dim botCounter As Integer
+Dim wb As Workbook
+
+Const botPrefix As String = "Bot_"
+
+    botCounter = 0
+    Set wb = ThisWorkbook
+    
+    For Each module In wb.VBProject.VBComponents
+        If Left(module.Name, Len(botPrefix)) = botPrefix Then
+            botName = Right(module.Name, Len(module.Name) - Len(botPrefix))
+            'on redimensionne notre tableau
+            ReDim Preserve botList(botCounter)
+            'on ajoute le bot au tableau de bot
+            botList(botCounter) = botName
+            'on incrzmente notre compteur
+            botCounter = botCounter + 1
+        End If
+    Next module
+    
+    Set wb = Nothing
+
+    'on associe le tableau de bot ainsi constitué au retour de la fonction
+    GetBotList = botList
+
+End Function
+
+Function ShapeExists(pShapeToFound As String) As Boolean
+Dim sha As Shape
+    For Each sha In ActiveSheet.Shapes
+         If sha.Name = pShapeToFound Then ShapeExists = True
+    Next sha
+End Function

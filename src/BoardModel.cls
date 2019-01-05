@@ -55,6 +55,10 @@ Public Sub FormatBoard()
 Dim cell As Range
 Dim btnRange As Range
 Dim btn As Button
+Dim lblWhiteBotRange As Range
+Dim lblBlackBotRange As Range
+Dim lblWhiteBot As Shape
+Dim lblBlackBot As Shape
 
     Worksheets(1).Name = "BOARD"
     Worksheets("BOARD").Select
@@ -169,12 +173,47 @@ Dim btn As Button
       .Name = "BtnDisplayOptions"
     End With
     
+    'Place le label du bot blanc
+    
+    If Not ShapeExists("lblDisplayWhiteBot") Then
+        Set lblWhiteBotRange = Range("E11:G11")
+        With lblWhiteBotRange
+            Set lblWhiteBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
+        End With
+        
+        With lblWhiteBot
+            .Name = "lblDisplayWhiteBot"
+            .TextFrame.Characters.Font.Color = RGB(0, 0, 0)
+            .TextFrame.VerticalAlignment = xlVAlignCenter
+            .TextFrame.HorizontalAlignment = xlHAlignCenter
+            .Fill.ForeColor.RGB = RGB(255, 255, 255)
+            .line.ForeColor.RGB = RGB(0, 0, 0)
+        End With
+    End If
+    
+    'Place le label du bot noir
+    If Not ShapeExists("lblDisplayBlackBot") Then
+        Set lblBlackBotRange = Range("I11:K11")
+        With lblBlackBotRange
+            Set lblBlackBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
+        End With
+        
+        With lblBlackBot
+            .Name = "lblDisplayBlackBot"
+            .TextFrame.Characters.Font.Color = RGB(0, 0, 0)
+            .TextFrame.VerticalAlignment = xlVAlignCenter
+            .TextFrame.HorizontalAlignment = xlHAlignCenter
+            .Fill.ForeColor.RGB = RGB(255, 255, 255)
+            .line.ForeColor.RGB = RGB(0, 0, 0)
+        End With
+    End If
     'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
     Call SetNamedRange
     Call Log.InitDataInterface
+    Call BotManager.InitBot
 End Sub
 
 
@@ -219,28 +258,55 @@ End Property
 
 
 
-'/// PROCÉDURE  : Change la couleur affichée sur le plateau de jeu
-'/// PARAMÈTRE  : Aucun
-'/// RETOUR     : Aucun
-Public Sub SwitchTurn()
-
-    If Range("TurnValue") = EnumString(EColor.Black) Or Range("TurnValue") = EnumString(EColor.White) Then
-        If Me.TurnColor = EColor.Black Then
-            Me.TurnColor = EColor.White
-        ElseIf Me.TurnColor = EColor.White Then
-            Me.TurnColor = EColor.Black
-        End If
-    End If
-    
-End Sub
-
-
-
 '/// PROPRIÉTÉ  : Retourne la couleur du joueur du tour en cours
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Property Let TurnColor(ByVal pColor As EColor)
     Range("TurnValue") = EnumString(pColor)
+End Property
+
+
+
+'/// PROPRIÉTÉ  : Retourne la valeur de l'énumération EColor associée de la valeur écrite sur le damier
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : EColor
+Public Property Let GameState(pState As EState)
+    Select Case pState
+        Case EState.WhiteWin 
+            Range("TurnValue") = "White Win"
+        Case EState.BlackWin 
+            Range("TurnValue") = "Black Win"
+        Case EState.Draw 
+            Range("TurnValue") = "Draw"
+        Case EState.WhiteFailed 
+            Range("TurnValue") = "White Failed"
+        Case EState.BlackFailed 
+            Range("TurnValue") = "Black Failed"
+    End Select
+End Property
+    
+
+
+'/// PROPRIÉTÉ  : Retourne la valeur de l'énumération EColor associée de la valeur écrite sur le damier
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : EColor
+Public Property Get GameState() As EState
+    Select Case Range("TurnValue").Value
+        Case "White Win" 
+            GameState = EState.WhiteWin 
+        Case "Black Win" 
+            GameState = EState.BlackWin 
+        Case "Draw" 
+            GameState = EState.Draw 
+        Case "White Failed" 
+            GameState = EState.WhiteFailed 
+        Case "Black Failed" 
+            GameState = EState.BlackFailed 
+        Case "White","Black"
+            GameState = EState.TheGameMustGoOn
+        Case Else
+            GameState = EState.InvalidState
+    End Select
 End Property
 
 
@@ -332,26 +398,25 @@ End Property
 
 
 
-'/// PROCÉDURE  : Ecris sur le plateau de jeu "You Win" s’il ne reste qu'un seul joueur ou "Draw" en cas d'égalité
+'/// PROCÉDURE  : Change la couleur affichée sur le plateau de jeu
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
-Public Sub SearchWinner()
+Public Sub EndTurn()
 Dim blackPawns As Variant
 Dim whitePawns As Variant
 Dim enemyPawns As Variant
 Dim pawn As Variant
 Dim canEnemyAttack As Boolean
     
-    If Range("TurnValue") = "White" Or Range("TurnValue") = "Black" Then
+    ' search winner
+    If Me.GameState = EState.TheGameMustGoOn Then
         blackPawns = Tools.GetPawns(EColor.Black)
         whitePawns = Tools.GetPawns(EColor.White)
         
-        If Tools.IsArrayNullOrEmpty(blackPawns) Or _
-           Tools.IsArrayNullOrEmpty(whitePawns) Then
-        
-            'si une couleur n'a plus de pion
-            Range("TurnValue") = "You Win"
-            
+        If Tools.IsArrayNullOrEmpty(blackPawns) Then
+            Me.GameState = EState.WhiteWin
+        ElseIf Tools.IsArrayNullOrEmpty(whitePawns) Then
+            Me.GameState = EState.BlackWin
         Else
         
             If Me.TurnColor = EColor.White Then
@@ -366,23 +431,39 @@ Dim canEnemyAttack As Boolean
                 End If
             Next pawn
             
-            If Not canEnemyAttack Then
-                Range("TurnValue") = "Draw"
+            ' si l'enemi peut attaquer on change la couleur pour le tour suivant
+            If canEnemyAttack Then
+                If Me.Gamestate = EState.TheGameMustGoOn Then
+                    If Me.TurnColor = EColor.Black Then
+                        Me.TurnColor = EColor.White
+                    ElseIf Me.TurnColor = EColor.White Then
+                        Me.TurnColor = EColor.Black
+                    End If
+                End If
+            ' si aucun pion enemis ne peut se déplacer il y a égalité
+            Else 
+                Me.GameState = EState.Draw
             End If
         End If
     End If
-
+    
 End Sub
 
 
-'/// PROCÉDURE  : Vérifie la présence des plages nommées, utilisés par le damier, dans le classeur excel
+
+'/// PROCÉDURE  : Vérifie la présence des plages nommées utilisées par le damier dans le classeur excel
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SetNamedRange()
 
     'Accès par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
 
-    'On instancie l'objet Plateau en paramétrant plusieurs emplacements par défaut
+    'On paramètre plusieurs emplacements par défaut
+    ' Range("Game") = Range("B2:I9")
+    ' Range("Restart") = Range("K2:M2")
+    ' Range("Turn") = Range("K5:M5")
+    ' Range("ConfigPlayer") = Range("K7:M7")
+    ' Range("Memory") = Range("K9:M9")
     
     On Error Resume Next
     
@@ -430,16 +511,16 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne true si "You win" est écris sur le plateau
+'/// PROPRIÉTÉ  : Retourne true si la partie est terminé
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Boolean
-Property Get IsWinner() As Boolean
+Public Property Get IsGameOver() As Boolean
 
-    IsWinner = False
+    IsGameOver = False
     
-    If Range("TurnValue") <> EnumString(EColor.White) And _
-       Range("TurnValue") <> EnumString(EColor.Black) Then
-        IsWinner = True
+    If Not Me.GameState = EState.TheGameMustGoOn Then
+        IsGameOver = True
+        Call Log.GT_InsertGame(BotManager.GetWhiteBot, BotManager.GetBlackBot)
     End If
     
 End Property
@@ -449,7 +530,7 @@ End Property
 '/// PROPRIÉTÉ  : Retourne un tableau comprenant les coefficients associés à la direction du déplacement
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Variant (tableau de la forme (x,y))
-Property Get CardinalCoef(ByVal pDirection As EWindRose) As Variant
+Public Property Get CardinalCoef(ByVal pDirection As EWindRose) As Variant
     
     If pDirection = EWindRose.SouthEast Then
         CardinalCoef = Array(1, 1)
