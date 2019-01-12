@@ -1,14 +1,14 @@
 Attribute VB_Name = "Enums"
-'une enum permet de dÃ©finir une liste de contsantes (Ã©numÃ©ration).
+'une enum permet de définir une liste de contsantes (énumération).
 
-'/// Ã‰NUMÃ‰RATION : ReprÃ©sente les deux couleurs que peuvent avoir les pions
+'/// ÉNUMÉRATION : Représente les deux couleurs que peuvent avoir les pions
 '/// VALEURS     : Blanc, Noir
 Public Enum EColor
     White = 0
     Black = 1
 End Enum
 
-'/// Ã‰NUMÃ‰RATION : ReprÃ©sente la configuration du jeu
+'/// ÉNUMÉRATION : Représente la configuration du jeu
 '/// VALEURS     : 1 joueur, 2 joueurs, IA vs IA
 Public Enum EConfig
     SinglePlayer = 10
@@ -16,7 +16,7 @@ Public Enum EConfig
     Automate = 12
 End Enum
 
-'/// Ã‰NUMÃ‰RATION : ReprÃ©sente une zone du plateau de jeu
+'/// ÉNUMÉRATION : Représente une zone du plateau de jeu
 '/// VALEURS     : Le jeu (le damier), Le bouton restaart, La zone affichant la configuration du jeu, Le reste
 Public Enum ESection
     Game = 20
@@ -25,7 +25,7 @@ Public Enum ESection
     OutOfLimit = 23
 End Enum
 
-'/// Ã‰NUMÃ‰RATION : ReprÃ©sente les 4 diagonales possible pour un dÃ©placer
+'/// ÉNUMÉRATION : Représente les 4 diagonales possible pour un déplacer
 '/// VALEURS     : Nord Est, Nord Ouest, Sud Est, Sud Ouest
 Public Enum EWindRose
     NorthEast = 30
@@ -34,8 +34,8 @@ Public Enum EWindRose
     SouthWest = 33
 End Enum
 
-'/// Ã‰NUMÃ‰RATION : ReprÃ©sente les Ã©tats de la partie
-'/// VALEURS     : Echec, Gagnant, Ã‰galitÃ©, Invalide, Continuer
+'/// ÉNUMÉRATION : Représente les états de la partie
+'/// VALEURS     : Echec, Gagnant, Égalité, Invalide, Continuer
 Public Enum EState
     TheGameMustGoOn = 40
     WhiteWin = 41
@@ -48,8 +48,8 @@ End Enum
 
 
 
-'/// FONCTION   : Retourne la valeur de l'Ã©num sous la forme de string
-'/// PARAMÃˆTRE  : Enum
+'/// FONCTION   : Retourne la valeur de l'énum sous la forme de string
+'/// PARAMÈTRE  : Enum
 '/// RETOUR     : String
 Public Function EnumString(pEnum As Variant) As String
     Select Case pEnum
