@@ -59,16 +59,12 @@ Public Property Get IsSuccess() As Boolean
 Dim board As BoardModel
 Dim alliesInitial As Variant
 Dim alliesFinal As Variant
-Dim enemiesInital As Variant
-Dim enemiesFinal As Variant
 Dim missingAllies As Variant
 Dim newAllies As Variant
 Dim currentSnapshot As String
 Dim mockSnapshot As String
 Dim originalPawn As PawnModel
 Dim originalTarget As PawnModel
-
-    Application.ScreenUpdating = False
 
     Set board = New BoardModel
     
@@ -101,8 +97,6 @@ Dim originalTarget As PawnModel
             End If
         End If
     End If
-    
-    Application.ScreenUpdating = True
     
 End Property
 

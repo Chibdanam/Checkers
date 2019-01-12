@@ -3,7 +3,11 @@ Option Explicit
 Option Base 0
 
 '/// https://www.exceltrick.com/formulas_macros/vba-wait-and-sleep-functions/?
-'Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#If VBA7 Then
+    Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
+#Else
+    Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
+#End If
 
 
 
@@ -11,7 +15,7 @@ Option Base 0
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Variant (tableau de pion)
 Public Function GetPawns(ByVal pColor As EColor) As Variant
-Dim pawnList() As PawnModel
+Dim pawnlist() As PawnModel
 Dim pawnCandidate As PawnModel
 Dim pawnCounter As Integer
 Dim cell As Range
@@ -29,9 +33,9 @@ Dim cell As Range
         If pawnCandidate.IsPawn And pawnCandidate.Color = pColor Then
             
             'on redimensionne notre tableau
-            ReDim Preserve pawnList(pawnCounter)
+            ReDim Preserve pawnlist(pawnCounter)
             'on ajoute le pion au tableau de pion
-            Set pawnList(pawnCounter) = pawnCandidate
+            Set pawnlist(pawnCounter) = pawnCandidate
             'on incrzmente notre compteur
             pawnCounter = pawnCounter + 1
             
@@ -40,7 +44,7 @@ Dim cell As Range
     Next cell
     
     'on associe le tableau de pion ainsi constitué au retour de la fonction
-    GetPawns = pawnList
+    GetPawns = pawnlist
     
 End Function
 
@@ -88,7 +92,7 @@ Dim mark As String
 Dim boardRow As Range
 Dim cell As Range
     
-    For Each boardRow In Range("Game").rows
+    For Each boardRow In Range("Game").Rows
         blueprint = blueprint + "|"
         For Each cell In boardRow.Cells
             With cell
@@ -128,8 +132,6 @@ Dim cellsMock As Variant
 Dim cellMock As Variant
 Dim rowCounter As Integer
 Dim columnCounter
-        
-    Application.ScreenUpdating = False
     
     rowCounter = 1
     patternRows = Split(pBoardPattern, vbNewLine)
@@ -159,5 +161,13 @@ Dim columnCounter
             End With
         Next cellMock
     Next patternRow
+End Sub
+
+Public Sub RefreshScreen(Optional ByVal milliseconds As Integer)
+
     Application.ScreenUpdating = True
+    DoEvents
+    If Not IsMissing(milliseconds) Then Sleep milliseconds
+    Application.ScreenUpdating = False
+    
 End Sub

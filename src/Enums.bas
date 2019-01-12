@@ -34,6 +34,18 @@ Public Enum EWindRose
     SouthWest = 33
 End Enum
 
+'/// ÉNUMÉRATION : Représente les états de la partie
+'/// VALEURS     : Echec, Gagnant, Égalité, Invalide, Continuer
+Public Enum EState
+    TheGameMustGoOn = 40
+    WhiteWin = 41
+    BlackWin = 42
+    Draw = 43
+    WhiteFailed = 44
+    BlackFailed = 45
+    InvalidState = 46
+End Enum
+
 
 
 '/// FONCTION   : Retourne la valeur de l'énum sous la forme de string
@@ -76,6 +88,23 @@ Public Function EnumString(pEnum As Variant) As String
             EnumString = "SouthEast"
         Case EWindRose.SouthWest
             EnumString = "SouthWest"
+            
+            
+        'EState
+        Case EState.TheGameMustGoOn
+            EnumString = "TheGameMustGoOn"
+        Case EState.WhiteWin
+            EnumString = "WhiteWin"
+        Case EState.BlackWin
+            EnumString = "BlackWin"
+        Case EState.Draw
+            EnumString = "Draw"
+        Case EState.WhiteFailed
+            EnumString = "WhiteFailed"
+        Case EState.BlackFailed
+            EnumString = "BlackFailed"
+        Case EState.InvalidState
+            EnumString = "InvalidState"
 
     End Select
 End Function

@@ -7,15 +7,15 @@ Option Base 0
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Aucun
 Public Sub Run(pColor As EColor)
-Dim bot As String
+Dim Bot As String
 
     If EnumString(pColor) = "White" Then
-        bot = "Bot.Run"
+        Bot = "Bot.Run"
     ElseIf EnumString(pColor) = "Black" Then
-        bot = "Bot.Run"
+        Bot = "Bot.Run"
     End If
 
-    Call RunBot(bot)
+    Call RunBot(Bot)
 
 End Sub
 
