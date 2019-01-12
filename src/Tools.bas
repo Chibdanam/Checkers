@@ -15,7 +15,7 @@ Option Base 0
 '/// PARAMÈTRE  : EColor
 '/// RETOUR     : Variant (tableau de pion)
 Public Function GetPawns(ByVal pColor As EColor) As Variant
-Dim pawnlist() As PawnModel
+Dim pawnList() As PawnModel
 Dim pawnCandidate As PawnModel
 Dim pawnCounter As Integer
 Dim cell As Range
@@ -33,9 +33,9 @@ Dim cell As Range
         If pawnCandidate.IsPawn And pawnCandidate.Color = pColor Then
             
             'on redimensionne notre tableau
-            ReDim Preserve pawnlist(pawnCounter)
+            ReDim Preserve pawnList(pawnCounter)
             'on ajoute le pion au tableau de pion
-            Set pawnlist(pawnCounter) = pawnCandidate
+            Set pawnList(pawnCounter) = pawnCandidate
             'on incrzmente notre compteur
             pawnCounter = pawnCounter + 1
             
@@ -44,7 +44,7 @@ Dim cell As Range
     Next cell
     
     'on associe le tableau de pion ainsi constitué au retour de la fonction
-    GetPawns = pawnlist
+    GetPawns = pawnList
     
 End Function
 
@@ -163,6 +163,27 @@ Dim columnCounter
     Next patternRow
 End Sub
 
+Public Function SheetExists(pSheetToFind As String) As Boolean
+Dim sh As Worksheet
+    For Each sh In Worksheets
+        If pSheetToFind = sh.Name Then SheetExists = True
+    Next sh
+End Function
+
+Function GetRangeFromTable(pSheetName As String, pTableName As String, pColumnName As String, pID As Integer) As Range
+Dim columnRange As Range
+Dim currentRowRange As Range
+
+    Set columnRange = ThisWorkbook.Sheets(pSheetName).ListObjects(pTableName).ListColumns(pColumnName).Range
+    Set currentRowRange = ThisWorkbook.Sheets(pSheetName).ListObjects(pTableName).ListRows(pID).Range
+    
+    Set GetRangeFromTable = Application.Intersect(currentRowRange, columnRange)
+End Function
+
+Public Sub DisplayOptions()
+    Call UFOptions.Show
+End Sub
+
 Public Sub RefreshScreen(Optional ByVal milliseconds As Integer)
 
     Application.ScreenUpdating = True
@@ -171,3 +192,42 @@ Public Sub RefreshScreen(Optional ByVal milliseconds As Integer)
     Application.ScreenUpdating = False
     
 End Sub
+
+
+Public Function GetBotList() As Variant
+Dim module As Variant
+Dim botList() As String
+Dim botName As String
+Dim botCounter As Integer
+Dim wb As Workbook
+
+Const botPrefix As String = "Bot_"
+
+    botCounter = 0
+    Set wb = ThisWorkbook
+    
+    For Each module In wb.VBProject.VBComponents
+        If Left(module.Name, Len(botPrefix)) = botPrefix Then
+            botName = Right(module.Name, Len(module.Name) - Len(botPrefix))
+            'on redimensionne notre tableau
+            ReDim Preserve botList(botCounter)
+            'on ajoute le bot au tableau de bot
+            botList(botCounter) = botName
+            'on incrzmente notre compteur
+            botCounter = botCounter + 1
+        End If
+    Next module
+    
+    Set wb = Nothing
+
+    'on associe le tableau de bot ainsi constitué au retour de la fonction
+    GetBotList = botList
+
+End Function
+
+Function ShapeExists(pShapeToFound As String) As Boolean
+Dim sha As Shape
+    For Each sha In ActiveSheet.Shapes
+         If sha.Name = pShapeToFound Then ShapeExists = True
+    Next sha
+End Function

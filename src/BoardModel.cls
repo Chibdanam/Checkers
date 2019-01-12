@@ -53,6 +53,12 @@ End Sub
 '/// RETOUR     : Aucun
 Public Sub FormatBoard()
 Dim cell As Range
+Dim btnRange As Range
+Dim btn As Button
+Dim lblWhiteBotRange As Range
+Dim lblBlackBotRange As Range
+Dim lblWhiteBot As Shape
+Dim lblBlackBot As Shape
 
     Worksheets(1).Name = "BOARD"
     Worksheets("BOARD").Select
@@ -158,12 +164,56 @@ Dim cell As Range
         .Borders.Weight = xlThick
     End With
     
+    ActiveSheet.Buttons.Delete
+    Set btnRange = Range("B11:C11")
+    Set btn = ActiveSheet.Buttons.Add(btnRange.Left, btnRange.Top - (btnRange.Height / 2), btnRange.Width, btnRange.Height)
+    With btn
+      .OnAction = "Tools.DisplayOptions"
+      .Caption = "Options"
+      .Name = "BtnDisplayOptions"
+    End With
+    
+    'Place le label du bot blanc
+    
+    If Not ShapeExists("lblDisplayWhiteBot") Then
+        Set lblWhiteBotRange = Range("E11:G11")
+        With lblWhiteBotRange
+            Set lblWhiteBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
+        End With
+        
+        With lblWhiteBot
+            .Name = "lblDisplayWhiteBot"
+            .TextFrame.Characters.Font.Color = RGB(0, 0, 0)
+            .TextFrame.VerticalAlignment = xlVAlignCenter
+            .TextFrame.HorizontalAlignment = xlHAlignCenter
+            .Fill.ForeColor.RGB = RGB(255, 255, 255)
+            .line.ForeColor.RGB = RGB(0, 0, 0)
+        End With
+    End If
+    
+    'Place le label du bot noir
+    If Not ShapeExists("lblDisplayBlackBot") Then
+        Set lblBlackBotRange = Range("I11:K11")
+        With lblBlackBotRange
+            Set lblBlackBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
+        End With
+        
+        With lblBlackBot
+            .Name = "lblDisplayBlackBot"
+            .TextFrame.Characters.Font.Color = RGB(0, 0, 0)
+            .TextFrame.VerticalAlignment = xlVAlignCenter
+            .TextFrame.HorizontalAlignment = xlHAlignCenter
+            .Fill.ForeColor.RGB = RGB(255, 255, 255)
+            .line.ForeColor.RGB = RGB(0, 0, 0)
+        End With
+    End If
     'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
     Call SetNamedRange
-
+    Call Log.InitDataInterface
+    Call BotManager.InitBot
 End Sub
 
 
@@ -222,15 +272,15 @@ End Property
 '/// RETOUR     : Aucun
 Public Property Let GameState(pState As EState)
     Select Case pState
-        Case EState.WhiteWin
+        Case EState.WhiteWin 
             Range("TurnValue") = "White Win"
-        Case EState.BlackWin
+        Case EState.BlackWin 
             Range("TurnValue") = "Black Win"
-        Case EState.Draw
+        Case EState.Draw 
             Range("TurnValue") = "Draw"
-        Case EState.WhiteFailed
+        Case EState.WhiteFailed 
             Range("TurnValue") = "White Failed"
-        Case EState.BlackFailed
+        Case EState.BlackFailed 
             Range("TurnValue") = "Black Failed"
     End Select
 End Property
@@ -242,16 +292,16 @@ End Property
 '/// RETOUR     : EState
 Public Property Get GameState() As EState
     Select Case Range("TurnValue").Value
-        Case "White Win"
-            GameState = EState.WhiteWin
-        Case "Black Win"
-            GameState = EState.BlackWin
-        Case "Draw"
-            GameState = EState.Draw
-        Case "White Failed"
-            GameState = EState.WhiteFailed
-        Case "Black Failed"
-            GameState = EState.BlackFailed
+        Case "White Win" 
+            GameState = EState.WhiteWin 
+        Case "Black Win" 
+            GameState = EState.BlackWin 
+        Case "Draw" 
+            GameState = EState.Draw 
+        Case "White Failed" 
+            GameState = EState.WhiteFailed 
+        Case "Black Failed" 
+            GameState = EState.BlackFailed 
         Case "White", "Black"
             GameState = EState.TheGameMustGoOn
         Case Else
@@ -382,7 +432,7 @@ Dim canEnemyMoves As Boolean
                 End If
             Next pawn
             
-            ' si l'enemi peut attaquer on change la couleur pour le tour suivant
+            ' si l'enemi peut faire un mouvement on change la couleur pour le tour suivant
             If canEnemyMoves Then
                 If Me.GameState = EState.TheGameMustGoOn Then
                     If Me.TurnColor = EColor.Black Then
@@ -471,6 +521,7 @@ Public Property Get IsGameOver() As Boolean
     
     If Not Me.GameState = EState.TheGameMustGoOn Then
         IsGameOver = True
+        Call Log.GT_InsertGame(BotManager.GetWhiteBot, BotManager.GetBlackBot)
     End If
     
 End Property

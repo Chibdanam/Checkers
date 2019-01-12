@@ -110,6 +110,8 @@ Dim turnCount As Integer
             Call board.FormatBoard
             'initialise les pions à leur position de départ
             Call board.Initialisation
+            '
+            Call Log.CG_ClearData
     End Select
     Application.ScreenUpdating = True
 End Sub

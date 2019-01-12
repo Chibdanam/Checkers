@@ -66,6 +66,11 @@ Dim mockSnapshot As String
 Dim originalPawn As PawnModel
 Dim originalTarget As PawnModel
 
+Dim logIsQueen As Boolean
+Dim logBecameQueen As Boolean
+Dim logIsAttack As Boolean
+Dim move As MoveModel
+
     Set board = New BoardModel
     
     If board.TurnColor = EColor.White Then
@@ -86,9 +91,14 @@ Dim originalTarget As PawnModel
         
         Set originalPawn = New PawnModel
         Call originalPawn.Build(missingAllies(0).CurrentRange)
+        logIsQueen = originalPawn.IsQueen
         
         Set originalTarget = New PawnModel
         Call originalTarget.Build(newAllies(0).CurrentRange)
+        
+        Set move = New MoveModel
+        Call move.Build(originalPawn, originalTarget)
+        logIsAttack = move.IsAttack
         
         If originalPawn.TryMoveTo(originalTarget, True) Then
             mockSnapshot = Tools.MakeBlueprintFromBoard
@@ -96,6 +106,16 @@ Dim originalTarget As PawnModel
                 IsSuccess = True
             End If
         End If
+    End If
+
+    If IsSuccess Then
+    
+        If originalPawn.IsQueen And Not logIsQueen Then
+            logBecameQueen = True
+        End If
+        
+        Call Log.CG_InsertNewTurn(board.TurnColor, logIsQueen, logBecameQueen, logIsAttack, prvSavedSnapshot, mockSnapshot)
+
     End If
     
 End Property
