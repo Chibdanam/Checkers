@@ -7,34 +7,34 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = True
-Option Explicit                             '/// Toutes les variables doivent être déclarées
-Option Base 0                               '/// Les Arrays comment à "0"
+Option Explicit                             '/// Toutes les variables doivent Ãªtre dÃ©clarÃ©es
+Option Base 0                               '/// Les Arrays comment Ã  "0"
 
 
 
-'/// PROCÉDURE  : Se déclenche lorsqu'un double clic survient sur la feuille et transmet en paramètre la range de la cellule cliquée
-'/// PARAMÈTRE  : Range, Boolean
-'/// RETOUR     : Aucun (évènement)
+'/// PROCÃ‰DURE  : Se dÃ©clenche lorsqu'un double clic survient sur la feuille et transmet en paramÃ¨tre la range de la cellule cliquÃ©e
+'/// PARAMÃˆTRE  : Range, Boolean
+'/// RETOUR     : Aucun (Ã©vÃ¨nement)
 Private Sub Worksheet_BeforeDoubleClick(ByVal pTarget As Range, pCancel As Boolean)
 Dim board As BoardModel
 Dim turnCount As Integer
     
     Application.ScreenUpdating = False
     
-    'Si Cancel a sa valeur par défaut ou Égal à False, alors après la fin de cette procédure,
-    'Excel va continuer en traitant le clic droit comme il le fait par défaut.
+    'Si Cancel a sa valeur par dÃ©faut ou Ã‰gal Ã  False, alors aprÃ¨s la fin de cette procÃ©dure,
+    'Excel va continuer en traitant le clic droit comme il le fait par dÃ©faut.
     
-    'Si Cancel est à True, alors Excel ne va pas faire son traitement habituel,
-    'Excel considère que l’évènement du clic droit est entièrement pris en charge par la procédure.
+    'Si Cancel est Ã  True, alors Excel ne va pas faire son traitement habituel,
+    'Excel considÃ¨re que lâ€™Ã©vÃ¨nement du clic droit est entiÃ¨rement pris en charge par la procÃ©dure.
     pCancel = True
     
-    'on instancie un objet correspondant à notre plateau de jeu
+    'on instancie un objet correspondant Ã  notre plateau de jeu
     Set board = New BoardModel
 
-    'selon la section dans laquelle on a cliqué
+    'selon la section dans laquelle on a cliquÃ©
     Select Case board.GetSection(pTarget)
     
-        'si on a cliqué sur le damier
+        'si on a cliquÃ© sur le damier
         Case ESection.Game
         
             'selon la valeur actuelle de configuration de la partie
@@ -46,7 +46,7 @@ Dim turnCount As Integer
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
                     
-                        'vérifie s'il y a un vainqueur
+                        'met a jour l'etat de la partie
                         Call board.EndTurn
                     
                     End If
@@ -56,6 +56,8 @@ Dim turnCount As Integer
                 
                     'si l'action correspond au mouvement d'un pion
                     If Player.Run(pTarget) Then
+                        
+                        'met a jour l'etat de la partie
                         Call board.EndTurn
                         
                         's'il n'y a pas de vainqueur
@@ -64,7 +66,7 @@ Dim turnCount As Integer
                             'on appel le bot
                             Call BotManager.Run(board.TurnColor)
 
-                            'vérifie s'il y a un vainqueur
+                            'vÃ©rifie s'il y a un vainqueur
                             Call board.EndTurn
                                     
                         End If
@@ -75,7 +77,7 @@ Dim turnCount As Integer
                     
                     turnCount = 0
                     
-                    'tant qu'il n'y a pas de vainqueur et qu'on a joué moins de 300 tours
+                    'tant qu'il n'y a pas de vainqueur et qu'on a jouÃ© moins de 300 tours
                     While Not board.IsGameOver And turnCount < 300
                     
                         Call BotManager.Run(board.TurnColor)
@@ -90,10 +92,10 @@ Dim turnCount As Integer
                     
             End Select
                 
-        'cas de clic sur la configuration des joueurs, on incrémente la configuration
+        'cas de clic sur la configuration des joueurs, on incrÃ©mente la configuration
         Case ESection.ConfigPlayer
         
-            'on incrémente le type de partie dans l'ordre -> 1joueurs, 2joueurs, ia vs ia
+            'on incrÃ©mente le type de partie dans l'ordre -> 1joueurs, 2joueurs, ia vs ia
             If board.ConfigPlayer = EConfig.SinglePlayer Then
                 board.ConfigPlayer = EConfig.TwoPlayers
             ElseIf board.ConfigPlayer = EConfig.TwoPlayers Then
@@ -106,7 +108,7 @@ Dim turnCount As Integer
         Case ESection.Restart
             'formate le plateau de jeux sur la feuille Excel
             Call board.FormatBoard
-            'initialise les pions à leur position de départ
+            'initialise les pions Ã  leur position de dÃ©part
             Call board.Initialisation
             '
             Call Log.CG_ClearData
