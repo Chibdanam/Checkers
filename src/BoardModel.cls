@@ -10,8 +10,8 @@ Attribute VB_Exposed = False
 Option Explicit
 Option Base 0
 
-'/// CONSTRUCTEUR: méthode appelé lors de l'instanciation de l'objet
-'/// PARAMÈTRE   : Aucun
+'/// CONSTRUCTEUR: mÃ©thode appelÃ© lors de l'instanciation de l'objet
+'/// PARAMÃˆTRE   : Aucun
 '/// RETOUR      : Aucun
 Private Sub class_Initialize()
     If Not Range("K2").Value = "Restart" Then Call SetNamedRange
@@ -19,16 +19,16 @@ End Sub
 
 
 
-'/// DESTRUCTEUR: méthode appelé lors de la destruction de l'objet
-'/// PARAMÈTRE  : Aucun
+'/// DESTRUCTEUR: mÃ©thode appelÃ© lors de la destruction de l'objet
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Private Sub class_Terminate()
 End Sub
 
 
 
-'/// PROCÉDURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par défaut
-'/// PARAMÈTRE  : Aucun
+'/// PROCÃ‰DURE  : Initialise le plateau de jeu en positionnant les pions sur leur valeur par dÃ©faut
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub Initialisation()
 Dim blueprint As String
@@ -48,8 +48,8 @@ End Sub
 
 
 
-'/// PROCÉDURE  : formate la feuille Excel en plateau de jeu par défaut
-'/// PARAMÈTRE  : Aucun
+'/// PROCÃ‰DURE  : formate la feuille Excel en plateau de jeu par dÃ©faut
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub FormatBoard()
 Dim cell As Range
@@ -70,11 +70,11 @@ Dim lblBlackBot As Shape
         .MergeCells = False
     End With
 
-    'on récupère toutes les cellules qui composent notre damier
+    'on rÃ©cupÃ¨re toutes les cellules qui composent notre damier
     For Each cell In Range("B2:I9")
         'si la somme colonne + ligne d'une cellule est paire, alors on set la couleur claire, sinon la sombre
         If (cell.Column + cell.Row) Mod 2 = 0 Then
-            'colore la cellule en blanc cassé
+            'colore la cellule en blanc cassÃ©
             cell.Interior.Color = RGB(255, 255, 200)
         Else
             'colore la cellule en marron
@@ -101,7 +101,7 @@ Dim lblBlackBot As Shape
     Range("A9").Value = "8"
     
     
-    'On modifie les paramètres de toutes les cellules comprises sur l'aire de jeu et a coté
+    'On modifie les paramÃ¨tres de toutes les cellules comprises sur l'aire de jeu et a cotÃ©
     With Range("A1:N11")
         'Hauteur de la cellule
         .RowHeight = 25
@@ -123,17 +123,17 @@ Dim lblBlackBot As Shape
     Range("K2:M2").MergeCells = True
     'Bouton Restart
     With Range("K2:M2")
-        'écris la valeur de la cellule
+        'Ã©cris la valeur de la cellule
         .Value = "Restart"
-        'Définit les contours par un trait continue
+        'DÃ©finit les contours par un trait continue
         .Borders.LineStyle = xlContinuous
-        'Définit l'épaisseur du contour : gros
+        'DÃ©finit l'Ã©paisseur du contour : gros
         .Borders.Weight = xlThick
         'Couleur du fond de cellule blanc
         .Interior.ColorIndex = 2
     End With
     
-    'En-Tête de l'indicateur du tour en cours
+    'En-TÃªte de l'indicateur du tour en cours
     Range("K4:M4").MergeCells = True
     Range("K4:M4").Value = "Turn"
     
@@ -155,7 +155,7 @@ Dim lblBlackBot As Shape
         .Borders.Weight = xlThick
     End With
     
-    'Pion en mémoire
+    'Pion en mÃ©moire
     Range("K9:M9").MergeCells = True
     With Range("K9:M9")
         .Value = ""
@@ -207,7 +207,7 @@ Dim lblBlackBot As Shape
             .line.ForeColor.RGB = RGB(0, 0, 0)
         End With
     End If
-    'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
+    'on masque toutes les colonnes et lignes au-delÃ  en bas et Ã  droite de la case Q14
     Range(Range("O12"), Range("O12").End(xlToRight)).EntireColumn.Hidden = True
     Range(Range("O12"), Range("O12").End(xlDown)).EntireRow.Hidden = True
 
@@ -218,12 +218,12 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne le nom de la section dans laquelle se trouve la Range passée en paramètre
-'/// PARAMÈTRE  : Range
+'/// PROPRIÃ‰TÃ‰  : Retourne le nom de la section dans laquelle se trouve la Range passÃ©e en paramÃ¨tre
+'/// PARAMÃˆTRE  : Range
 '/// RETOUR     : ESection
 Public Property Get GetSection(ByVal pCell As Range) As ESection
 
-    'par défaut, on définit la valeur de retour à Hors limite
+    'par dÃ©faut, on dÃ©finit la valeur de retour Ã  Hors limite
     GetSection = ESection.OutOfLimit
     
     'si la cellule est comprise danse une des sections connues du plateau, alors on renvoi la valeur de la section
@@ -239,8 +239,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne la valeur de l'énumération EColor associée de la valeur écrite sur le damier
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne la valeur de l'Ã©numÃ©ration EColor associÃ©e de la valeur Ã©crite sur le damier
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : EColor
 Public Property Get TurnColor() As EColor
 
@@ -249,7 +249,7 @@ Public Property Get TurnColor() As EColor
     ElseIf Range("TurnValue") = EnumString(EColor.Black) Then
         TurnColor = EColor.Black
     Else
-        'Si aucune valeur attendue n'est trouvée, on la paramètre à "White" par défaut
+        'Si aucune valeur attendue n'est trouvÃ©e, on la paramÃ¨tre Ã  "White" par dÃ©faut
         TurnColor = EColor.White
         Range("TurnValue") = EnumString(EColor.White)
     End If
@@ -258,8 +258,9 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Ecrit la couleur du joueur du tour
-'/// PARAMÈTRE  : Aucun
+
+'/// PROPRIÃ‰TÃ‰  : Ecrit la couleur du joueur du tour
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Property Let TurnColor(ByVal pColor As EColor)
     Range("TurnValue") = EnumString(pColor)
@@ -267,8 +268,9 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Ecrit l'etat de la partie
-'/// PARAMÈTRE  : EState
+
+'/// PROPRIÃ‰TÃ‰  : Ecrit l'etat de la partie
+'/// PARAMÃˆTRE  : EState
 '/// RETOUR     : Aucun
 Public Property Let GameState(pState As EState)
     Select Case pState
@@ -287,8 +289,8 @@ End Property
     
 
 
-'/// PROPRIÉTÉ  : Retourne la valeur de l'énumération EState associée a l'état de la partie
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne la valeur de l'Ã©numÃ©ration EState associÃ©e a l'Ã©tat de la partie
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : EState
 Public Property Get GameState() As EState
     Select Case Range("TurnValue").Value
@@ -311,8 +313,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne la configuration actuelle du plateau jeu (1 joueur, 2 joueurs, ia vs ia)
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne la configuration actuelle du plateau jeu (1 joueur, 2 joueurs, ia vs ia)
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : EConfig
 Public Property Get ConfigPlayer() As EConfig
     
@@ -323,7 +325,7 @@ Public Property Get ConfigPlayer() As EConfig
     ElseIf Range("ConfigPlayerValue").Value = EnumString(EConfig.Automate) Then
         ConfigPlayer = EConfig.Automate
     Else
-        'Si aucune valeur attendue n'est trouvée, on la paramètre a "1 Player" par défaut
+        'Si aucune valeur attendue n'est trouvÃ©e, on la paramÃ¨tre a "1 Player" par dÃ©faut
         ConfigPlayer = EConfig.SinglePlayer
         Range("ConfigPlayerValue") = EnumString(EConfig.SinglePlayer)
     End If
@@ -332,8 +334,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Modifie la configuration du plateau de jeu
-'/// PARAMÈTRE  : EConfig
+'/// PROPRIÃ‰TÃ‰  : Modifie la configuration du plateau de jeu
+'/// PARAMÃˆTRE  : EConfig
 '/// RETOUR     : Aucun
 Public Property Let ConfigPlayer(ByVal pConfig As EConfig)
         Range("ConfigPlayer") = EnumString(pConfig)
@@ -341,21 +343,21 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : écris sur le plateau de jeu dans la zone "mémoire" la position du pion passé en paramètre
-'/// PARAMÈTRE  : PawnModel
+'/// PROPRIÃ‰TÃ‰  : Ã©cris sur le plateau de jeu dans la zone "mÃ©moire" la position du pion passÃ© en paramÃ¨tre
+'/// PARAMÃˆTRE  : PawnModel
 '/// RETOUR     : Aucun
 Public Property Let Memory(ByVal pPawn As PawnModel)
 Dim Column As String
 Dim Row As String
 Dim offset As Integer
 
-    'permet d'écrire sur le plateau les coordonnées dans le référentiel du plateau et non le référentiel d’Excel
-    'le damier commençant en "B2", on a un offset de 1 sur la colonne et de 1 sur la ligne par rapport à "A1"
+    'permet d'Ã©crire sur le plateau les coordonnÃ©es dans le rÃ©fÃ©rentiel du plateau et non le rÃ©fÃ©rentiel dÂ’Excel
+    'le damier commenÃ§ant en "B2", on a un offset de 1 sur la colonne et de 1 sur la ligne par rapport Ã  "A1"
     offset = 1
     
-    'afin de récupérer la lettre correspondant à la colonne, on convertie la valeur de la colonne en caractère ASCII
+    'afin de rÃ©cupÃ©rer la lettre correspondant Ã  la colonne, on convertie la valeur de la colonne en caractÃ¨re ASCII
     Column = Chr(64 + (pPawn.CurrentRange.Column - offset))
-    'on convertie notre valeur numérique en chaine de caractère : Integer to String
+    'on convertie notre valeur numÃ©rique en chaine de caractÃ¨re : Integer to String
     Row = CStr(pPawn.CurrentRange.Row - offset)
     
     Range("MemoryValue").Value = Column + Row
@@ -364,8 +366,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne le pion écris en mémoire sur le plateau de jeu
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne le pion Ã©cris en mÃ©moire sur le plateau de jeu
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : PawnModel
 Public Property Get Memory() As PawnModel
 Dim offsetPawnPosition As String
@@ -377,19 +379,19 @@ Dim offset As Integer
     
     offset = 1
     
-    'si la range "mémoire" n'est pas vie
+    'si la range "mÃ©moire" n'est pas vie
     If Not IsEmpty(Range("MemoryValue")) Then
         
-        'on récupère la valeur écrite sur le plateau
+        'on rÃ©cupÃ¨re la valeur Ã©crite sur le plateau
         offsetPawnPosition = Range("MemoryValue").Value
         
-        'récupère la cellule dans le référentiel du damier
+        'rÃ©cupÃ¨re la cellule dans le rÃ©fÃ©rentiel du damier
         Set offsetPawnRange = Range(offsetPawnPosition)
         
-        'récupère la véritable cellule dans le référentiel d’Excel
+        'rÃ©cupÃ¨re la vÃ©ritable cellule dans le rÃ©fÃ©rentiel dÂ’Excel
         Set pawnRange = Cells(offsetPawnRange.Row + offset, offsetPawnRange.Column + offset)
         
-        'on construit le pion avec la cellule précédemment récupéré
+        'on construit le pion avec la cellule prÃ©cÃ©demment rÃ©cupÃ©rÃ©
         Call Memory.Build(pawnRange)
         
     End If
@@ -398,8 +400,8 @@ End Property
 
 
 
-'/// PROCÉDURE  : Termine le tour de jeu en mettant a jour l'etat de la partie
-'/// PARAMÈTRE  : Aucun
+'/// PROCÃ‰DURE  : Termine le tour de jeu en mettant a jour l'etat de la partie
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub EndTurn()
 Dim blackPawns As Variant
@@ -432,6 +434,7 @@ Dim canEnemyMoves As Boolean
                 End If
             Next pawn
             
+
             ' si l'enemi peut faire un mouvement on change la couleur pour le tour suivant
             If canEnemyMoves Then
                 If Me.GameState = EState.TheGameMustGoOn Then
@@ -441,7 +444,7 @@ Dim canEnemyMoves As Boolean
                         Me.TurnColor = EColor.Black
                     End If
                 End If
-            ' si aucun pion enemis ne peut se déplacer il y a égalité
+            ' si aucun pion enemis ne peut se dÃ©placer il y a Ã©galitÃ©
             Else
                 Me.GameState = EState.Draw
             End If
@@ -452,14 +455,14 @@ End Sub
 
 
 
-'/// PROCÉDURE  : Vérifie la présence des plages nommées utilisées par le damier dans le classeur excel
-'/// PARAMÈTRE  : Aucun
+'/// PROCÃ‰DURE  : VÃ©rifie la prÃ©sence des plages nommÃ©es utilisÃ©es par le damier dans le classeur excel
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub SetNamedRange()
 
-    'Accès par l'interface graphique : Formules -> Noms définis -> Gestionnaire de noms
+    'AccÃ¨s par l'interface graphique : Formules -> Noms dÃ©finis -> Gestionnaire de noms
 
-    'On paramètre plusieurs emplacements par défaut
+    'On paramÃ¨tre plusieurs emplacements par dÃ©faut
     ' Range("Game") = Range("B2:I9")
     ' Range("Restart") = Range("K2:M2")
     ' Range("Turn") = Range("K5:M5")
@@ -468,23 +471,23 @@ Public Sub SetNamedRange()
     
     On Error Resume Next
     
-    'Correspond à l'air de jeu du damier
+    'Correspond Ã  l'air de jeu du damier
     If IsError(Range("Game").Select) Then
         ActiveWorkbook.Names.Add Name:="Game", RefersToR1C1:="=Feuil1!R2C2:R9C9"
     End If
     
-    'Correspond au bouton "Restart" à côté du damier
+    'Correspond au bouton "Restart" Ã  cÃ´tÃ© du damier
     If IsError(Range("Restart").Select) Then
         ActiveWorkbook.Names.Add Name:="Restart", RefersToR1C1:="=Feuil1!R2C11:R2C13"
     End If
     
 
-    'Correspond à la zone indiquant la couleur du joueur du tour en cours
+    'Correspond Ã  la zone indiquant la couleur du joueur du tour en cours
     If IsError(Range("Turn").Select) Then
         ActiveWorkbook.Names.Add Name:="Turn", RefersToR1C1:="=Feuil1!R5C11:R5C13"
     End If
 
-    'afin de vérifier des égalités de valeur, il est nécessaire d'avoir une range contenant uniquement une seule cellule
+    'afin de vÃ©rifier des Ã©galitÃ©s de valeur, il est nÃ©cessaire d'avoir une range contenant uniquement une seule cellule
     If IsError(Range("TurnValue").Select) Then
         ActiveWorkbook.Names.Add Name:="TurnValue", RefersToR1C1:="=Feuil1!R5C11"
     End If
@@ -499,7 +502,7 @@ Public Sub SetNamedRange()
     End If
     
 
-    'Correspond à la zone tampon permettant de savoir si un pion est en mémoire
+    'Correspond Ã  la zone tampon permettant de savoir si un pion est en mÃ©moire
     If IsError(Range("Memory").Select) Then
         ActiveWorkbook.Names.Add Name:="Memory", RefersToR1C1:="=Feuil1!R9C11:R9C13"
     End If
@@ -512,8 +515,8 @@ End Sub
 
 
 
-'/// PROPRIÉTÉ  : Retourne true si la partie est terminé
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne true si la partie est terminÃ©
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Boolean
 Public Property Get IsGameOver() As Boolean
 
@@ -528,8 +531,8 @@ End Property
 
 
 
-'/// PROPRIÉTÉ  : Retourne un tableau comprenant les coefficients associés à la direction du déplacement
-'/// PARAMÈTRE  : Aucun
+'/// PROPRIÃ‰TÃ‰  : Retourne un tableau comprenant les coefficients associÃ©s Ã  la direction du dÃ©placement
+'/// PARAMÃˆTRE  : Aucun
 '/// RETOUR     : Variant (tableau de la forme (x,y))
 Public Property Get CardinalCoef(ByVal pDirection As EWindRose) As Variant
     
