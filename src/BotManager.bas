@@ -1,26 +1,6 @@
 Attribute VB_Name = "BotManager"
 Option Explicit
 Option Base 0
-Private prvWhiteBot As String
-Private prvBlackBot As String
-
-
-
-'/// PROCÉDURE  : Récupère le bot blanc
-'/// PARAMÈTRE  : Aucun
-'/// RETOUR     : String
-Public Function GetWhiteBot() As String
-    GetWhiteBot = prvWhiteBot
-End Function
-
-
-
-'/// PROCÉDURE  : Récupère le bot noir
-'/// PARAMÈTRE  : Aucun
-'/// RETOUR     : String
-Public Function GetBlackBot() As String
-    GetBlackBot = prvBlackBot
-End Function
 
 
 
@@ -28,11 +8,10 @@ End Function
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
 Public Sub InitBot()
-    If prvWhiteBot = "" Then prvWhiteBot = "FirstBot"
-    If prvBlackBot = "" Then prvBlackBot = "Random"
-    
-    Sheets("BOARD").Shapes("lblDisplayWhiteBot").TextFrame.Characters.Text = "W - " + prvWhiteBot
-    Sheets("BOARD").Shapes("lblDisplayBlackBot").TextFrame.Characters.Text = "B - " + prvBlackBot
+Dim board As BoardModel
+    Set board = New BoardModel
+    If board.WhiteBot = "" Then board.WhiteBot = "Default"
+    If board.BlackBot = "" Then board.BlackBot = "Default"
 End Sub
 
 
@@ -42,11 +21,14 @@ End Sub
 '/// RETOUR     : Aucun
 Public Sub Run(pColor As EColor)
 Dim bot As String
+Dim board As BoardModel
+
+    Set board = New BoardModel
 
     If EnumString(pColor) = "White" Then
-        bot = GetWhiteBot
+        bot = board.WhiteBot
     ElseIf EnumString(pColor) = "Black" Then
-        bot = GetBlackBot
+        bot = board.BlackBot
     End If
 
     Call RunBot(bot)
@@ -75,8 +57,10 @@ Dim lapTimer As Single
     While Not confirmLap
         
         lapTimer = Timer
-
+        
+        On Error Resume Next
         Application.Run "Bot_" + pBotName + ".Run"
+        On Error GoTo 0
         
         'on calcule le temps d'exécution du bot
         lapTimer = (Timer - lapTimer) * 1000

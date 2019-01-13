@@ -2,9 +2,9 @@ VERSION 5.00
 Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} UFOptions 
    Caption         =   "Options"
    ClientHeight    =   3036
-   ClientLeft      =   105
-   ClientTop       =   450
-   ClientWidth     =   4590
+   ClientLeft      =   108
+   ClientTop       =   456
+   ClientWidth     =   4584
    OleObjectBlob   =   "UFOptions.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -13,24 +13,62 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private Sub CommandButton_ApplyConfig_Click()
+Dim module As Variant
+Dim whiteGood As Boolean
+Dim blackGood As Boolean
 
-
-
-
-
+    For Each module In ThisWorkbook.VBProject.VBComponents
+        If module.Type = 1 And Left(module.Name, 4) = "Bot_" Then
+            If ComboBox_WhiteBot.Value = Right(module.Name, Len(module.Name) - 4) Then whiteGood = True
+            If ComboBox_WhiteBot.Value = Right(module.Name, Len(module.Name) - 4) Then blackGood = True
+        End If
+    Next module
+    
+    If whiteGood And blackGood Then
+        Sheets("BOARD").Shapes("lblDisplayWhiteBot").TextFrame.Characters.Text = "W - " + ComboBox_WhiteBot.Value
+        Sheets("BOARD").Shapes("lblDisplayBlackBot").TextFrame.Characters.Text = "B - " + ComboBox_BlackBot.Value
+        Unload Me
+    Else
+        MsgBox "Please select a bot from the list"
+    End If
+    
+End Sub
 
 Private Sub UserForm_Initialize()
-'    Dim gamesCount As Integer
-'
-'    For i = 1 To 5
-'        ComboBox1.AddItem "Ligne" & i
-'    Next i
-    ' Affecter une valeur par défaut lors de l'affichage du ComboBox.
-'    ComboBox1.ListIndex = 0
+Dim gamesCount As Integer
+Dim module As Variant
+
+    For Each module In ThisWorkbook.VBProject.VBComponents
+
+        'if normal module
+        If module.Type = 1 And Left(module.Name, 4) = "Bot_" Then
+            ComboBox_WhiteBot.AddItem Right(module.Name, Len(module.Name) - 4)
+            ComboBox_BlackBot.AddItem Right(module.Name, Len(module.Name) - 4)
+        End If
+        
+    Next module
+    
+    whiteLabel = Sheets("BOARD").Shapes("lblDisplayWhiteBot").TextFrame.Characters.Text
+    blackLabel = Sheets("BOARD").Shapes("lblDisplayBlackBot").TextFrame.Characters.Text
+    
+    'Affecter une valeur par défaut lors de l'affichage du ComboBox.
+    If IsEmpty(Right(whiteLabel, Len(whiteLabel) - 4)) Then
+        ComboBox_BlackBot.ListIndex = 0
+    Else
+        ComboBox_WhiteBot.Value = Right(whiteLabel, Len(whiteLabel) - 4)
+    End If
+    
+    If IsEmpty(Right(blackLabel, Len(blackLabel) - 4)) Then
+        ComboBox_BlackBot.ListIndex = 0
+    Else
+        ComboBox_BlackBot.Value = Right(blackLabel, Len(blackLabel) - 4)
+    End If
+    
 End Sub
 
 
-Private Sub CommandButton_Replay_Click()
+Private Sub CommandButton_StartReplay_Click()
     Application.ScreenUpdating = False
     Call StartReplay
     Application.ScreenUpdating = True

@@ -165,7 +165,7 @@ Dim lblBlackBot As Shape
     End With
     
     ActiveSheet.Buttons.Delete
-    Set btnRange = Range("B11:C11")
+    Set btnRange = Range("K11:M11")
     Set btn = ActiveSheet.Buttons.Add(btnRange.Left, btnRange.Top - (btnRange.Height / 2), btnRange.Width, btnRange.Height)
     With btn
       .OnAction = "Tools.DisplayOptions"
@@ -176,7 +176,7 @@ Dim lblBlackBot As Shape
     'Place le label du bot blanc
     
     If Not ShapeExists("lblDisplayWhiteBot") Then
-        Set lblWhiteBotRange = Range("E11:G11")
+        Set lblWhiteBotRange = Range("B11:D11")
         With lblWhiteBotRange
             Set lblWhiteBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
         End With
@@ -188,12 +188,13 @@ Dim lblBlackBot As Shape
             .TextFrame.HorizontalAlignment = xlHAlignCenter
             .Fill.ForeColor.RGB = RGB(255, 255, 255)
             .line.ForeColor.RGB = RGB(0, 0, 0)
+            .TextFrame.Characters.Text = "W - "
         End With
     End If
     
     'Place le label du bot noir
     If Not ShapeExists("lblDisplayBlackBot") Then
-        Set lblBlackBotRange = Range("I11:K11")
+        Set lblBlackBotRange = Range("G11:I11")
         With lblBlackBotRange
             Set lblBlackBot = ActiveSheet.Shapes.AddShape(msoShapeRectangle, .Left, .Top - (.Height / 2), .Width, .Height)
         End With
@@ -205,6 +206,7 @@ Dim lblBlackBot As Shape
             .TextFrame.HorizontalAlignment = xlHAlignCenter
             .Fill.ForeColor.RGB = RGB(255, 255, 255)
             .line.ForeColor.RGB = RGB(0, 0, 0)
+            .TextFrame.Characters.Text = "B - "
         End With
     End If
     'on masque toutes les colonnes et lignes au-delà en bas et à droite de la case Q14
@@ -258,7 +260,6 @@ End Property
 
 
 
-
 '/// PROPRIÉTÉ  : Ecrit la couleur du joueur du tour
 '/// PARAMÈTRE  : Aucun
 '/// RETOUR     : Aucun
@@ -268,21 +269,20 @@ End Property
 
 
 
-
 '/// PROPRIÉTÉ  : Ecrit l'etat de la partie
 '/// PARAMÈTRE  : EState
 '/// RETOUR     : Aucun
 Public Property Let GameState(pState As EState)
     Select Case pState
-        Case EState.WhiteWin 
+        Case EState.WhiteWin
             Range("TurnValue") = "White Win"
-        Case EState.BlackWin 
+        Case EState.BlackWin
             Range("TurnValue") = "Black Win"
-        Case EState.Draw 
+        Case EState.Draw
             Range("TurnValue") = "Draw"
-        Case EState.WhiteFailed 
+        Case EState.WhiteFailed
             Range("TurnValue") = "White Failed"
-        Case EState.BlackFailed 
+        Case EState.BlackFailed
             Range("TurnValue") = "Black Failed"
     End Select
 End Property
@@ -294,16 +294,16 @@ End Property
 '/// RETOUR     : EState
 Public Property Get GameState() As EState
     Select Case Range("TurnValue").Value
-        Case "White Win" 
-            GameState = EState.WhiteWin 
-        Case "Black Win" 
-            GameState = EState.BlackWin 
-        Case "Draw" 
-            GameState = EState.Draw 
-        Case "White Failed" 
-            GameState = EState.WhiteFailed 
-        Case "Black Failed" 
-            GameState = EState.BlackFailed 
+        Case "White Win"
+            GameState = EState.WhiteWin
+        Case "Black Win"
+            GameState = EState.BlackWin
+        Case "Draw"
+            GameState = EState.Draw
+        Case "White Failed"
+            GameState = EState.WhiteFailed
+        Case "Black Failed"
+            GameState = EState.BlackFailed
         Case "White", "Black"
             GameState = EState.TheGameMustGoOn
         Case Else
@@ -351,7 +351,7 @@ Dim Column As String
 Dim Row As String
 Dim offset As Integer
 
-    'permet d'écrire sur le plateau les coordonnées dans le référentiel du plateau et non le référentiel d?Excel
+    'permet d'écrire sur le plateau les coordonnées dans le référentiel du plateau et non le référentiel d’Excel
     'le damier commençant en "B2", on a un offset de 1 sur la colonne et de 1 sur la ligne par rapport à "A1"
     offset = 1
     
@@ -388,7 +388,7 @@ Dim offset As Integer
         'récupère la cellule dans le référentiel du damier
         Set offsetPawnRange = Range(offsetPawnPosition)
         
-        'récupère la véritable cellule dans le référentiel d?Excel
+        'récupère la véritable cellule dans le référentiel d’Excel
         Set pawnRange = Cells(offsetPawnRange.Row + offset, offsetPawnRange.Column + offset)
         
         'on construit le pion avec la cellule précédemment récupéré
@@ -434,7 +434,6 @@ Dim canEnemyMoves As Boolean
                 End If
             Next pawn
             
-
             ' si l'enemi peut faire un mouvement on change la couleur pour le tour suivant
             If canEnemyMoves Then
                 If Me.GameState = EState.TheGameMustGoOn Then
@@ -524,7 +523,7 @@ Public Property Get IsGameOver() As Boolean
     
     If Not Me.GameState = EState.TheGameMustGoOn Then
         IsGameOver = True
-        Call Log.GT_InsertGame(BotManager.GetWhiteBot, BotManager.GetBlackBot)
+        Call Log.GT_InsertGame(Me.WhiteBot, Me.BlackBot, Me.GameState)
     End If
     
 End Property
@@ -546,4 +545,45 @@ Public Property Get CardinalCoef(ByVal pDirection As EWindRose) As Variant
         CardinalCoef = Array(-1, -1)
     End If
     
+End Property
+
+
+
+'/// PROPRIÉTÉ  : Retourne le nom du Bot blanc
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : String
+Public Property Get WhiteBot() As String
+Dim botName As String
+Dim whiteLabel As String
+    whiteLabel = Sheets("BOARD").Shapes("lblDisplayWhiteBot").TextFrame.Characters.Text
+    botName = Right(whiteLabel, Len(whiteLabel) - 4)
+    WhiteBot = botName
+End Property
+
+
+'/// PROPRIÉTÉ  : Retourne le nom du Bot noir
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : String
+Public Property Get BlackBot() As String
+Dim botName As String
+Dim blackLabel As String
+    blackLabel = Sheets("BOARD").Shapes("lblDisplayBlackBot").TextFrame.Characters.Text
+    botName = Right(blackLabel, Len(blackLabel) - 4)
+    BlackBot = botName
+End Property
+
+
+'/// PROPRIÉTÉ  : Ecrit le nom du Bot blanc
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : String
+Public Property Let WhiteBot(ByVal pName As String)
+    Sheets("BOARD").Shapes("lblDisplayWhiteBot").TextFrame.Characters.Text = "W - " + pName
+End Property
+
+
+'/// PROPRIÉTÉ  : Ecrit le nom du Bot noir
+'/// PARAMÈTRE  : Aucun
+'/// RETOUR     : String
+Public Property Let BlackBot(ByVal pName As String)
+    Sheets("BOARD").Shapes("lblDisplayBlackBot").TextFrame.Characters.Text = "W - " + pName
 End Property

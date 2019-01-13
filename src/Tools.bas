@@ -2,8 +2,6 @@ Attribute VB_Name = "Tools"
 Option Explicit
 Option Base 0
 
-'Public Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)
-
 '/// https://www.exceltrick.com/formulas_macros/vba-wait-and-sleep-functions/?
 #If VBA7 Then
     Declare PtrSafe Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As LongPtr)

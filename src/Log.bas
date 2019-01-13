@@ -263,15 +263,22 @@ Dim rangeToUpdate As Range
 
 End Sub
 
-Public Sub GT_InsertGame(pWhiteBotName As String, pBlackBotName As String)
+Public Sub GT_InsertGame(pWhiteBotName As String, pBlackBotName As String, pWinner As EState)
 Dim ID As Integer
 
     ID = Log.CreateNewEntryAndGetID(cstGamesSheet, cstGamesTable)
     
     Call Log.GT_UpdateWhitePlayer(ID, pWhiteBotName)
     Call Log.GT_UpdateBlackPlayer(ID, pBlackBotName)
-    'Call Log.GT_UpdateWinner(ID,)
     Call Log.GT_UpdateGameDate(ID, Now)
+    
+    If pWinner = EState.BlackWin Or pWinner = EState.WhiteFailed Then
+        Call Log.GT_UpdateWinner(ID, pBlackBotName)
+    ElseIf pWinner = EState.WhiteWin Or pWinner = EState.BlackFailed Then
+        Call Log.GT_UpdateWinner(ID, pWhiteBotName)
+    ElseIf pWinner = EState.Draw Then
+        Call Log.GT_UpdateWinner(ID, EnumString(EState.Draw))
+    End If
     
     Call TT_InsertTurns(ID)
    
