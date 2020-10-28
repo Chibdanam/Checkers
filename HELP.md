@@ -1,7 +1,8 @@
 # Summary
 
 <!-- TOC -->
-lolilol
+lolilol oui non oui 
+
 - [Statements](#Statements)
   - [Option Base](#Option-Base)
   - [Option Explicit](#Option-Explicit)
@@ -291,7 +292,7 @@ Property **Get** allows reading a property of a class module
 Private prvNom As String
 
 Property Get Nom() As String
-    ' Propriété en lecture
+    ' PropriÃ©tÃ© en lecture
     Nom = prvNom
 End Property
 ```
@@ -303,7 +304,7 @@ Property **Let** allows writing a property of a class module
 Private prvNom As String
 
 Property Let Nom(pNom As String)
-    ' Propriété en écriture
+    ' PropriÃ©tÃ© en Ã©criture
     prvNom = pNom
 End Property
 ```
